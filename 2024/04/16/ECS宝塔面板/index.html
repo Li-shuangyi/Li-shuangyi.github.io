@@ -5,7 +5,7 @@
   
     <title>
       
-        漂浮的以太——tools | 
+        漂浮的以太——ECS宝塔面板 | 
             Hexo
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,7 +20,7 @@
 
     <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
     <script>
-      document.title = `漂浮的以太——tools`
+      document.title = `漂浮的以太——ECS宝塔面板`
     </script>
 <meta name="generator" content="Hexo 7.1.1"></head>
 
@@ -351,28 +351,149 @@
       <div id="main-container" class="main-container">
 
 
-  <link rel="stylesheet" href="/css/partial/tools.css" />
+  <link rel="stylesheet" href="/css/partial/article.css" />
 
-
-
-<div class="tools">
-  <h2 class="tools-title">我的自制工具列表...</h2>
-  <ul class="tools-list">
-    
-      <li>
-        <img class="tool-cover" src="https://coke-cola.gitee.io/resume-page/assets/dark-f439b888.jpeg" alt="">
-        <div class="tool-info">
-          <div>
-            <p class="tool-title">在线简历生成器</p>
-            <p class="tool-intro">一个免费的在线简历生成工具</p>
+<div class="article-container">
+  <div class="article">
+    <h1 class="article-title">ECS宝塔面板</h1>
+    <div class="article-info">
+      <div class="article-info--item">
+        <div class="article-info--info">
+          
+          <div class="article-info--categories">
+            <span>分类：</span>
+            
           </div>
-          <a class="tool-link" href="https://coke-cola.gitee.io/resume-page/#/" target="_blank">前往使用>></a>
+          
+          
+          <div class="article-info--tags">
+            <span>标签：</span>
+            <a class="tag-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag">服务器</a>
+          </div>
+          
+          <p class="article-info--date">日期：2024-04-16 10:35:36</p>
         </div>
-      </li>
+        <img src="/imgs/ECS-cover.webp" alt="" class="article-cover">
+      </div>
+    </div>
+    <article class="article-content markdown-body">
+      <h1 id="宝塔面板安装"><a href="#宝塔面板安装" class="headerlink" title="宝塔面板安装"></a>宝塔面板安装</h1><h2 id="安全组设置"><a href="#安全组设置" class="headerlink" title="安全组设置"></a>安全组设置</h2><ol>
+<li><p>在控制面板进入安全组</p>
+<p><img src="/image/%E5%AE%9D%E5%A1%94-1.png">	</p>
+<p><img src="/image/%E5%AE%9D%E5%A1%94-2.png">	</p>
+</li>
+<li><p>添加安全组</p>
+</li>
+</ol>
+<p>​	服务器需要端口放行，否则端口将无法访问，因为安全需要，所以ECS存在安全组。</p>
+<p>​	安装&amp;常用需放行的端口:</p>
+<table>
+<thead>
+<tr>
+<th align="center">tomcat端口:</th>
+<th align="center">8080</th>
+<th align="center">mysql端口:</th>
+<th align="center">3306</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">https网站访问端口:</td>
+<td align="center">80、443</td>
+<td align="center">phpmyadmin访问端口：</td>
+<td align="center">888</td>
+</tr>
+<tr>
+<td align="center">FTP端口:</td>
+<td align="center">20、21、39000-40000</td>
+<td align="center">面板地址访问端口:</td>
+<td align="center">8888</td>
+</tr>
+<tr>
+<td align="center">SSH连接端口:</td>
+<td align="center">22</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><strong>规则方向：</strong>入方向(外部访问服务器)&#x2F;出方向(服务器访问外部网络)。<br><strong>授权策略：</strong>允许&#x2F;拒绝；决定允许该端口访问还是拒绝。<br><strong>优先级：</strong>同一端口，优先级越高的设置将覆盖优先级低的设置。<br><strong>协议类型：</strong>端口协议类型，里面可以选择端口类型和一些常用的端口。<br><strong>端口范围：</strong>格式：aa&#x2F;bb,表示从aa到bb之间的所有端口，如果只是某一端口，就写成aa&#x2F;aa。<br><strong>授权对象：</strong>即允许访问的ip地址。格式 ip&#x2F;端口。</p>
+<p><img src="/image/%E5%AE%9D%E5%A1%94-3.png">	</p>
+<p><img src="/image/%E5%AE%9D%E5%A1%94-4.png">	</p>
+
+    </article>
     
-  </ul>
+    <div class="read-nums">
+      <!-- id 将作为查询条件 -->
+      <span id="2024/04/16/ECS宝塔面板/" class="leancloud_visitors" data-flag-title="Your Article Title">
+        <em class="post-meta-item-text">浏览量</em>
+        <i class="leancloud-visitors-count"></i>
+      </span>
+    </div>
+    <div class="comments-intro">
+      <h2>评论区</h2>
+      <p>欢迎你留下宝贵的意见，昵称输入QQ号会显示QQ头像哦~</p>
+    </div>
+    <div id="vcomments" class="vcomments"></div>
+    
+  </div>
+  <div class="article-catelogue">
+    <div class="article-catelogue--wrapper">
+      <div class="catelogue catelogue-1">
+        <h3>目录</h3>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9D%E5%A1%94%E9%9D%A2%E6%9D%BF%E5%AE%89%E8%A3%85"><span class="toc-number">1.</span> <span class="toc-text">宝塔面板安装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E7%BB%84%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">安全组设置</span></a></li></ol></li></ol>
+      </div>
+      
+        <div class="catelogue catelogue-2">
+           
+          
+            <p>
+              <span>下一篇</span>
+              <a href="/2024/04/15/2024转专业简历/">简历</a>
+            </p>
+          
+        </div>
+      
+    </div>
+  </div>
 </div>
 
+
+<script>
+  // var定义，避免pjax重新进来造成的重复声明错误
+  var config = JSON.parse('{"enable":true,"appId":"Pf8zCXGEH1qsprnWfikVVujL-gzGzoHsz","appKey":"qOqoiUHhH1TGtLRUYURkLRQX","placeholder":"站主会不定期回来打扫","meta":["nick"],"recordIP":true,"visitor":true,"enableQQ":true}')
+  new Valine({
+    el: '#vcomments',
+    appId: config.appId,
+    appKey: config.appKey,
+    placeholder: config.placeholder,
+    meta: config.meta,
+    recordIP: config.recordIP,
+    visitor: config.visitor,
+    enableQQ: config.enableQQ,
+    path: '2024/04/16/ECS宝塔面板/'
+  })
+</script>
+
+
+<script>
+  $(document).on('pjax:complete', function() {
+    const tocs = document.querySelector('.toc')
+    const links = tocs ? tocs.querySelectorAll('a') : []
+    links.forEach(link => {
+      link.addEventListener('click', e => {
+        const href = decodeURIComponent(e.href)
+        href.search(/#(.*)/)
+        const id = RegExp.$1
+        const target = document.querySelector('#' + id)
+        const top = target.offsetTop
+        document.documentElement.scrollTo({
+          top: top - 100,
+          behavior: 'smooth'
+        })
+        e.preventDefault()
+      })
+    })
+  })
+</script> 
 
 </div>
       <div class="main-right-wrapper"><div class="main-right">
