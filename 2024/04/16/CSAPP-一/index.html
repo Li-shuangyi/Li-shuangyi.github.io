@@ -5,7 +5,7 @@
   
     <title>
       
-        漂浮的以太——log | 
+        漂浮的以太——CSAPP读书笔记(一) | 
             Hexo
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,7 +20,7 @@
 
     <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
     <script>
-      document.title = `漂浮的以太——log`
+      document.title = `漂浮的以太——CSAPP读书笔记(一)`
     </script>
 <meta name="generator" content="Hexo 7.1.1"></head>
 
@@ -351,23 +351,292 @@
       <div id="main-container" class="main-container">
 
 
-  <link rel="stylesheet" href="/css/partial/log.css" />
+  <link rel="stylesheet" href="/css/partial/article.css" />
+
+<div class="article-container">
+  <div class="article">
+    <h1 class="article-title">CSAPP读书笔记(一)</h1>
+    <div class="article-info">
+      <div class="article-info--item">
+        <div class="article-info--info">
+          
+          <div class="article-info--categories">
+            <span>分类：</span>
+            
+          </div>
+          
+          
+          <div class="article-info--tags">
+            <span>标签：</span>
+            <a class="tag-link" href="/tags/CSAPP/" rel="tag">CSAPP</a>
+          </div>
+          
+          <p class="article-info--date">日期：2024-04-16 21:50:16</p>
+        </div>
+        <img src="/imgs/CSAPP-cover.webp" alt="" class="article-cover">
+      </div>
+    </div>
+    <article class="article-content markdown-body">
+      <p><strong>2015 CMU 15-213 CSAPP</strong></p>
+<ul>
+<li><p><input disabled="" type="checkbox"> 
+Lab1(datalab): Manipulating bits</p>
+</li>
+<li><p><input disabled="" type="checkbox"> 
+Lab2(bomblab): Defusing a binary bomb</p>
+</li>
+<li><p><input disabled="" type="checkbox"> 
+Lab3(attacklab): The basics of code injection attacks </p>
+</li>
+<li><p><input disabled="" type="checkbox"> 
+Lab4(cachelab): Build a cache simulator</p>
+</li>
+<li><p><input disabled="" type="checkbox"> 
+Lab5(tshlab): Unix Shell</p>
+</li>
+<li><p><input disabled="" type="checkbox"> 
+Lab6(malloclab): malloc package</p>
+</li>
+<li><p><input disabled="" type="checkbox"> 
+Lab7(proxylab): Web proxy</p>
+</li>
+</ul>
+<h1 id="Lecture-01-Bits-Bytes-and-Integer"><a href="#Lecture-01-Bits-Bytes-and-Integer" class="headerlink" title="Lecture 01 Bits,Bytes,and Integer"></a>Lecture 01 Bits,Bytes,and Integer</h1><p>位（Bit）：计算机中存储信息的最小单位。可以存储一个二进制数，表示两种状态。</p>
+<p>字节（Byte）：计算机中存储信息都基本单位。八个二进制位为一个字节。</p>
+<p>字（Word）：字是计算机处理信息的基本单位，其大小取决于计算机体系结构和操作系统。一个字由若干个字节组成，通常是2个字节、4个字节或更多。</p>
+<p>字长（Word Length）：字长指的是计算机处理器一次能处理的二进制数据的位数。它决定了计算机的运算能力和数据存储的最大范围。常见的字长包括16位、32位、64位等。也称作机器字长。</p>
+<ul>
+<li>虚拟地址空间是由机器字长决定的。虚拟地址空间是一个进程可用于存储其代码、数据和堆栈等的抽象地址空间。在32位系统中，虚拟地址空间的最大大小通常是2^32 字节（或4GB），一个32位地址可以表示的最大地址是2^32。</li>
+</ul>
+<p>32位二进制表示过于复杂,常用十六位表示</p>
+<p>例如0x80000000指的是int的最小值T_min</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0x指十六进制</span><br><span class="line"><span class="number">8</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span></span><br><span class="line"><span class="number">1000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></span><br></pre></td></tr></table></figure>
 
 
 
-<div class="log">
-  
-  
-    <link rel="stylesheet" href="/css/partial/empty.css" />
+<h2 id="Shift-Operations"><a href="#Shift-Operations" class="headerlink" title="Shift Operations"></a>Shift Operations</h2><p><strong>Left Shift : x&lt;&lt;y</strong></p>
+<ul>
+<li><p>左侧多余位删除。</p>
+</li>
+<li><p>右侧补0。</p>
+</li>
+<li><p>当左移的位数超过该数值类型的最大位数时,编译器会用左移的位数去模类型的最大位数,然后按余数进行移位,如:</p>
+<p>int i &#x3D; 1, j &#x3D; 0x80000000; &#x2F;&#x2F;设int为32位<br>i &#x3D; i &lt;&lt; 33; &#x2F;&#x2F; 33 % 32 &#x3D; 1 左移1位,i变成2;<br>j &#x3D; j &lt;&lt; 33; &#x2F;&#x2F; 33 % 32 &#x3D; 1 左移1位,j变成0,最高位被丢弃;</p>
+<p>在用gcc编译这段程序的时候编译器会给出一个warning,说左移位数&gt;&#x3D;类型长度.那么实际上i,j移动的就是1位(33%32)。</p>
+</li>
+</ul>
+<p><strong>Right Shift : x&gt;&gt;y</strong></p>
+<ul>
+<li><p>右侧多余位删除。</p>
+</li>
+<li><p><strong>Logical shift (逻辑移位)</strong> : 空缺位用0填充。有符号数的右移是逻辑右移。</p>
+</li>
+<li><p><strong>Arithmetic shift(算数移位)</strong>: 空缺位用符号位填充。有符号数的右移是算数右移</p>
+</li>
+<li><p>当移动的位数超过类型的长度时,会取余数,然后移动余数个位。</p>
+</li>
+<li><p><img src="/image/CSAPP/(%E4%B8%80)/1.png"></p>
+</li>
+</ul>
+<h2 id="Numeric-Ranges"><a href="#Numeric-Ranges" class="headerlink" title="Numeric Ranges"></a>Numeric Ranges</h2><table>
+<thead>
+<tr>
+<th align="center">Unsigned Values</th>
+<th align="center">Two’s Complement Values</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">UMin &#x3D; 0</td>
+<td align="center">TMin &#x3D; -2^(w-1)</td>
+</tr>
+<tr>
+<td align="center">000…0</td>
+<td align="center">100…0</td>
+</tr>
+<tr>
+<td align="center">UMax &#x3D; 2^w-1</td>
+<td align="center">TMax &#x3D; 2^(w-1)-1</td>
+</tr>
+<tr>
+<td align="center">111…1</td>
+<td align="center">011…1</td>
+</tr>
+</tbody></table>
+<h2 id="掩码运算"><a href="#掩码运算" class="headerlink" title="掩码运算"></a>掩码运算</h2><p>从一个字节中选出位的集合。</p>
+<p>比如掩码0xFF表示一个字的低字节。</p>
+<p>x&amp;0xFF表示生成一个由x的最低有效字节组成的值,其他字节被置为0。</p>
+<h2 id="Casting-Surprise"><a href="#Casting-Surprise" class="headerlink" title="Casting Surprise"></a>Casting Surprise</h2><ol>
+<li><strong>整数溢出</strong>：当一个整数值超出了其数据类型的最大值或最小值时，会发生整数溢出。在C语言中，整数溢出会导致“溢出”值被截断，从而循环回最小值或最大值。</li>
+<li><strong>有符号与无符号整数</strong>：有符号整数可以表示正数、负数和零，而无符号整数只能表示非负数（包括零）。当有符号整数与无符号整数进行操作时，有符号整数会被转换为无符号整数。</li>
+<li>有符号数的补码的最高位，不仅有符号位的意思，还有权重的意思。</li>
+</ol>
+<blockquote>
+<p><strong>Exercise2-21</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">表达式</th>
+<th align="center">类型</th>
+<th align="center">求值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-2147483647-1 &#x3D;&#x3D; 2147483648U</td>
+<td align="center">无符号</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">-2147483647-1 &lt; 2147483647</td>
+<td align="center">有符号</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">-2147483647-1U &lt; 2147483647</td>
+<td align="center">无符号</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">-2147483647-1 &lt; -2147483647</td>
+<td align="center">有符号</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">-2147483647-1U &lt; -2147483647</td>
+<td align="center">无符号</td>
+<td align="center">1</td>
+</tr>
+</tbody></table>
+<p>T_min &#x3D; -2147483648</p>
+<p>T_minU &#x3D; 2147483648</p>
+<p>-1U &#x3D; 4294967295</p>
+</blockquote>
+<p>sizeof得到的值为usigned value</p>
+<h2 id="原码-补码-反码"><a href="#原码-补码-反码" class="headerlink" title="原码 补码 反码"></a>原码 补码 反码</h2><h3 id="同余"><a href="#同余" class="headerlink" title="同余"></a>同余</h3><p>两个整数a，b，若它们除以整数m所得的余数相等，则称a，b对于模m同余</p>
+<p>记作 a ≡ b (mod m)</p>
+<p>读作 a 与 b 关于模 m 同余。</p>
+<p>举例说明:</p>
+<blockquote>
+<p>4 mod 12 &#x3D; 4</p>
+<p>16 mod 12 &#x3D; 4</p>
+<p>28 mod 12 &#x3D; 4</p>
+</blockquote>
+<p>所以4, 16, 28关于模 12 同余。</p>
+<h3 id="负数取模"><a href="#负数取模" class="headerlink" title="负数取模"></a>负数取模</h3><p><img src="https://img-blog.csdnimg.cn/2020101616021332.jpg"></p>
+<blockquote>
+<p>x mod y等于 x 减去 y 乘上 x与y的商的下界。</p>
+</blockquote>
+<p>以 -3 mod 2 举例:</p>
+<blockquote>
+<p>-3 mod 2</p>
+<p>&#x3D; -3 - 2x[-3&#x2F;2 ]</p>
+<p>&#x3D; -3 - 2x[-1.5]</p>
+<p>&#x3D; -3 - 2x(-2)</p>
+<p>&#x3D; -3 + 4 &#x3D; 1</p>
+<p>(-2) mod 12 &#x3D; 12-2&#x3D;10</p>
+<p>(-4) mod 12 &#x3D; 12-4 &#x3D; 8</p>
+<p>(-5) mod 12 &#x3D; 12 - 5 &#x3D; 7</p>
+</blockquote>
+<h2 id="同余的定理"><a href="#同余的定理" class="headerlink" title="同余的定理"></a>同余的定理</h2><ul>
+<li>反身性 : a ≡ a (mod m)</li>
+<li>线性运算定理:</li>
+</ul>
+<p>​	如果a ≡ b (mod m)，c ≡ d (mod m) 那么:</p>
+<p>​	(1)a ± c ≡ b ± d (mod m)</p>
+<p>​	(2)a * c ≡ b * d (mod m)</p>
+<p>一个数的反码, 实际上是这个数对于一个模的同余数。</p>
+<p>而2+126很显然相当于钟表转过了一轮, 而因为符号位是参与计算的, 正好和溢出的最高位形成正确的运算结果。</p>
+<p>既然反码可以将减法变成加法, 那么现在计算机使用的补码呢? 为什么在反码的基础上加1, 还能得到正确的结果?</p>
+<blockquote>
+<p>2-1&#x3D;2+(-1) &#x3D; [0000 0010]原 + [1000 0001]原 &#x3D; [0000 0010]补 + [1111 1111]补</p>
+</blockquote>
+<p>如果把[1111 1111]当成原码, 去除符号位, 则:</p>
+<blockquote>
+<p>[0111 1111]原 &#x3D; 127</p>
+</blockquote>
+<p>其实, 在反码的基础上+1, 只是相当于增加了模的值:</p>
+<blockquote>
+<p>(-1) mod 128 &#x3D; 127</p>
+<p>127 mod 128 &#x3D; 127</p>
+<p>2-1 ≡ 2+127 (mod 128)</p>
+</blockquote>
+<p>此时, 表盘相当于每128个刻度转一轮. 所以用补码表示的运算结果最小值和最大值应该是[-128, 128]。</p>
+<p>但是由于0的特殊情况, 没有办法表示128, 所以补码的取值范围是[-128, 127]。</p>
 
-<div class="empty empty-container">
-  <p>啊哦~</p>
-  <p>这里暂时什么也没有哦o(╥﹏╥)o</p>
+    </article>
+    
+    <div class="read-nums">
+      <!-- id 将作为查询条件 -->
+      <span id="2024/04/16/CSAPP-一/" class="leancloud_visitors" data-flag-title="Your Article Title">
+        <em class="post-meta-item-text">浏览量</em>
+        <i class="leancloud-visitors-count"></i>
+      </span>
+    </div>
+    <div class="comments-intro">
+      <h2>评论区</h2>
+      <p>欢迎你留下宝贵的意见，昵称输入QQ号会显示QQ头像哦~</p>
+    </div>
+    <div id="vcomments" class="vcomments"></div>
+    
+  </div>
+  <div class="article-catelogue">
+    <div class="article-catelogue--wrapper">
+      <div class="catelogue catelogue-1">
+        <h3>目录</h3>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Lecture-01-Bits-Bytes-and-Integer"><span class="toc-number">1.</span> <span class="toc-text">Lecture 01 Bits,Bytes,and Integer</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Shift-Operations"><span class="toc-number">1.1.</span> <span class="toc-text">Shift Operations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Numeric-Ranges"><span class="toc-number">1.2.</span> <span class="toc-text">Numeric Ranges</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A9%E7%A0%81%E8%BF%90%E7%AE%97"><span class="toc-number">1.3.</span> <span class="toc-text">掩码运算</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Casting-Surprise"><span class="toc-number">1.4.</span> <span class="toc-text">Casting Surprise</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%A0%81-%E8%A1%A5%E7%A0%81-%E5%8F%8D%E7%A0%81"><span class="toc-number">1.5.</span> <span class="toc-text">原码 补码 反码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E4%BD%99"><span class="toc-number">1.5.1.</span> <span class="toc-text">同余</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%9F%E6%95%B0%E5%8F%96%E6%A8%A1"><span class="toc-number">1.5.2.</span> <span class="toc-text">负数取模</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E4%BD%99%E7%9A%84%E5%AE%9A%E7%90%86"><span class="toc-number">1.6.</span> <span class="toc-text">同余的定理</span></a></li></ol></li></ol>
+      </div>
+      
+        <div class="catelogue catelogue-2">
+           
+          
+            <p>
+              <span>下一篇</span>
+              <a href="/2024/04/16/ECS宝塔面板/">ECS宝塔面板</a>
+            </p>
+          
+        </div>
+      
+    </div>
+  </div>
 </div>
 
-  
-</div>
 
+<script>
+  // var定义，避免pjax重新进来造成的重复声明错误
+  var config = JSON.parse('{"enable":true,"appId":"Pf8zCXGEH1qsprnWfikVVujL-gzGzoHsz","appKey":"qOqoiUHhH1TGtLRUYURkLRQX","placeholder":"站主会不定期回来打扫","meta":["nick"],"recordIP":true,"visitor":true,"enableQQ":true}')
+  new Valine({
+    el: '#vcomments',
+    appId: config.appId,
+    appKey: config.appKey,
+    placeholder: config.placeholder,
+    meta: config.meta,
+    recordIP: config.recordIP,
+    visitor: config.visitor,
+    enableQQ: config.enableQQ,
+    path: '2024/04/16/CSAPP-一/'
+  })
+</script>
+
+
+<script>
+  $(document).on('pjax:complete', function() {
+    const tocs = document.querySelector('.toc')
+    const links = tocs ? tocs.querySelectorAll('a') : []
+    links.forEach(link => {
+      link.addEventListener('click', e => {
+        const href = decodeURIComponent(e.href)
+        href.search(/#(.*)/)
+        const id = RegExp.$1
+        const target = document.querySelector('#' + id)
+        const top = target.offsetTop
+        document.documentElement.scrollTo({
+          top: top - 100,
+          behavior: 'smooth'
+        })
+        e.preventDefault()
+      })
+    })
+  })
+</script> 
 
 </div>
       <div class="main-right-wrapper"><div class="main-right">

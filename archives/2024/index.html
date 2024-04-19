@@ -197,7 +197,7 @@
   const ipt = document.querySelector('#search-input')
   const btn = document.querySelector('#search-btn')
   const layer = document.querySelector('#search-layer')
-  const posts = JSON.parse(`[{"title":"简历","cover":"/imgs/CV-cover.webp","path":"2024/04/15/2024转专业简历/"},{"title":"ECS宝塔面板","cover":"/imgs/ECS-cover.webp","path":"2024/04/16/ECS宝塔面板/"},{"title":"Hello World","path":"2024/04/14/hello-world/"}]`)
+  const posts = JSON.parse(`[{"title":"简历","cover":"/imgs/CV-cover.webp","path":"2024/04/15/2024转专业简历/"},{"title":"CSAPP读书笔记(一)","cover":"/imgs/CSAPP-cover.webp","path":"2024/04/16/CSAPP-一/"},{"title":"ECS宝塔面板","cover":"/imgs/ECS-cover.webp","path":"2024/04/16/ECS宝塔面板/"},{"title":"Hello World","path":"2024/04/14/hello-world/"}]`)
   ipt.addEventListener('keyup', e => {
     if (e.key === 'Enter') {
       handleSearch()
@@ -268,7 +268,7 @@
         </a>
         <a href="/tags">
           <div>
-            <span>1</span>
+            <span>2</span>
             <span>标签</span>
           </div>
         </a>
@@ -331,7 +331,7 @@
       </h5>
       <p class="main-left--subtitle">
         <span>文章数目：</span>
-        <span>3 篇</span>
+        <span>4 篇</span>
       </p>
       <p class="main-left--subtitle">
         <span>最近动态：</span>
@@ -339,7 +339,7 @@
       </p>
       <p class="main-left--subtitle">
         <span>上线时间：</span>
-        <span>3天</span>
+        <span>6天</span>
       </p>
       <p class="main-left--subtitle">
         <span>当前版本：</span>
@@ -360,7 +360,44 @@
   <div class="index-left">
     
       <div class="index-article">
-        <!-- <img class="index-article--cover" src="/imgs/ECS-cover.webp" alt=""> -->
+        <!-- <img class="index-article--cover" src="/imgs/CSAPP-cover.webp" alt=""> -->
+        <div class="index-article--box">
+          <img class="index-article--cover" data-cover="/imgs/CSAPP-cover.webp" alt="CSAPP读书笔记(一)" />
+        </div>
+        <div class="index-article--content">
+          <a href="/2024/04/16/CSAPP-%E4%B8%80/">CSAPP读书笔记(一) </a>
+          <div>
+            
+            
+              <p>
+                <a class="-link" href="/tags/CSAPP/" rel="tag">CSAPP</a>
+              </p>
+            
+          </div>
+          <div class="bg"></div>
+        </div>
+      </div>
+    
+      <div class="index-article">
+        <!-- <img class="index-article--cover" src="/imgs/CV-cover.webp" alt=""> -->
+        <div class="index-article--box">
+          <img class="index-article--cover" data-cover="/imgs/CV-cover.webp" alt="简历" />
+        </div>
+        <div class="index-article--content">
+          <a href="/2024/04/15/2024%E8%BD%AC%E4%B8%93%E4%B8%9A%E7%AE%80%E5%8E%86/">简历 </a>
+          <div>
+            
+            
+          </div>
+          <div class="bg"></div>
+        </div>
+      </div>
+    
+  </div>
+  <div class="index-center">
+    
+      <div class="index-article">
+        <!-- <img class="index-article--cover" data-cover="/imgs/ECS-cover.webp" src="/imgs/ECS-cover.webp" alt=""> -->
         <div class="index-article--box">
           <img class="index-article--cover" data-cover="/imgs/ECS-cover.webp" alt="ECS宝塔面板" />
         </div>
@@ -379,7 +416,7 @@
       </div>
     
       <div class="index-article">
-        <!-- <img class="index-article--cover" src="/imgs/default-cover.webp" alt=""> -->
+        <!-- <img class="index-article--cover" data-cover="" src="/imgs/default-cover.webp" alt=""> -->
         <div class="index-article--box">
           <img class="index-article--cover" data-cover="imgs/default-cover.webp" alt="Hello World" />
         </div>
@@ -394,29 +431,11 @@
       </div>
     
   </div>
-  <div class="index-center">
-    
-      <div class="index-article">
-        <!-- <img class="index-article--cover" data-cover="/imgs/CV-cover.webp" src="/imgs/CV-cover.webp" alt=""> -->
-        <div class="index-article--box">
-          <img class="index-article--cover" data-cover="/imgs/CV-cover.webp" alt="简历" />
-        </div>
-        <div class="index-article--content">
-          <a href="/2024/04/15/2024%E8%BD%AC%E4%B8%93%E4%B8%9A%E7%AE%80%E5%8E%86/">简历 </a>
-          <div>
-            
-            
-          </div>
-          <div class="bg"></div>
-        </div>
-      </div>
-    
-  </div>
   <div class="index-right">
     <div class="index-right-wrapper">
       
-      <ul class="tags" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag">服务器</a></li></ul>
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">2024年04月</a><span class="archive-list-count">3</span></li></ul>
+      <ul class="tags" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag">服务器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSAPP/" rel="tag">CSAPP</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">2024年04月</a><span class="archive-list-count">4</span></li></ul>
     </div>
   </div>
 </div>
