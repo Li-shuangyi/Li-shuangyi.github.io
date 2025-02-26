@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Ether Blog</title>
   
-  
+  <subtitle>Welcome to Ether Blog !!!</subtitle>
   <link href="http://example.com/rss.xml" rel="self"/>
   
   <link href="http://example.com/"/>
