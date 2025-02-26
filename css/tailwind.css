@@ -1417,7 +1417,7 @@ video {
 
 .border-line-color {
   --tw-border-opacity: 1;
-  border-color: rgb(20 83 45 / var(--tw-border-opacity, 1));
+  border-color: rgb(80 0 115 / var(--tw-border-opacity, 1));
 }
 
 .border-b-hacker-color3 {
@@ -1440,13 +1440,13 @@ video {
 }
 
 .from-hacker-color1 {
-  --tw-gradient-from: #2bbc8a var(--tw-gradient-from-position);
+  --tw-gradient-from: hsl(282, 71%, 52%) var(--tw-gradient-from-position);
   --tw-gradient-to: rgb(43 188 138 / 0) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
 .to-hacker-color2 {
-  --tw-gradient-to: #00c000 var(--tw-gradient-to-position);
+  --tw-gradient-to: hsl(282, 91%, 38%) var(--tw-gradient-to-position);
 }
 
 .decoration-slice {
@@ -1559,12 +1559,12 @@ video {
 
 .text-hacker-color1 {
   --tw-text-opacity: 1;
-  color: rgb(43 188 138 / var(--tw-text-opacity, 1));
+  color: rgb(147 92 171 / var(--tw-text-opacity, 1));
 }
 
 .text-hacker-color2 {
   --tw-text-opacity: 1;
-  color: rgb(0 192 0 / var(--tw-text-opacity, 1));
+  color: rgb(135 2 192 / var(--tw-text-opacity, 1));
 }
 
 .text-hacker-color3 {
@@ -1647,12 +1647,12 @@ video {
 
 .hover\:text-hacker-color1:hover {
   --tw-text-opacity: 1;
-  color: rgb(43 188 138 / var(--tw-text-opacity, 1));
+  color: rgb(147 92 171 / var(--tw-text-opacity, 1));
 }
 
 .hover\:text-hacker-color2:hover {
   --tw-text-opacity: 1;
-  color: rgb(0 192 0 / var(--tw-text-opacity, 1));
+  color: rgb(135 2 192 / var(--tw-text-opacity, 1));
 }
 
 .hover\:text-white:hover {
