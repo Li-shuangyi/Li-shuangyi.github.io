@@ -1446,7 +1446,7 @@ video {
 }
 
 .to-hacker-color2 {
-  --tw-gradient-to: hsl(282, 91%, 38%) var(--tw-gradient-to-position);
+  --tw-gradient-to: hsl(270, 68%, 45%) var(--tw-gradient-to-position);
 }
 
 .decoration-slice {
@@ -1564,7 +1564,7 @@ video {
 
 .text-hacker-color2 {
   --tw-text-opacity: 1;
-  color: rgb(135 2 192 / var(--tw-text-opacity, 1));
+  color: rgb(114 55 172 / var(--tw-text-opacity, 1));
 }
 
 .text-hacker-color3 {
@@ -1652,7 +1652,7 @@ video {
 
 .hover\:text-hacker-color2:hover {
   --tw-text-opacity: 1;
-  color: rgb(135 2 192 / var(--tw-text-opacity, 1));
+  color: rgb(114 55 172 / var(--tw-text-opacity, 1));
 }
 
 .hover\:text-white:hover {
