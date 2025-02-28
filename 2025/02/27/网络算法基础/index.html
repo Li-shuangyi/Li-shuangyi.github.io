@@ -305,7 +305,8 @@ ENDWHILE
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">Prim(Graph, start):<br>    初始化最小生成树的边集合 MST = &#123;&#125;<br>    初始化一个优先队列 Q，用于存储每个节点及其最小边的权重<br>    对于每个节点 v ∈ Graph:<br>        设置 v 的最小权重为无穷大（∞）<br>    设置 start 节点的最小权重为 0，并将其加入 Q<br><br>    WHILE Q is not empty:<br>        选择 Q 中最小的权重的节点 u<br>        标记 u 为“已加入到最小生成树”<br><br>        对于 u 的每个邻居 v:<br>            IF v is not in MST AND weight(u, v) &lt; v 的当前权重:<br>                更新 v 的最小权重为 weight(u, v)<br>                将 v 更新到 Q 中，以反映其新的最小权重<br><br>        ENDFOR<br>    ENDWHILE<br></code></pre></td></tr></table></figure>
 
 <p>Prim算法的证明：</p>
-<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/12.PNG" alt="图片" title="Prim的证明-1"><br><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/13.PNG" alt="图片" title="Prim的证明-2"></p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/12.PNG" alt="图片" title="Prim的证明-1"></p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/13.PNG" alt="图片" title="Prim的证明-2"></p>
 
     </div>
 
