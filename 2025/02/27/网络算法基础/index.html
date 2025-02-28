@@ -188,23 +188,18 @@
 <li>合并：将两个已排序的子数组合并。</li>
 </ul>
 <h3 id="Merge-Step"><a href="#Merge-Step" class="headerlink" title="Merge Step"></a>Merge Step</h3><p> <strong>CLAIM</strong>：对于n ≥ 1的数组，MergeSort需要的运行时间T(n) ≤ $ 6n \log_2 n + 6n $</p>
-<img src="/home/qi/my-blog/source/images/网络算法基础/1.PNG" alt="1" style="zoom:50%;" />
-
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/1.PNG" alt="图片" title="证明"></p>
 <h3 id="函数增长的渐进符号"><a href="#函数增长的渐进符号" class="headerlink" title="函数增长的渐进符号"></a>函数增长的渐进符号</h3><p><strong>Big O</strong>: 如果存在正数c和N，对于所有的n&gt;&#x3D;N，有f(n)&lt;&#x3D;c*g(n)，则f(n)&#x3D;O(g(n))。</p>
 <p><strong>Big Omega</strong>：如果存在正数c和N，对于所有的n&gt;&#x3D;N，有f(n)&gt;&#x3D;c*g(n)，则f(n)&#x3D;Omega(g(n))。</p>
 <p><strong>Big Theta</strong>：f(n)&#x3D;Theta(g(n))，当且仅当f(n)&#x3D;O(g(n))且f(n)&#x3D;Omega(g(n))。</p>
 <h3 id="基于比较的排序"><a href="#基于比较的排序" class="headerlink" title="基于比较的排序"></a>基于比较的排序</h3><p><strong>CLAIM</strong>：任何基于比较的排序算法，RT不可能低于O(nlogn)。</p>
 <p>任何基于两两比较的排序算法都可以表达为一棵决策树（完全二叉树）。</p>
 <p>完全二叉树：完全二叉树从根结点到倒数第二层满足完美二叉树，最后一层可以不完全填充，其叶子结点都靠左对齐。</p>
-<img src="/home/qi/my-blog/source/images/网络算法基础/2.PNG" alt="2" style="zoom:50%;" />
-
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/2.PNG" alt="图片" title="决策树的性质"></p>
 <h3 id="主办法（Master-Method）"><a href="#主办法（Master-Method）" class="headerlink" title="主办法（Master Method）"></a>主办法（Master Method）</h3><p><strong>主定理</strong></p>
-<img src="/home/qi/my-blog/source/images/网络算法基础/3.PNG" alt="3" style="zoom:50%;" />
-
-<img src="/home/qi/my-blog/source/images/网络算法基础/5.PNG" alt="5" style="zoom:50%;" />
-
-<img src="/home/qi/my-blog/source/images/网络算法基础/4.PNG" alt="4" style="zoom:50%;" />
-
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/3.PNG" alt="图片" title="主定理的定义"></p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/4.PNG" alt="图片" title="主定理的证明"></p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/4.PNG" alt="图片" title="参数"></p>
 
     </div>
 
