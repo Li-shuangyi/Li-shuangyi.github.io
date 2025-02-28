@@ -200,6 +200,36 @@
 <p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/3.PNG" alt="图片" title="主定理的定义"></p>
 <p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/4.PNG" alt="图片" title="主定理的证明"></p>
 <p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/4.PNG" alt="图片" title="参数"></p>
+<h1 id="图简介"><a href="#图简介" class="headerlink" title="图简介"></a>图简介</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><p><strong>树</strong>：不包含任何圈的连通图。</p>
+<p><strong>生成树(Spanning Tree)</strong>：如果图G的一个子图包含了G的全部顶点，且为树，则称之为G的生成树。</p>
+<h2 id="图搜索"><a href="#图搜索" class="headerlink" title="图搜索"></a>图搜索</h2><h3 id="循环不变式"><a href="#循环不变式" class="headerlink" title="循环不变式"></a>循环不变式</h3><ul>
+<li>概念：每次循环开始时都要保持的性质 &#x2F; 状态。</li>
+<li><strong>INVARIANT</strong>：已探索集合和未探索集合应该处于正确的状态。边界点集合应准备好了。<ul>
+<li>循环开始时，从边界点集合中选择一个顶点进行探索。</li>
+<li>循环结束前，将新扩展的边界点纳入集合。</li>
+</ul>
+</li>
+<li>维护边界点集合：<ul>
+<li><strong>BFS：队列(FIFO)</strong></li>
+<li><strong>DFS：堆栈(LIFO)</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a>BFS</h3><pre><code>BFS(Graph, start):
+    Create an empty queue Q
+    Create an empty set visited to track visited nodes
+    Enqueue start node into Q
+    Add start node to visited set
+While Q is not empty:
+    Dequeue a node u from Q
+    Process node u (e.g., print, calculate, etc.)
+    
+    For each neighbor v of u:
+        if v is not in visited:
+            Enqueue v into Q
+            Add v to visited set
+</code></pre>
+<p><strong>聚合分析复杂度</strong>：</p>
 
     </div>
 
