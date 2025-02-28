@@ -215,7 +215,8 @@
 </ul>
 </li>
 </ul>
-<h3 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a>BFS</h3><pre><code>BFS(Graph, start):
+<h3 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a>BFS</h3><p>BFS的伪代码：</p>
+<pre><code>BFS(Graph, start):
 B.EnQueue(s)
 WHILE B is not empty:
     d=B.DeQueue();
@@ -228,11 +229,13 @@ WHILE B is not empty:
 ENDWHILE
 </code></pre>
 <p><strong>聚合分析复杂度</strong>：O(n+m)</p>
-<h3 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a>DFS</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">DFS(Graph, start):<br>B.Push(s)<br>WHILE B is not empty:<br> d = B.Pop()<br> 标记 d 为“已探索”<br> FOR each neighbor t of d:<br>  IF t is not in visited:<br>   B.Push(t)<br>  ENDIF<br> ENDFOR<br>ENDWHILE<br></code></pre></td></tr></table></figure>
+<h3 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a>DFS</h3><p>DFS的伪代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">DFS(Graph, start):<br>B.Push(s)<br>WHILE B is not empty:<br> d = B.Pop()<br> 标记 d 为“已探索”<br> FOR each neighbor t of d:<br>  IF t is not in visited:<br>   B.Push(t)<br>  ENDIF<br> ENDFOR<br>ENDWHILE<br></code></pre></td></tr></table></figure>
 
 <p><strong>聚合分析复杂度</strong>：O(n+m)</p>
 <h2 id="图的连通性"><a href="#图的连通性" class="headerlink" title="图的连通性"></a>图的连通性</h2><h3 id="无向图的连通分量"><a href="#无向图的连通分量" class="headerlink" title="无向图的连通分量"></a><u>无向图</u>的连通分量</h3><p>下述等价关系的等价类：当且仅当图中具有u-v路径时，称u~v。</p>
-<h4 id="BFS求无向连通分量"><a href="#BFS求无向连通分量" class="headerlink" title="BFS求无向连通分量"></a>BFS求无向连通分量</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">Loop-BFS(G):<br>FOR i=1 to n<br>	IF t is not in visited:<br>		BFS(G,i);<br>ENDFOR<br></code></pre></td></tr></table></figure>
+<h4 id="BFS求无向连通分量"><a href="#BFS求无向连通分量" class="headerlink" title="BFS求无向连通分量"></a>BFS求无向连通分量</h4><p>BFS求无向连通分量的伪代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">Loop-BFS(G):<br>FOR i=1 to n<br>	IF t is not in visited:<br>		BFS(G,i);<br>ENDFOR<br></code></pre></td></tr></table></figure>
 
 <p><strong>聚合分析复杂度</strong>：O(n+m)</p>
 <h3 id="有向图的强连通分量（Strongly-Connected-Component-SCC）"><a href="#有向图的强连通分量（Strongly-Connected-Component-SCC）" class="headerlink" title="有向图的强连通分量（Strongly Connected Component,SCC）"></a><u>有向图</u>的强连通分量（Strongly Connected Component,SCC）</h3><p>下述等价关系的等价类：当且仅当有向图G中具有u -&gt; v路径且具有v -&gt; u路径时，称称u~v。</p>
@@ -244,7 +247,65 @@ ENDWHILE
 <p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/6.PNG" alt="图片" title="Kosaraju算法-1"></p>
 <p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/7.PNG" alt="图片" title="Kosaraju算法-2"></p>
 <p><strong>聚合分析复杂度</strong>：O(n+m)</p>
-<h4 id="关键引理"><a href="#关键引理" class="headerlink" title="关键引理"></a><strong>关键引理</strong></h4><p>Key Lemma：考虑有向图G中的两个临接SCC，f(v)表示顶点v在反向图G’中Loop-DFS的完成时间，则有：<br>$$<br>\max_{v \in C_1} f(v) &lt; \max_{v \in C_2} f(v)<br>$$</p>
+<h4 id="关键引理"><a href="#关键引理" class="headerlink" title="关键引理"></a><strong>关键引理</strong></h4><p>Key Lemma：考虑有向图G中的两个临接SCC，f(v)表示顶点v在反向图G’中Loop-DFS的完成时间，则有：<br>$$<br>\max_{v \in C_1} f(v) &lt; \max_{v \in C_2} f(v)<br>$$<br>推论：最大的f值必然在”sink“SCC中。</p>
+<h1 id="贪心MST"><a href="#贪心MST" class="headerlink" title="贪心MST"></a>贪心MST</h1><h2 id="贪心vs分治"><a href="#贪心vs分治" class="headerlink" title="贪心vs分治"></a>贪心vs分治</h2><ul>
+<li><strong>决策过程</strong>：<ul>
+<li><strong>分治</strong>：每个子问题的解都会考虑整个子问题的情况，逐步拆解，最终合并。</li>
+<li><strong>贪心</strong>：每一步决策只关注当前的局部最优解，不回头。</li>
+</ul>
+</li>
+<li><strong>全局与局部</strong>：<ul>
+<li><strong>分治</strong>：每个子问题的解可能涉及整个问题的全局结构。</li>
+<li><strong>贪心</strong>：每一步只考虑局部最优解，期望通过局部最优解得到全局最优解。</li>
+</ul>
+</li>
+<li><strong>解决问题的方式</strong>：<ul>
+<li><strong>分治</strong>：递归地分解问题，直到子问题足够简单直接求解。</li>
+<li><strong>贪心</strong>：通过逐步选择当前最优的解来构建最终解。</li>
+</ul>
+</li>
+<li><strong>是否需要回溯</strong>：<ul>
+<li><strong>分治</strong>：通常会回溯并合并结果。</li>
+<li><strong>贪心</strong>：不会回溯，一旦做出选择就不再修改。</li>
+</ul>
+</li>
+</ul>
+<h2 id="MST（前提：无向图）"><a href="#MST（前提：无向图）" class="headerlink" title="MST（前提：无向图）"></a>MST（前提：无向图）</h2><p><strong>定义</strong>：最小权重生成树T。</p>
+<ul>
+<li>必须是无向图;</li>
+<li>生成树的权重定义为树上边权重之和;</li>
+<li>生成树定义为E的子集：<ol>
+<li>必须覆盖V;</li>
+<li>无环;</li>
+<li>连通。</li>
+</ol>
+</li>
+</ul>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/8.PNG" alt="图片" title="MST"></p>
+<h3 id="割"><a href="#割" class="headerlink" title="割"></a>割</h3><p>割的概念：图G(V，E)的一个割(Cut)是V的一个划分，该划分将集合V分为两个非空的集合。</p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/9.PNG" alt="图片" title="割"></p>
+<ul>
+<li>n个顶点的图最多有 $ 2^n-2 $ 个不同的割。</li>
+</ul>
+<p><strong>Empty-Cut引理</strong>：图G不连通，当且仅当Cut(A，B)没有割边。</p>
+<p><strong>Double-Crossing Lemma</strong>：如果某个圈C⊆E中有边跨越了Cut(A，B)，则C中<strong>至少还有一条边</strong>跨越Cut(A，B)。</p>
+<p><strong>Lonely-Cut Corollary</strong>：如果边e是跨越了Cut(A，B)的唯一一条边，则e不可能在<strong>任一</strong>圈中。</p>
+<p><strong>The Cut Property</strong>：考虑图G中的一条边e，如果存在Cut(A，B)，使得e是所有跨越该割的所有边中权最小者，则e一定在G的MST中。</p>
+<p>割的证明：</p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/10.PNG" alt="图片" title="割的证明-1"></p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/11.PNG" alt="图片" title="割的证明-2"></p>
+<h3 id="Prime算法"><a href="#Prime算法" class="headerlink" title="Prime算法"></a><strong>Prime算法</strong></h3><p>基本思想：</p>
+<ul>
+<li>从一个节点开始（任意选择一个节点作为起点），将它加入生成树。</li>
+<li>找到当前生成树中所有节点与其他节点之间的边，选择权重最小的边。</li>
+<li>将与该边相连的节点加入生成树，更新最小边的权重，重复选择最小边的过程。</li>
+<li>直到所有节点都被加入到生成树中。</li>
+</ul>
+<p>Pim的伪代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">Prim(Graph, start):<br>    初始化最小生成树的边集合 MST = &#123;&#125;<br>    初始化一个优先队列 Q，用于存储每个节点及其最小边的权重<br>    对于每个节点 v ∈ Graph:<br>        设置 v 的最小权重为无穷大（∞）<br>    设置 start 节点的最小权重为 0，并将其加入 Q<br><br>    WHILE Q is not empty:<br>        选择 Q 中最小的权重的节点 u<br>        标记 u 为“已加入到最小生成树”<br><br>        对于 u 的每个邻居 v:<br>            IF v is not in MST AND weight(u, v) &lt; v 的当前权重:<br>                更新 v 的最小权重为 weight(u, v)<br>                将 v 更新到 Q 中，以反映其新的最小权重<br><br>        ENDFOR<br>    ENDWHILE<br></code></pre></td></tr></table></figure>
+
+<p>Prim算法的证明：</p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/12.PNG" alt="图片" title="Prim的证明-1"><br><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/13.PNG" alt="图片" title="Prim的证明-2"></p>
 
     </div>
 
