@@ -294,6 +294,25 @@ ENDWHILE
 <p>割的证明：</p>
 <p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/10.PNG" alt="图片" title="割的证明-1"></p>
 <p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/11.PNG" alt="图片" title="割的证明-2"></p>
+<h3 id="堆（Heap）"><a href="#堆（Heap）" class="headerlink" title="堆（Heap）"></a>堆（Heap）</h3><p>一个容器，其中元素具有key。</p>
+<p>常规操作及对应的RT：</p>
+<ul>
+<li>Heapify：建堆 O(n)</li>
+<li>Insert：加入一个新的对象 O(logn)</li>
+<li>Extract-Min：从堆中取出具有最小key的元素 O(logn)</li>
+<li>Delete：删除指定元素 O(logn)</li>
+</ul>
+<h4 id="Heap-Property"><a href="#Heap-Property" class="headerlink" title="Heap Property"></a><strong>Heap Property</strong></h4><ul>
+<li>堆是一颗有根，二叉，尽可能完全的树。</li>
+<li>任何节点的key都不大于其所有子代的key。 ——&gt; <strong>根元素具有最小key</strong></li>
+</ul>
+<h4 id="用数组实现堆"><a href="#用数组实现堆" class="headerlink" title="用数组实现堆"></a><strong>用数组实现堆</strong></h4><ul>
+<li>Parent (i) &#x3D; i &#x2F; 2  （下标i为奇数时向下取整）</li>
+<li>LeftC (i) &#x3D; 2i</li>
+<li>RightC (i) &#x3D; 2i + 1</li>
+</ul>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/12.PNG" alt="图片" title="堆的操作-1"></p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/13.PNG" alt="图片" title="堆的操作-2"></p>
 <h3 id="Prime算法"><a href="#Prime算法" class="headerlink" title="Prime算法"></a><strong>Prime算法</strong></h3><p>基本思想：</p>
 <ul>
 <li>从一个节点开始（任意选择一个节点作为起点），将它加入生成树。</li>
@@ -305,8 +324,118 @@ ENDWHILE
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">Prim(Graph, start):<br>    初始化最小生成树的边集合 MST = &#123;&#125;<br>    初始化一个优先队列 Q，用于存储每个节点及其最小边的权重<br>    对于每个节点 v ∈ Graph:<br>        设置 v 的最小权重为无穷大（∞）<br>    设置 start 节点的最小权重为 0，并将其加入 Q<br><br>    WHILE Q is not empty:<br>        选择 Q 中最小的权重的节点 u<br>        标记 u 为“已加入到最小生成树”<br><br>        对于 u 的每个邻居 v:<br>            IF v is not in MST AND weight(u, v) &lt; v 的当前权重:<br>                更新 v 的最小权重为 weight(u, v)<br>                将 v 更新到 Q 中，以反映其新的最小权重<br><br>        ENDFOR<br>    ENDWHILE<br></code></pre></td></tr></table></figure>
 
 <p>Prim算法的证明：</p>
-<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/12.PNG" alt="图片" title="Prim的证明-1"></p>
-<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/13.PNG" alt="图片" title="Prim的证明-2"></p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/14.PNG" alt="图片" title="Prim的证明-1"></p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/15.PNG" alt="图片" title="Prim的证明-2"></p>
+<p>用堆实现Prim：</p>
+<pre><code>Prim(Graph, start):
+    初始化最小生成树 MST = &#123;&#125;
+    初始化最小堆 MinHeap
+    初始化一个集合 Visited，用于记录已加入 MST 的节点
+    将 (0, start) 插入 MinHeap  // (边的权重, 节点)
+    初始化 total_weight = 0  // 记录最小生成树的总权重	
+	WHILE MinHeap is not empty:
+    	(weight, node) = MinHeap.Pop()  // 取出当前权重最小的边
+   	 IF node 已在 Visited:
+    	    CONTINUE  // 如果该节点已经在 MST 中，跳过
+
+  	  标记 node 为已访问
+  	  total_weight += weight  // 累加权重
+  	  MST.Add(node)
+
+	    FOR each (neighbor, edge_weight) in Graph[node]:  // 遍历邻居
+     	   IF neighbor 不在 Visited:
+       	     MinHeap.Push((edge_weight, neighbor))  // 只加入未访问的节点
+
+	RETURN MST, total_weight
+</code></pre>
+<p><strong>复杂度分析</strong>：</p>
+<ul>
+<li>n次Extract-Min：O(nlogn)</li>
+<li>m次Delete和m次Insert：O(mlogn)</li>
+</ul>
+<p>总RT &#x3D; O(nlogn)+O(mlogn) &#x3D; <strong>O(mlogn)</strong></p>
+<h2 id="Kruskal算法"><a href="#Kruskal算法" class="headerlink" title="Kruskal算法"></a>Kruskal算法</h2><p>基本思想：</p>
+<ul>
+<li>按权重升序对边排序。</li>
+<li>按序逐条检查边。</li>
+<li>只要不成环，就将边加入T。</li>
+</ul>
+<p>Kruskal的伪代码：</p>
+<pre><code>Kruskal(Graph):
+    初始化最小生成树 MST = &#123;&#125;
+    初始化并查集（Union-Find）来管理连通性
+    按照权重从小到大排序 Graph 的所有边 EdgeList
+	FOR (u, v, weight) in EdgeList:  // 遍历排序后的边
+   	 IF u 和 v 不在同一个连通分量 (Find(u) ≠ Find(v)):
+    	    MST.Add((u, v, weight))  // 加入最小生成树
+  	      Union(u, v)  // 合并连通分量
+  	  IF MST 的边数 == V - 1:
+     	   BREAK  // 最小生成树构建完成
+	RETURN MST
+</code></pre>
+<p>Kruskal算法的证明：</p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/16.PNG" alt="图片" title="Kruskal的证明-1"></p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/17.PNG" alt="图片" title="Kruskal的证明-2"></p>
+<h4 id="UNION-FIND算法"><a href="#UNION-FIND算法" class="headerlink" title="UNION-FIND算法"></a>UNION-FIND算法</h4><p>Union-Find（并查集）是一种高效的数据结构，主要用于<strong>处理动态连通性问题</strong>。它支持两种核心操作：</p>
+<ol>
+<li><strong>Find(x)</strong>：查找元素 <code>x</code> 所属的集合（返回它的代表元素）。</li>
+<li><strong>Union(x, y)</strong>：合并 <code>x</code> 和 <code>y</code> 所在的两个集合。</li>
+</ol>
+<p>核心思想：</p>
+<ul>
+<li><strong>每个集合用一棵树表示</strong>，树的根节点作为该集合的<strong>代表元</strong>（代表元素）。</li>
+<li><strong>Find(x)</strong> 操作用于查找 <code>x</code> 所在集合的代表元（根节点）。</li>
+<li><strong>Union(x, y)</strong> 操作用于合并两个集合，<strong>将其中一个集合的根节点指向另一个集合的根</strong>。</li>
+</ul>
+<h1 id="Dijkstra算法"><a href="#Dijkstra算法" class="headerlink" title="Dijkstra算法"></a>Dijkstra算法</h1><p>Dijkstra的前提：<strong>无负权图（源点到第一层点的权重可为负值），避免负圈。</strong></p>
+<p>Dijkstra的基本思路：</p>
+<ol>
+<li>初始化：</li>
+</ol>
+<ul>
+<li>设 <code>dist[s] = 0</code>（起点到自身的距离为 0），其他所有点 <code>dist[v] = ∞</code>（起始时认为未知）。</li>
+<li>用一个**优先队列（最小堆）**维护当前已发现的最短距离点。</li>
+</ul>
+<ol start="2">
+<li>贪心扩展：</li>
+</ol>
+<ul>
+<li>每次从<strong>未访问的节点中选取当前 <code>dist[v]</code> 最小的点 <code>u</code></strong>。</li>
+<li>遍历 u的所有邻居 v，尝试松弛：<ul>
+<li><strong>如果 <code>dist[u] + w(u, v) &lt; dist[v]</code>，更新 <code>dist[v]</code></strong>，并将 <code>v</code> 加入优先队列。</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>终止：所有节点均已访问，或优先队列为空（所有可达点已确定最短路径）。</li>
+</ol>
+<p>Dijkstra的伪代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">Dijkstra(Graph, start):<br>    初始化 dist[]，所有点设为 ∞，dist[start] = 0<br>    初始化优先队列 PQ，插入 (0, start)  // (当前最短距离, 顶点)<br>    初始化 visited[] 记录已确定最短路径的点<br><br>    WHILE PQ 不为空:<br>        (d, u) = PQ.Pop()  // 取出当前最短距离的点<br>        IF u 已访问:<br>            CONTINUE<br>        标记 u 为已访问<br><br>        FOR each 邻居 (v, weight) of u:<br>            IF dist[u] + weight &lt; dist[v]:  // 进行松弛操作<br>                dist[v] = dist[u] + weight<br>                PQ.Push((dist[v], v))  // 将 v 加入优先队列<br>    <br>    RETURN dist[]<br></code></pre></td></tr></table></figure>
+
+<h2 id="循环桶"><a href="#循环桶" class="headerlink" title="循环桶"></a>循环桶</h2><p><strong>桶（Bucket）</strong> 是一种数据存储和分类的方法，可以根据某种规则（如哈希值、时间、范围等）<strong>将数据映射到不同的桶中</strong>，以加快查询、存储或计算的效率。</p>
+<p>循环桶将数据按照一定规则分配到有限个桶（Bucket）中，并循环使用这些桶。</p>
+<h3 id="循环桶的核心特点"><a href="#循环桶的核心特点" class="headerlink" title="循环桶的核心特点"></a>循环桶的核心特点</h3><ol>
+<li>固定数量的桶（N 个）：<ul>
+<li>设定 <code>N</code> 个桶，编号从 <code>0</code> 到 <code>N-1</code>，它们按照顺序<strong>排列成一个循环结构</strong>。</li>
+<li>访问时<strong>基于取模（modulo）运算</strong>，保证访问永远落在 <code>0 ~ N-1</code> 之间。</li>
+</ul>
+</li>
+<li>循环访问（Modulo 取模）：<ul>
+<li>计算索引 <code>index = (当前时间 t) % N</code>，从而使得时间到了 <code>N</code> 之后会回到 <code>0</code>，形成循环管理。</li>
+</ul>
+</li>
+</ol>
+<h3 id="用循环桶实现Dijkstra算法："><a href="#用循环桶实现Dijkstra算法：" class="headerlink" title="用循环桶实现Dijkstra算法："></a>用循环桶实现Dijkstra算法：</h3><p><strong>CLAIM</strong>：Dijkstra算法中最多只需要C+1个桶。</p>
+<ul>
+<li>永久标记的顶点和非边界顶点不在桶中。</li>
+<li>边界点的距离标记不会超过A[i]+C（i为当前标记点）</li>
+<li>顶点x的桶的编号：A[x]mod(C+1)</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">Dijkstra_CircularBucket(Graph, start):<br>    初始化 dist[]，所有点设为 ∞，dist[start] = 0<br>    初始化桶 Bucket[]，桶的数量为 C+1，存储每个距离区间的节点<br>    初始化 visited[]，记录顶点是否已被永久标记<br>    <br>    将起点 start 放入 Bucket[0] 中（dist[start] = 0）<br>    <br>    WHILE 有节点未被永久标记:<br>        从桶中找出具有最小距离的非永久标记的边界点 u<br>        标记 u 为永久标记，并从桶中移除 u<br>        <br>        FOR 每个邻居 v of u:<br>            IF v 没有被永久标记:<br>                IF dist[u] + w(u, v) &lt; dist[v]:<br>                    dist[v] = dist[u] + w(u, v)  // 松弛操作<br>                    将 v 放入 Bucket[dist[v] mod (C + 1)] 中  // 根据 dist[v] 放入桶<br>                    更新 v 的距离标记<br><br>    RETURN dist[]<br></code></pre></td></tr></table></figure>
+
+<p><strong>复杂度分析</strong>：O(m+nC)</p>
+<h2 id="Dijsktra算法扩展"><a href="#Dijsktra算法扩展" class="headerlink" title="Dijsktra算法扩展"></a>Dijsktra算法扩展</h2><h3 id="单源单宿最短路问题"><a href="#单源单宿最短路问题" class="headerlink" title="单源单宿最短路问题"></a>单源单宿最短路问题</h3><p>问题描述：给定图G，给定顶点s和d，求从s到d的最小权重路径。</p>
+<p>解决方式：增加一个判断分支，d被永久标记时终止循环。</p>
 
     </div>
 
