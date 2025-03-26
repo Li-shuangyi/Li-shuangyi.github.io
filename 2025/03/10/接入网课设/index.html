@@ -23,6 +23,12 @@
         margin-top: 0 !important;
         margin-bottom: 1rem !important;
     }
+    @media (min-width: 1024px) {
+        #middle-box{
+            min-width: 56rem;
+        }
+    
+    }
 </style>
 <head>
     <meta charset="UTF-8">
@@ -31,6 +37,7 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/tailwind.css">
     <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/toc.css">
     
 <header class="bg-black text-hacker-white py-4 font-dos font-extrabold">
     <div class="container mx-auto flex items-center justify-between space-x-8">
@@ -159,7 +166,7 @@
   
 
 <meta name="generator" content="Hexo 7.3.0"></head>
-<body class="bg-black text-hacker-color3 container mx-auto">
+<body class="bg-black text-hacker-color3 container mx-auto" style="overflow-x:hidden">
     <!-- 文章标题 -->
     <h1 class="text-5xl text-hacker-color1 font-bold font-dos my-6 text-center">接入网综合课设</h1>
 
@@ -169,8 +176,9 @@
     </p>
 
     <!-- 文章内容 -->
-    <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight">
-        <h1 id="接入网综合课设"><a href="#接入网综合课设" class="headerlink" title="接入网综合课设"></a>接入网综合课设</h1><h2 id="阶段一"><a href="#阶段一" class="headerlink" title="阶段一"></a>阶段一</h2><ol>
+    <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight" style="display: flex;">
+        <div id="middle-box">
+            <h1 id="接入网综合课设"><a href="#接入网综合课设" class="headerlink" title="接入网综合课设"></a>接入网综合课设</h1><h2 id="阶段一"><a href="#阶段一" class="headerlink" title="阶段一"></a>阶段一</h2><ol>
 <li><p>完成虚拟机选型，并配置至少两个网段， 分别测试子网内和子网间连通性； </p>
 </li>
 <li><p>设计PPPOE本地认证拓扑图及IP地址规划 (客户至少两个网段)  ；</p>
@@ -456,12 +464,27 @@
 <li><strong>IP 数据报文</strong>: 网络通信数据（TCP&#x2F;IP、UDP）。</li>
 </ol>
 
+        </div>
+        
+            <div class="post-container">
+            <aside class="toc-container">
+                <button class="toc-toggle">文章目录</button>
+                <nav class="toc" id="toc"></nav>
+            </aside>
+        </div>
+        
     </div>
+
 
     <!-- 返回主页链接 -->
     <div class="text-center my-8">
         <a href="/" class="text-hacker-color1 underline hover:text-hacker-color2">← Back to Home</a>
     </div>
+
+      
+      <script src="/js/toc.js"></script>  <!-- 引入 TOC 逻辑 -->
+      
+      
 
     <footer class="bg-black text-gray-400 py-4">
     <div class="container mx-auto text-center">
