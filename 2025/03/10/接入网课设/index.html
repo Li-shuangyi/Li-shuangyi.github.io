@@ -463,6 +463,338 @@
 <li><strong>NCP（Network Control Protocol)</strong> : 分配 IP 地址。</li>
 <li><strong>IP 数据报文</strong>: 网络通信数据（TCP&#x2F;IP、UDP）。</li>
 </ol>
+<h2 id="阶段二"><a href="#阶段二" class="headerlink" title="阶段二"></a>阶段二</h2><ol>
+<li>设计PPPoE+RADIUS远程接入控制拓扑图及IP地址规划（客户机至少两个网段）。</li>
+<li>选型RADIUS服务器软件，并在虚拟平台下完成PPPOE+RADIUS远程接入认证的搭建、配置、实验测试。</li>
+</ol>
+<h3 id="任务一-1"><a href="#任务一-1" class="headerlink" title="任务一"></a>任务一</h3><p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/42.png" alt="42"></p>
+<h3 id="任务二"><a href="#任务二" class="headerlink" title="任务二"></a>任务二</h3><ul>
+<li>RADIUS服务器：FreeRADIUS 3.0.27 （最新stable版本）</li>
+<li>RADIUS客户端：FreeRADIUS -client-1.1.7</li>
+</ul>
+<h4 id="配置Radius服务器及客户端静态IP"><a href="#配置Radius服务器及客户端静态IP" class="headerlink" title="配置Radius服务器及客户端静态IP"></a>配置Radius服务器及客户端静态IP</h4><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo gedit /etc/netplan/01-network-manager-all.yaml<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>服务器</strong></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Let NetworkManager manage all devices on this system</span><br>network:<br>  version: 2<br>  renderer: NetworkManager<br>  ethernets:<br>    ens33:            <br>      dhcp4: true                           # 启用 DHCP<br>      nameservers:<br>        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置<br>        <br>    ens37:<br>      addresses: [192.168.30.2/24]        <br>      routes:<br>        - to: default<br>          via: 192.168.30.1                <br>      dhcp4: false                          <br>      nameservers:<br>        addresses: [8.8.8.8, 8.8.4.4] <br></code></pre></td></tr></table></figure>
+
+<p>配置完成后执行命令使配置生效。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo netplan apply<br></code></pre></td></tr></table></figure>
+
+<p>执行<code>ifconfig</code>命令查看当前IP地址</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/40.png" alt="40"></p>
+<ul>
+<li><strong>客户端（PPPoE服务器）</strong></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Let NetworkManager manage all devices on this system</span><br>network:<br>  version: 2<br>  renderer: NetworkManager<br>  ethernets:<br>    ens33:            <br>      dhcp4: true                           # 启用 DHCP<br>      nameservers:<br>        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置<br>        <br>    ens37:<br>      addresses: [192.168.10.1/24]           # 静态 IP 地址<br>      routes:<br>        - to: default<br>          via: 192.168.10.1  # 默认网关<br>      dhcp4: false                           # 禁用 DHCP<br>      nameservers:<br>        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置<br>        <br>    ens38:<br>      addresses: [192.168.20.1/24]           # 静态 IP 地址<br>      routes:<br>        - to: default<br>          via: 192.168.20.1  # 默认网关<br>      dhcp4: false                           # 禁用 DHCP<br>      nameservers:<br>        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置<br>        <br>    ens39:<br>      addresses: [192.168.30.1/24]           # 静态 IP 地址<br>      routes:<br>        - to: default<br>          via: 192.168.30.1  # 默认网关<br>      dhcp4: false                           # 禁用 DHCP<br>      nameservers:<br>        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置<br><br>      link: ens37<br>      addresses:<br>        - 192.168.10.129/25<br></code></pre></td></tr></table></figure>
+
+<p>配置完成后执行命令使配置生效。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo netplan apply<br></code></pre></td></tr></table></figure>
+
+<p>执行<code>ifconfig</code>命令查看当前IP地址</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/41.png" alt="41"></p>
+<h4 id="安装Radius服务器"><a href="#安装Radius服务器" class="headerlink" title="安装Radius服务器"></a>安装Radius服务器</h4><ol>
+<li><p>下载Radius：</p>
+<p>freeradius官方网站：<a target="_blank" rel="noopener" href="http://freeradius.org/download.html">http://freeradius.org/download.html</a></p>
+<p>freeradius官方文档：</p>
+</li>
+<li><p>解压：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">tar -zxvf freeradius-server-3.0.27.tar.gz <br></code></pre></td></tr></table></figure>
+</li>
+<li><p>安装依赖项</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo apt update<br>sudo apt install build-essential -y<br>sudo apt install libtalloc-dev -y<br>sudo apt install libssl-dev -y<br>sudo apt install libhiredis-dev -y<br>sudo apt install freeradius-mysql<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>编译及安装</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">cd  freeradius-server-3.0.26<br>./configure <br>make<br>sudo make install # 默认安装在 /usr/local/etc/raddb下<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>启动Radius</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">debug模式启动</span><br>sudo radiusd -X<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">后台进程方式启动</span><br>systemctl start radiusd<br>systemctl enable radiusd<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">日志</span><br>/var/log/radius/radius.log <br></code></pre></td></tr></table></figure>
+</li>
+<li><p>添加用户</p>
+<p>在 &#x2F;usr&#x2F;local&#x2F;etc&#x2F;raddb&#x2F;users 的末尾添加：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">test</span> 的用户设置明文密码为 <span class="hljs-string">&quot;test&quot;</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">user Cleartext-Password := <span class="hljs-string">&quot;password&quot;</span></span><br>test Cleartext-Password := &quot;test&quot;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">radtest &lt;用户名&gt; &lt;密码&gt; &lt;服务器地址&gt; &lt;端口&gt; &lt;共享密钥&gt;</span><br>radtest testing password123 127.0.0.1 0 testing123  <br></code></pre></td></tr></table></figure>
+
+<p>本地测试成功</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/34.png" alt="34"></p>
+</li>
+</ol>
+<h4 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h4><p>1.安装mariadb</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo apt update<br>sudo apt install mariadb-server mariadb-client<br>sudo systemctl start mariadb<br>sudo systemctl enable mariadb<br></code></pre></td></tr></table></figure>
+
+<p>若此时直接运行安全设置<code>mysql_secure_installation</code>，则报错：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">xu@xu-virtual-machine:~/Desktop$ mysql_secure_installation<br><br>NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB<br>      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!<br><br>In order to log into MariaDB to secure it, we&#x27;ll need the current<br>password for the root user.  If you&#x27;ve just installed MariaDB, and<br>you haven&#x27;t set the root password yet, the password will be blank,<br>so you should just press enter here.<br><br>Enter current password for root (enter for none): <br>ERROR 1698 (28000): Access denied for user &#x27;root&#x27;@&#x27;localhost&#x27;<br>Enter current password for root (enter for none): <br>Aborting!<br><br>Cleaning up...<br></code></pre></td></tr></table></figure>
+
+<p>这是因为 MariaDB 默认使用 <strong><code>auth_socket</code> 插件</strong> 进行身份验证，它不接受通过普通密码登录，只通过 Unix 套接字进行验证。</p>
+<p>解决方案：</p>
+<ul>
+<li><p>通过root用户登录:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo mysql -u root<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>禁用 <code>auth_socket</code> 插件并设置密码:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo mysql<br>USE mysql;<br>SET PASSWORD FOR &#x27;root&#x27;@&#x27;localhost&#x27; = PASSWORD(&#x27;1&#x27;);<br><span class="hljs-meta prompt_"># </span><span class="language-bash">刷新权限并退出</span><br>FLUSH PRIVILEGES;<br>EXIT;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<p>​	运行<code>mysql_secure_installation</code>进行安全设置：</p>
+<img src="/images/接入网综合课设/35.png" alt="35" style="zoom: 80%;" />
+
+<ol start="2">
+<li>进入数据库</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="code"><pre><code class="hljs sql">mysql <span class="hljs-operator">-</span>uroot <span class="hljs-operator">-</span>p<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>创建数据库并授权</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="code"><pre><code class="hljs sql">MariaDB [(<span class="hljs-keyword">none</span>)]<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">create</span> database radius；<br>Query OK, <span class="hljs-number">1</span> <span class="hljs-type">row</span> affected (<span class="hljs-number">0.00</span> sec)<br><br>MariaDB [(<span class="hljs-keyword">none</span>)]<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">grant</span> <span class="hljs-keyword">all</span> <span class="hljs-keyword">on</span> radius.<span class="hljs-operator">*</span> <span class="hljs-keyword">to</span> radius@<span class="hljs-string">&#x27;localhost&#x27;</span> identified <span class="hljs-keyword">by</span> <span class="hljs-string">&#x27;radius&#x27;</span>;<br>Query OK, <span class="hljs-number">0</span> <span class="hljs-keyword">rows</span> affected (<span class="hljs-number">0.00</span> sec)<br><br>MariaDB [(<span class="hljs-keyword">none</span>)]<span class="hljs-operator">&gt;</span> flush privileges;<br>Query OK, <span class="hljs-number">0</span> <span class="hljs-keyword">rows</span> affected (<span class="hljs-number">0.00</span> sec)<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="配置Radius服务器端和数据库"><a href="#配置Radius服务器端和数据库" class="headerlink" title="配置Radius服务器端和数据库"></a>配置Radius服务器端和数据库</h4><ol>
+<li>导入数据库</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">cd /usr/local/etc/raddb/mods-config/sql/main/mysql<br>mysql -u radius -p radius&lt; schema.sql<br></code></pre></td></tr></table></figure>
+
+<p>如果报错：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">root@xu-virtual-machine:/usr/local/etc/raddb/mods-config/sql/main/mysql# mysql -u radius -p radius&lt; schema.sql<br>Enter password: <br>ERROR 1045 (28000): Access denied for user &#x27;radius&#x27;@&#x27;localhost&#x27; (using password: YES)<br></code></pre></td></tr></table></figure>
+
+<p>这是因为 MySQL 用户 <code>radius</code> 在 <code>localhost</code> 上的访问被拒绝，重新设置密码</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><code class="hljs sql">mysql <span class="hljs-operator">-</span>uroot <span class="hljs-operator">-</span>p<br><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">USER</span> <span class="hljs-string">&#x27;radius&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="hljs-keyword">BY</span> <span class="hljs-string">&#x27;your_password&#x27;</span>;<br><span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">ALL</span> PRIVILEGES <span class="hljs-keyword">ON</span> radius.<span class="hljs-operator">*</span> <span class="hljs-keyword">TO</span> <span class="hljs-string">&#x27;radius&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span>;<br>FLUSH PRIVILEGES;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>配置Radius</p>
+<ul>
+<li><p>配置default文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo -i<br>gedit /usr/local/etc/raddb/sites-enabled/default<br></code></pre></td></tr></table></figure>
+
+<p>使用数据库储存用户信息&#x2F;计费：</p>
+<p>在538行authenticate {}部分，注释files，解注释sql</p>
+<p>在673行accounting{}部分，解注释 sql</p>
+</li>
+<li><p>配置sql文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo -i<br>gedit /usr/local/etc/raddb/mods-available/sql<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">设置文件</span><br>tls_required = no<br>driver = &quot;rlm_sql_mysql&quot;  # 指定 FreeRADIUS 使用 MySQL 数据库作为后端数据库来进行认证和计费<br>dialect = &quot;mysql&quot;         # mysql 表示使用 MySQL 数据库的 SQL 方言<br>server = &quot;localhost&quot;      # 数据库运行在本地计算机上<br>port = 3306 <br>login = &quot;radius&quot;<br>password = &quot;radius&quot;<br>radius_db = &quot;radius&quot;<br>read_clients = yes         # 允许 FreeRADIUS 从数据库中读取客户端信息                                      、<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>客户端认证设置</p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo gedit /usr/local/etc/raddb/clients.conf<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">定义 PPPoE 客户端连接到服务器时需要使用的 IP 地址和密码（共享密钥）</span><br>client pppoe-server &#123;<br>    ipaddr = 192.168.30.1<br>    secret = testing123<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>配置组与用户信息</li>
+</ol>
+<ul>
+<li>进入radius库</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo mysql -u root -p radius<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>新建组</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">insert into radgroupcheck (groupname,attribute,op,value) values  (&#x27;usr&#x27;,&#x27;Auth- Type&#x27;,&#x27;:=&#x27;,&#x27;Local&#x27;);<br>insert into radgroupcheck (groupname,attribute,op,value) values (&#x27;usr&#x27;,&#x27;Service-Type&#x27;,&#x27;:=&#x27;,&#x27;Framed-User&#x27;);<br>insert into radgroupcheck (groupname,attribute,op,value) values (&#x27;usr&#x27;,&#x27;Framed-IP-Address&#x27;,&#x27;:=&#x27;,&#x27;255.255.255.255&#x27;);<br>insert into radgroupcheck (groupname,attribute,op,value) values (&#x27;usr&#x27;,&#x27;Framed-IP-Netmask&#x27;,&#x27;:=&#x27;,&#x27;255.255.255.0&#x27;);<br></code></pre></td></tr></table></figure>
+
+<p>查看新建组 <code>select * from radgroupcheck; </code></p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/36.png" alt="36"></p>
+<p>可以看到，<code>usr</code> 组的认证方式为 <strong>本地认证（Local）</strong>， <code>Service-Type</code> 为 Framed-User，即拨号用户，用于 <strong>PPP&#x2F;PPPoE 认证</strong>。分配给用户的 IP 地址为255.255.255.255，表示 不指定具体 IP 地址，由PPPoE 服务器动态分配。若分配了 IP 地址，默认子网掩码为 <code>255.255.255.0</code>。</p>
+<ul>
+<li><p>配置 RADIUS 认证用户</p>
+<p>定义 RADIUS 用户，用于身份验证。</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo gedit /usr/local/etc/raddb/users<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">对于 client-1</span><br>user1 Cleartext-Password := &quot;test-1&quot;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">对于 client-2</span><br>user2 Cleartext-Password := &quot;test-2&quot;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>插入用户</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT INTO</span> radcheck (username, attribute, op, <span class="hljs-keyword">value</span>) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;user1&#x27;</span>, <span class="hljs-string">&#x27;Cleartext-Password&#x27;</span>, <span class="hljs-string">&#x27;:=&#x27;</span>, <span class="hljs-string">&#x27;test-1&#x27;</span>); <br><span class="hljs-keyword">INSERT INTO</span> radcheck (username, attribute, op, <span class="hljs-keyword">value</span>) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;user2&#x27;</span>, <span class="hljs-string">&#x27;Cleartext-Password&#x27;</span>, <span class="hljs-string">&#x27;:=&#x27;</span>, <span class="hljs-string">&#x27;test-2&#x27;</span>); <br></code></pre></td></tr></table></figure>
+
+<p>查看用户信息 <code>SELECT * FROM radcheck; </code></p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/37.png" alt="37"></p>
+<ul>
+<li>关联用户和组</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT INTO</span> radusergroup (username, groupname) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;user1&#x27;</span>, <span class="hljs-string">&#x27;usr&#x27;</span>);<br><span class="hljs-keyword">INSERT INTO</span> radusergroup (username, groupname) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;user2&#x27;</span>, <span class="hljs-string">&#x27;usr&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>查看用户和组的关联信息 <code>SELECT * FROM radusergroup; </code></p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/38.png" alt="38"></p>
+<ul>
+<li>建立软链接</li>
+</ul>
+<p>在 FreeRADIUS 服务器的配置目录中启用 SQL 模块</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo -i<br>cd /usr/local/etc/raddb/mods-enabled<br>ln -s /usr/local/etc/raddb/mods-available/sql ./<br></code></pre></td></tr></table></figure>
+
+<p>查看软链接信息 <code>ls -l /usr/local/etc/raddb/mods-enabled/sql </code><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/39.png" alt="39"></p>
+<ul>
+<li>本地测试用户链接：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">radtest user1 test-1 127.0.0.1 0 testing123<br>radtest user2 test-2 127.0.0.1 0 testing123<br></code></pre></td></tr></table></figure>
+
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/44.png" alt="44"></p>
+<h4 id="配置Radius客户端"><a href="#配置Radius客户端" class="headerlink" title="配置Radius客户端"></a>配置Radius客户端</h4><ol>
+<li>下载并安装RADIUS -clients</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">wget ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz<br>tar -xzvf freeradius-client-1.1.7.tar.gz <br><br>cd freeradius-client-1.1.7/<br>./configure <br>sudo make<br>sudo make install<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在 PPPoE 服务器中启用 RADIUS 认证</li>
+</ol>
+<p>​	在&#x2F;etc&#x2F;ppp&#x2F;pppoe-server-options中增加</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">加载 radius.so 插件</span><br>plugin /usr/lib/pppd/2.4.7/radius.so<br><span class="hljs-meta prompt_"># </span><span class="language-bash">指定 RADIUS 客户端配置文件</span><br>radius-config-file /usr/local/etc/radiusclient/radiusclient.conf<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>配置radiusclient.conf文件</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo gedit /usr/local/etc/radiusclient/radiusclient.conf<br></code></pre></td></tr></table></figure>
+
+<p>在文件末尾添加：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">认证顺序：先本地认证，再 RADIUS 远程认证</span><br>auth_order      local,radius<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">RADIUS 认证服务器</span><br>authserver      192.168.30.2:1812<br><span class="hljs-meta prompt_"># </span><span class="language-bash">RADIUS 计费服务器</span><br>acctserver      192.168.30.2:1813<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">RADIUS 共享密钥存放</span><br>servers        /usr/local/etc/radiusclient/servers<br><span class="hljs-meta prompt_"># </span><span class="language-bash">RADIUS 共享密钥文件</span><br>seqfile        /var/run/radius.seq<br><span class="hljs-meta prompt_"># </span><span class="language-bash">RADIUS映射文件</span><br>mapfile        /usr/local/etc/radiusclient/port-id-map<br>dictionary     /usr/local/etc/radiusclient/dictionary<br>login_radius   /usr/local/sbin/login.radius<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>配置 server 文件</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo gedit /usr/local/etc/radiusclient/servers<br></code></pre></td></tr></table></figure>
+
+<p>在文件末尾添加：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">[RADIUS服务器IP]  [共享密钥]  [可选参数]</span><br>192.168.30.2 testing123<br></code></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>配置dictionary文件</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo gedit /usr/local/etc/radiusclient/dictionary<br></code></pre></td></tr></table></figure>
+
+<p>在文件末尾添加：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">INCLUDE /usr/local/etc/radiusclient/dictionary.sip<br>INCLUDE /usr/local/etc/radiusclient/dictionary.ascend<br>INCLUDE /usr/local/etc/radiusclient/dictionary.merit<br>INCLUDE /usr/local/etc/radiusclient/dictionary.compat<br>INCLUDE /usr/local/etc/radiusclient/dictionary.microsoft<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="测试-2"><a href="#测试-2" class="headerlink" title="测试"></a>测试</h4><ul>
+<li><p>PPPoE服务器启动情况</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/43.png" alt="43"></p>
+</li>
+<li><p>Radius服务器启动情况</p>
+</li>
+</ul>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/45.png" alt="45"></p>
+<ul>
+<li><strong>Client1</strong></li>
+</ul>
+<p>输入正确用户及密码（user1，test-1），拨号成功</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/46.png" alt="46"></p>
+<p>PPPoE服务器已分配地址：</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/47.png" alt="47"></p>
+<p>上网测试：</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/49.png" alt="49"></p>
+<p>在Radius服务器端本次会话记录:</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/50.png" alt="50"></p>
+<p>输入错误用户及密码（user1，test-2），拨号失败</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/51.png" alt="51"></p>
+<p>在Radius服务器端本次会话记录:</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/53.png" alt="53"></p>
+<ul>
+<li><strong>Client2</strong></li>
+</ul>
+<p>输入正确用户密码（user2，test-2），拨号成功</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/46.png" alt="46"></p>
+<p>PPPoE服务器已分配地址：</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/48.png" alt="48"></p>
+<p>上网测试：</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/49.png" alt="49"></p>
+<p>在Radius服务器端本次会话记录:</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/52.png" alt="52"></p>
+<p>输入错误用户及密码（user2，test-1），拨号失败</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/51.png" alt="51"></p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/54.png" alt="54"></p>
+<h4 id="抓包分析"><a href="#抓包分析" class="headerlink" title="抓包分析"></a>抓包分析</h4><p>RADIUS报文格式</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/55.png" alt="55"></p>
+<p>RADIUS 报文类型分为 认证报文 和 计费报文：</p>
+<p><strong>1. 认证报文（Authentication Messages）</strong></p>
+<p>认证报文用于 <strong>用户身份验证</strong>，确保用户合法，并为其分配相应权限。常见类型如下：</p>
+<table>
+<thead>
+<tr>
+<th>报文类型</th>
+<th>代码</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Access-Request</strong></td>
+<td><code>1</code></td>
+<td>认证请求，客户端（NAS）向 RADIUS 服务器发送，包含用户名、密码等信息</td>
+</tr>
+<tr>
+<td><strong>Access-Accept</strong></td>
+<td><code>2</code></td>
+<td>认证通过，RADIUS 服务器返回，NAS 允许用户访问</td>
+</tr>
+<tr>
+<td><strong>Access-Reject</strong></td>
+<td><code>3</code></td>
+<td>认证失败，RADIUS 服务器拒绝用户访问</td>
+</tr>
+<tr>
+<td><strong>Access-Challenge</strong></td>
+<td><code>11</code></td>
+<td>质询认证，要求客户端提供额外凭证（如 EAP 认证）</td>
+</tr>
+</tbody></table>
+<p>** 2. 计费报文（Accounting Messages）**</p>
+<p>计费报文用于 <strong>记录用户上网时长、流量等信息</strong>，用于后续计费。常见类型如下：</p>
+<table>
+<thead>
+<tr>
+<th>报文类型</th>
+<th>代码</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Accounting-Request</strong></td>
+<td><code>4</code></td>
+<td>计费请求，NAS 发送给 RADIUS 服务器，包含用户会话信息</td>
+</tr>
+<tr>
+<td><strong>Accounting-Response</strong></td>
+<td><code>5</code></td>
+<td>计费响应，RADIUS 服务器收到计费信息后确认</td>
+</tr>
+</tbody></table>
+<p><code>Accounting-Request</code> 又分为：</p>
+<ul>
+<li><strong>Start</strong>（用户上线）：用户开始上网时发送，记录 <code>acctstarttime</code>。</li>
+<li><strong>Interim-Update</strong>（状态更新）：定期发送，更新流量、时长等数据。</li>
+<li><strong>Stop</strong>（用户下线）：用户断开时发送，记录 <code>acctstoptime</code>、<code>acctsessiontime</code>、流量。</li>
+</ul>
+<p>RADIUS客户端与服务器交互过程：</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/56.png" alt="56"></p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/57.png" alt="57"></p>
+<p><strong>Access-Request</strong>：</p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/58.png" alt="58"></p>
+<p><strong>Access-Accept</strong></p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/59.png" alt="59"></p>
+<p><strong>Access-Reject</strong></p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/60.png" alt="60"></p>
+<p><strong>Accounting-Request</strong></p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/61.png" alt="61"></p>
+<p><strong>Accounting-Response</strong></p>
+<p><img src="/images/%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%BC%E5%90%88%E8%AF%BE%E8%AE%BE/62.png" alt="62"></p>
+<h4 id="遇到的问题及调试方法"><a href="#遇到的问题及调试方法" class="headerlink" title="遇到的问题及调试方法"></a>遇到的问题及调试方法</h4><p>在Radius全面配置好后，windows客户端无法直接拨号，否则显示691错误码，在radius端无信息反馈。推测PPPoE与客户端间传输存在问题。接回PPPoE本地测试可通。</p>
+<p>使用<code>sudo tail -f /var/log/syslog | grep ppp</code>监听PPPoE服务器信息</p>
+<p>当客户端拨号时，报错：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">Apr  3 11:19:13 xu-virtual-machine pppd[2901]: rc_read_dictionary: invalid type on line 92 of dictionary /usr/local/etc/radiusclient/dictionary<br>Apr  3 11:19:13 xu-virtual-machine pppd[2901]: RADIUS: Can&#x27;t read dictionary file /usr/local/etc/radiusclient/dictionary<br>Apr  3 11:19:13 xu-virtual-machine pppd[2901]: Peer user2 failed CHAP authentication<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>把<code>/usr/local/etc/radiusclient/dictionary</code>文件中所有<code>ipv6addr</code>和<code>ipv6prdeix</code>改成<code>string</code></p>
+</li>
+<li><p>下载dictionary.microsoft，只有使用该文件才支持Windows拨号</p>
+</li>
+<li><p>在<code>/usr/local/etc/radiusclient/dictionary</code>末尾加上</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">INCLUDE /usr/local/etc/radiusclient/dictionary.sip<br>INCLUDE /usr/local/etc/radiusclient/dictionary.ascend<br>INCLUDE /usr/local/etc/radiusclient/dictionary.merit<br>INCLUDE /usr/local/etc/radiusclient/dictionary.compat<br>INCLUDE /usr/local/etc/radiusclient/dictionary.microsoft<br></code></pre></td></tr></table></figure>
+
+<p>之后再拨号，Radius服务器端显示报错信息，根据具体报错信息修改即可。</p>
+</li>
+</ul>
 
         </div>
         
