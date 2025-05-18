@@ -449,7 +449,7 @@
 <li>路线图现在类似于网格地图</li>
 </ul>
 <p><img src="/images/path_planning_learning/14.png" alt="PRM-Query"></p>
-<p>优点</p>
+<p> 优点</p>
 <ul>
 <li>概率完备</li>
 </ul>
@@ -462,6 +462,150 @@
 <li><p>效率不高</p>
 </li>
 </ul>
+<h3 id="Lazy-collision-checking"><a href="#Lazy-collision-checking" class="headerlink" title="Lazy collision-checking"></a>Lazy collision-checking</h3><p><strong>效率低</strong>: PRM（Probabilistic Roadmap）或 RRT（Rapidly-exploring Random Tree) 需要频繁地检查从一个配置到另一个配置（或状态）之间的路径是否与障碍物发生碰撞。但碰撞检测是一个昂贵的计算操作，尤其在高维空间或复杂环境中，频繁的碰撞检测会成为性能瓶颈。</p>
+<ul>
+<li>不考虑采样点和生成分段碰撞（懒惰）</li>
+</ul>
+<p>先构建图（PRM）或树（RRT）时不立即检查碰撞，等到真正要使用这条路径时（例如在查询最短路径、或者将路径从树&#x2F;图中提取出来时），再执行碰撞检测。</p>
+<h4 id="PRM-Lazy-collision-checking"><a href="#PRM-Lazy-collision-checking" class="headerlink" title="PRM+Lazy collision-checking"></a><strong>PRM+Lazy collision-checking</strong></h4><ol>
+<li><p>构建 roadmap：采样节点、连接边，不做碰撞检测。</p>
+</li>
+<li><p>查询路径：使用 A* 或 Dijkstra 等算法找到一条从起点到终点的路径。</p>
+</li>
+<li><p>在该路径上进行逐段碰撞检测：</p>
+<ul>
+<li><p>如果全部无碰撞，路径有效；</p>
+</li>
+<li><p>如果某段有碰撞，将该边标记为无效（不可达），从图中删除，重新搜索。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><img src="/images/path_planning_learning/15.png" alt="Lazy collision-checking"></p>
+<h2 id="Rapidly-exploring-Random-Tree"><a href="#Rapidly-exploring-Random-Tree" class="headerlink" title="Rapidly-exploring Random Tree"></a>Rapidly-exploring Random Tree</h2><p><strong>核心思想:</strong></p>
+<blockquote>
+<p>通过生成next构建树状态在树中通过执行随机控制,从起点开始，不断向随机方向扩展一棵树，迅速探索整个状态空间。</p>
+</blockquote>
+<p>伪代码:</p>
+<p><img src="/images/path_planning_learning/16.png" alt="RRT伪代码"></p>
+<ul>
+<li>初始化一棵树 <code>T</code>，将起始点 <code>X_init</code> 作为树的根节点。</li>
+<li>循环:</li>
+<li>在整个状态空间中随机采样一个点 <code>X_rand</code>，用于探索新方向。</li>
+<li>找出树 <code>T</code> 中距离 <code>X_rand</code> 最近的已有节点 <code>X_nearest</code>。</li>
+<li>从 <code>X_nearest</code> 朝 <code>q_rand</code> 方向延伸一个固定步长delta，生成新点 <code>X_new</code>。</li>
+</ul>
+<p>如果新点 <code>X_new</code> 是可行的（比如不与障碍物碰撞），则执行以下操作:</p>
+<ul>
+<li>把这个新点 <code>X_new</code> 加入树中，作为新的节点。</li>
+<li>在树中添加一条从 <code>X_nearest</code> 到 <code>X_new</code> 的路径边。</li>
+<li>返回整个搜索生成的树 <code>T</code>，它包含从起点开始探索出来的路径结构。</li>
+</ul>
+<p>**提前停止的条件：**因为每一段树枝的末端都是Xnew，所以每产生一次Xnew节点，我们都判断一下Xnew与终点之间的距离，看这个距离是否小于步长，如果小于步长且没有经过障碍物，则就直接把Xnew与终点进行相连。</p>
+<blockquote>
+<p>优点:<br>·旨在找到从起点到目标的路径<br>·比PRM更有针对性<br>缺点:<br>·非最优解<br>·效率不高,在 <strong>narrow环境</strong> 中效率低<br>·整个空间取样</p>
+</blockquote>
+<h3 id="KD树"><a href="#KD树" class="headerlink" title="KD树"></a>KD树</h3><p> Kd-Tree，即K-dimensional  tree，是一棵二叉树，树中存储的是一些K维数据。在一个K维数据集合上构建一棵Kd-Tree代表了对该K维数据集合构成的K维空间的一个划分，即树中的每个结点就对应了一个K维的超矩形区域（Hyperrectangle）。</p>
+<p>关键术语:</p>
+<ul>
+<li>维度（K）：表示数据点所在的空间维数。例如，二维空间中的点有x和y坐标，三维空间中的点有x、y、z坐标。</li>
+<li>节点：KD树的每个节点包含一个K维点及其分割超平面的信息。</li>
+<li>超平面：在K维空间中用于将空间划分为两个部分的（K-1）维子空间。例如，二维空间中的超平面是直线，三维空间中的超平面是平面。</li>
+</ul>
+<p>构建步骤:</p>
+<ol>
+<li><p>输入数据：假设有N个K维数据点。</p>
+</li>
+<li><p>选择分割维度：按照循环顺序选择当前维度。例如，第一个维度（x轴）用于根节点，第二个维度（y轴）用于其子节点，依此类推。</p>
+</li>
+<li><p>选择分割值：在当前分割维度上找到<strong>中位数</strong>点，将其作为当前节点。</p>
+</li>
+<li><p>划分数据：</p>
+<ul>
+<li><p>左子集：所有在当前分割维度上小于中位数点的点。</p>
+</li>
+<li><p>右子集：所有在当前分割维度上大于中位数点的点。</p>
+</li>
+</ul>
+</li>
+<li><p>递归构建子树：对左子集和右子集重复上述步骤，直到所有点都被包含在树中。</p>
+</li>
+<li><p>终止条件：当某一子集为空时，递归终止。</p>
+</li>
+</ol>
+<p><img src="/images/path_planning_learning/17.png" alt="一个创建KD树的例子"></p>
+<p>使用KD树提高<strong>路径规划</strong>效率</p>
+<h3 id="Bidirectional-RRT-RRT-Connect-双向快速扩展随机树"><a href="#Bidirectional-RRT-RRT-Connect-双向快速扩展随机树" class="headerlink" title="Bidirectional RRT &#x2F; RRT-Connect 双向快速扩展随机树"></a>Bidirectional RRT &#x2F; RRT-Connect 双向快速扩展随机树</h3><blockquote>
+<ol>
+<li>初始化两棵树：T_start 以 q_start 为根，T_goal 以 q_goal 为根。</li>
+<li>重复以下过程直到路径找到或迭代上限：<br>a. 从状态空间中采样一个随机点 q_rand。<br>b. 使用 Extend 操作从 T_start 向 q_rand 延伸，得到 q_new。<br>c. 如果扩展成功：<br>i. 使用 Connect 操作让 T_goal 向 q_new 不断扩展，直到无法前进。<br>ii. 如果两个树在某个点连接，则路径找到。<br>d. 交换 T_start 和 T_goal。</li>
+</ol>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">项目</th>
+<th align="center">单向 RRT</th>
+<th align="center">双向 RRT（RRT-Connect）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">扩展方向</td>
+<td align="center">只从起点扩展</td>
+<td align="center">起点和终点同时扩展</td>
+</tr>
+<tr>
+<td align="center">搜索速度</td>
+<td align="center">较慢</td>
+<td align="center">更快，更高效</td>
+</tr>
+<tr>
+<td align="center">成功率</td>
+<td align="center">容易陷入复杂障碍</td>
+<td align="center">双向推进更容易绕障碍</td>
+</tr>
+<tr>
+<td align="center">路径质量</td>
+<td align="center">一般</td>
+<td align="center">更好</td>
+</tr>
+<tr>
+<td align="center">复杂性</td>
+<td align="center">低</td>
+<td align="center">高</td>
+</tr>
+</tbody></table>
+<h2 id="Optimal-sampling-based-path-planning-methods"><a href="#Optimal-sampling-based-path-planning-methods" class="headerlink" title="Optimal sampling-based path planning methods"></a>Optimal sampling-based path planning methods</h2><p>在传统采样方法（如 RRT、PRM）的基础上，进一步加入了<strong>路径最优性保证</strong>的算法。最经典的代表是 <strong>RRT</strong>*</p>
+<h3 id="RRT"><a href="#RRT" class="headerlink" title="RRT*"></a>RRT*</h3><p><img src="/images/path_planning_learning/18.png" alt="RRT*伪代码"></p>
+<p><strong>Choose Best Parent</strong>：在新节点周围半径内的已有节点中，选择一条“代价最小”的路径作为父节点；</p>
+<p><strong>Rewire</strong>：反过来看新节点是否能以更小的代价更新周围节点的父节点。</p>
+<h3 id="Kinodynamic-RRT"><a href="#Kinodynamic-RRT" class="headerlink" title="Kinodynamic-RRT*"></a>Kinodynamic-RRT*</h3><p>更改Steer（）函数以适应机器人的运动或其他限制导航(曲线)</p>
+<h2 id="Advanced-Sampling-based-Methods"><a href="#Advanced-Sampling-based-Methods" class="headerlink" title="Advanced Sampling-based Methods"></a>Advanced Sampling-based Methods</h2><h3 id="Inform-RRT"><a href="#Inform-RRT" class="headerlink" title="Inform RRT*"></a>Inform RRT*</h3><p>一旦找到一条路径，其代价为 <code>c_best</code>，就只在以下区域采样：</p>
+<blockquote>
+<p><strong>从起点 <code>q_start</code> 到终点 <code>q_goal</code> 的椭球体区域（Ellipsoidal Sampling Space）</strong><br> 半长轴为 <code>c_best/2</code>，焦点为起点与终点，构成一个最短路径所有可能穿过的区域。</p>
+</blockquote>
+<p><img src="/images/path_planning_learning/18.png" alt="Inform RRT*"></p>
+<h3 id="Cross-entropy-motion-planning"><a href="#Cross-entropy-motion-planning" class="headerlink" title="Cross-entropy motion planning"></a>Cross-entropy motion planning</h3><ol>
+<li><p><strong>初始化一个轨迹分布模型</strong></p>
+<ul>
+<li><p>比如用高斯分布建模一条轨迹（多个中间点组成）</p>
+</li>
+<li><p>初始均值：可能是直线路径，初始方差大</p>
+</li>
+</ul>
+</li>
+<li><p><strong>采样多个轨迹</strong></p>
+<p>每条轨迹是从当前分布中采样得到的一个完整路径（可加速度约束等）</p>
+</li>
+<li><p><strong>评估轨迹代价</strong>:碰撞检测、路径长度、平滑性、目标接近度等</p>
+</li>
+<li><p><strong>选取表现最好的轨迹（Top-k）</strong>:选出“精英轨迹”，即代价最小的那一部分</p>
+</li>
+<li><p>**用精英轨迹更新分布参数:**更新高斯均值和协方差，使下次采样更集中于好路径附近</p>
+</li>
+<li><p><strong>迭代</strong>:重复 2-5，直到满足终止条件（如达到最小代价、收敛、超时等）</p>
+</li>
+</ol>
 
         </div>
         
