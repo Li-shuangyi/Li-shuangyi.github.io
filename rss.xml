@@ -6,7 +6,7 @@
   <link href="http://example.com/rss.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2025-05-18T16:26:24.766Z</updated>
+  <updated>2025-05-21T18:09:31.108Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>课程设计_背单词软件调试记录</title>
+    <link href="http://example.com/2025/05/22/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1_%E8%83%8C%E5%8D%95%E8%AF%8D%E8%BD%AF%E4%BB%B6%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/"/>
+    <id>http://example.com/2025/05/22/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1_%E8%83%8C%E5%8D%95%E8%AF%8D%E8%BD%AF%E4%BB%B6%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/</id>
+    <published>2025-05-21T18:05:19.000Z</published>
+    <updated>2025-05-21T18:09:31.108Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="调试记录"><a href="#调试记录" class="headerlink" title="调试记录"></a>调试记录</h1><h2 id="5-21测试记录"><a href="#5-21测试记录" class="headerlink" title="5.21测试记录"></a>5.21测试记录</h2><p>目前采用静态网页进行可视化</p><ol><li>用户登录未测试,现在根据用户名区分不同用户,密码不管是什么都能登录</li><li>增加home界面,在该页面可选择词书,查询单词,选择学习&#x2F;复习,复习下选择释义测试&#x2F;拼写测试</li><li>查询单词后可选择标记</li><li>个人中心中增加我的数据&#x2F;学习进度.我的数据子菜单下可展开每个掌握度的单词</li><li>将不同词书隔离,不同词书学习进度独立,学习的单词独立</li><li>在Learning界面中乱序展示所有单词,可进行标记</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;调试记录&quot;&gt;&lt;a href=&quot;#调试记录&quot; class=&quot;headerlink&quot; title=&quot;调试记录&quot;&gt;&lt;/a&gt;调试记录&lt;/h1&gt;&lt;h2 id=&quot;5-21测试记录&quot;&gt;&lt;a href=&quot;#5-21测试记录&quot; class=&quot;headerlink&quot; title=&quot;5</summary>
+      
+    
+    
+    
+    
+    <category term="算法" scheme="http://example.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
   
   <entry>
     <title>Path_planning_learning</title>
