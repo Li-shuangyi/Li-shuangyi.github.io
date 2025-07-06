@@ -6,7 +6,7 @@
   <link href="http://example.com/rss.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2025-05-21T18:09:31.108Z</updated>
+  <updated>2025-07-06T03:36:10.988Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,13 +17,35 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>复现FAST-LIVO2</title>
+    <link href="http://example.com/2025/07/04/%E5%A4%8D%E7%8E%B0FAST-LIVO2/"/>
+    <id>http://example.com/2025/07/04/%E5%A4%8D%E7%8E%B0FAST-LIVO2/</id>
+    <published>2025-07-04T06:26:07.000Z</published>
+    <updated>2025-07-06T03:36:10.988Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="项目名称-FAST-LIVO2复现"><a href="#项目名称-FAST-LIVO2复现" class="headerlink" title="项目名称 : FAST-LIVO2复现"></a>项目名称 : FAST-LIVO2复现</h1><h2 id="任务规划"><a href="#任务规划" class="headerlink" title="任务规划"></a>任务规划</h2><ul><li><p>硬件:</p><ol><li><p>手持设备支架设计(Solidworks)</p></li><li><p>STM32硬同步流程</p></li><li><p>相机-Lidar标定</p></li></ol></li><li><p>软件:</p><ol><li>环境,build</li><li>录包,跑包</li></ol></li></ul><h2 id="本机环境"><a href="#本机环境" class="headerlink" title="本机环境"></a>本机环境</h2><ol><li><p>NVIDIA驱动 : </p><ul><li><p><strong>关闭bios security boot</strong></p></li><li><p>在命令行模式下删除之前安装的nvidia驱动</p><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">Ctrl + Alt + F3<br>sudo systemctl stop gdm<br>sudo apt-get purge &#x27;^nvidia-.*&#x27;<br>sudo apt-get autoremove<br>sudo rm -rf /etc/X11/xorg.conf<br>sudo rm -rf /lib/modules/$(uname -r)/kernel/drivers/video/nvidia*<br>sudo rm -rf /usr/src/nvidia*<br>sudo rm -rf /usr/share/doc/NVIDIA_GLX-1.0*<br>sudo rm -rf /usr/share/man/man1/nvidia*<br>sudo rm -rf /usr/bin/nvidia*<br>sudo rm -rf /etc/modprobe.d/blacklist-nvidia.conf<br></code></pre></td></tr></table></figure></li><li><p>重新安装,选择recommend的版本</p><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo ubuntu-drivers devices # 查看可以使用的驱动版本<br></code></pre></td></tr></table></figure></li><li><p>重启</p><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">reboot<br></code></pre></td></tr></table></figure></li><li><p>检查</p><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">nvidia-smi<br></code></pre></td></tr></table></figure></li></ul></li></ol><h2 id="NUC环境搭建"><a href="#NUC环境搭建" class="headerlink" title="NUC环境搭建"></a>NUC环境搭建</h2><ol><li><p>修网卡 : </p><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">fast@fast:~/WIFI/backport-iwlwifi$ lspci | grep -i wireless<br>fast@fast:~/WIFI/backport-iwlwifi$ lsmod | grep iwl<br></code></pre></td></tr></table></figure><p>系统没有识别出无线网卡设备,疑似硬件问题.最后使用网线上网.</p></li></ol><h2 id="论文阅读"><a href="#论文阅读" class="headerlink" title="论文阅读"></a>论文阅读</h2><h3 id="FAST-LIVO"><a href="#FAST-LIVO" class="headerlink" title="FAST-LIVO"></a>FAST-LIVO</h3><ul><li><p>LIO 子系统: 反向传播补偿 LiDAR 扫描的运动畸变,计算帧到地图点到平面的残差。</p></li><li><p>VIO 子系统: 提取当前 FoV 中的视觉子映射,剔除异常值。</p></li><li><p>视觉对齐: 稀疏直接图像对齐,比较光流误差。</p></li><li><p>紧密耦合: 点到平面残差和图像光度误差与误差状态iKF中的IMU传播紧密耦合。</p></li><li><p>ikdTree添加新点至全局映射。</p><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/1.png" alt="1"></p></li></ul><h3 id="FAST-LIVO2"><a href="#FAST-LIVO2" class="headerlink" title="FAST-LIVO2"></a>FAST-LIVO2</h3>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;项目名称-FAST-LIVO2复现&quot;&gt;&lt;a href=&quot;#项目名称-FAST-LIVO2复现&quot; class=&quot;headerlink&quot; title=&quot;项目名称 : FAST-LIVO2复现&quot;&gt;&lt;/a&gt;项目名称 : FAST-LIVO2复现&lt;/h1&gt;&lt;h2 id=&quot;任</summary>
+      
+    
+    
+    
+    
+    <category term="project" scheme="http://example.com/tags/project/"/>
+    
+  </entry>
+  
+  <entry>
     <title>课程设计_背单词软件调试记录</title>
     <link href="http://example.com/2025/05/22/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1_%E8%83%8C%E5%8D%95%E8%AF%8D%E8%BD%AF%E4%BB%B6%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/"/>
     <id>http://example.com/2025/05/22/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1_%E8%83%8C%E5%8D%95%E8%AF%8D%E8%BD%AF%E4%BB%B6%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/</id>
     <published>2025-05-21T18:05:19.000Z</published>
-    <updated>2025-05-21T18:09:31.108Z</updated>
+    <updated>2025-07-04T06:41:05.846Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="调试记录"><a href="#调试记录" class="headerlink" title="调试记录"></a>调试记录</h1><h2 id="5-21测试记录"><a href="#5-21测试记录" class="headerlink" title="5.21测试记录"></a>5.21测试记录</h2><p>目前采用静态网页进行可视化</p><ol><li>用户登录未测试,现在根据用户名区分不同用户,密码不管是什么都能登录</li><li>增加home界面,在该页面可选择词书,查询单词,选择学习&#x2F;复习,复习下选择释义测试&#x2F;拼写测试</li><li>查询单词后可选择标记</li><li>个人中心中增加我的数据&#x2F;学习进度.我的数据子菜单下可展开每个掌握度的单词</li><li>将不同词书隔离,不同词书学习进度独立,学习的单词独立</li><li>在Learning界面中乱序展示所有单词,可进行标记</li></ol>]]></content>
+    <content type="html"><![CDATA[<h1 id="调试记录"><a href="#调试记录" class="headerlink" title="调试记录"></a>调试记录</h1><h2 id="5-21测试记录"><a href="#5-21测试记录" class="headerlink" title="5.21测试记录"></a>5.21测试记录</h2><p>目前采用静态网页进行可视化</p><ol><li>用户登录未测试,现在根据用户名区分不同用户,密码不管是什么都能登录</li><li>增加home界面,在该页面可选择词书,查询单词,选择学习&#x2F;复习,复习下选择释义测试&#x2F;拼写测试</li><li>查询单词后可选择标记</li><li>个人中心中增加我的数据&#x2F;学习进度.我的数据子菜单下可展开每个掌握度的单词</li><li>将不同词书隔离,不同词书学习进度独立,学习的单词独立</li><li>在Learning界面中乱序展示所有单词,可进行标记</li></ol><h2 id="5-22测试记录"><a href="#5-22测试记录" class="headerlink" title="5.22测试记录"></a>5.22测试记录</h2><p>目前采用静态网页进行可视化</p><ol><li>增加每日学习部分.</li><li>增加profile中学习成果及可视化部分.</li><li>增加复习规则&#x2F;learn帮助&#x2F;review帮助</li><li>缺少按记忆曲线进行复习部分.</li></ol><p>代码已推送至dictionary的visual分支</p><p>&#96;在home界面可更改每日学习词数</p><h2 id="5-23测试记录"><a href="#5-23测试记录" class="headerlink" title="5.23测试记录"></a>5.23测试记录</h2><p>现在复习的逻辑已经完善了<br>可以在个人中心看到今日学习数据&#x2F;复习曲线&#x2F;待复习列表,复习只会在当天对应复习列表的词汇中抽取</p>]]></content>
     
     
       
