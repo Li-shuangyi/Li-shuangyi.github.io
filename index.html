@@ -177,6 +177,13 @@
               </p>
               <p class="post-excerpt text-hacker-color3 group-hover:text-white">
                 项目名称 : FAST-LIVO2复现任务规划
+设备:
+
+Livox AVIA
+Livox Converter 2.0
+海康相机MV-CS020-10UC
+
+
 硬件:
 
 手持设备支架设计(Solidworks)
@@ -194,13 +201,14 @@ STM32硬同步流程
 
 
 
-本机环境
-NVIDIA驱动 : 
+论文阅读FAST-LIVO
+LIO 子系统: 反向传播补偿 LiDAR 扫描的运动畸变,计算帧到地图点到平面的残差。
 
-关闭bios security boot
+VIO 子系统: 提取当前 FoV 中的视觉子映射,剔除异常值。
 
-在命令行模式下删除之前安装的nvidia驱动
-Ctrl + Alt + F3sudo systemctl stop gdmsudo apt-get purge &amp;#x27;^nvidia-.*&amp;#x27;sudo apt-get autoremovesudo rm -rf /etc/X11/xorg.confsudo ...
+视觉对齐: 稀疏直接图像对齐,比较光流误差。
+
+紧密耦合: 点到平面残差和图像光度误差与误差状态iK...
               </p>
             </a>
           </div>
