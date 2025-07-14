@@ -512,16 +512,38 @@
 <p>Livox Converter 2.0 同步线说明 :</p>
 <img src="../images/复现FAST-LIVO2/33.png" alt="雷达同步线" style="zoom:67%;" />
 
+<h3 id="4-串口绑定"><a href="#4-串口绑定" class="headerlink" title="4. 串口绑定"></a>4. 串口绑定</h3><p>为了赋予特定串口权限,且防止串口在ubuntu下名称跳变，本片介绍ubuntu系统下如何绑定串口。</p>
+<h4 id="1-建立udev规则"><a href="#1-建立udev规则" class="headerlink" title="1. 建立udev规则"></a>1. 建立udev规则</h4><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo gedit /etc/udev/rules.d/my_rule.rules<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-获取串口设备详情"><a href="#2-获取串口设备详情" class="headerlink" title="2. 获取串口设备详情"></a>2. 获取串口设备详情</h4><p>列出当前串口设备。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">ls /dev/ttyUSB*<br></code></pre></td></tr></table></figure>
+
+<p>以ttyUSB0为例。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">udevadm info --attribute-walk --name=/dev/ttyUSB0<br></code></pre></td></tr></table></figure>
+
+<p>获得详细信息，我习惯以第四行&#x3D;&#x3D;looking …&#x3D;&#x3D;以下的信息作为信息绑定的依靠。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">looking at device &#x27;/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3:1.0/ttyUSB0/tty/ttyUSB0&#x27;:<br>    KERNEL==&quot;ttyUSB0&quot;<br>    SUBSYSTEM==&quot;tty&quot;<br>    DRIVER==&quot;&quot;<br><br>  looking at parent device &#x27;/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3:1.0/ttyUSB0&#x27;:<br>    KERNELS==&quot;ttyUSB0&quot;<br>    SUBSYSTEMS==&quot;usb-serial&quot;<br>    DRIVERS==&quot;cp210x&quot;<br>    ATTRS&#123;port_number&#125;==&quot;0&quot;<br><br>  looking at parent device &#x27;/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3:1.0&#x27;:<br>    KERNELS==&quot;3-3:1.0&quot;<br>    SUBSYSTEMS==&quot;usb&quot;<br>    DRIVERS==&quot;cp210x&quot;<br>    ATTRS&#123;interface&#125;==&quot;CP2102 USB to UART Bridge Controller&quot;<br>    ATTRS&#123;authorized&#125;==&quot;1&quot;<br>    ATTRS&#123;bAlternateSetting&#125;==&quot; 0&quot;<br>    ATTRS&#123;bInterfaceProtocol&#125;==&quot;00&quot;<br>    ATTRS&#123;bNumEndpoints&#125;==&quot;02&quot;<br>    ATTRS&#123;supports_autosuspend&#125;==&quot;1&quot;<br>    ATTRS&#123;bInterfaceSubClass&#125;==&quot;00&quot;<br>    ATTRS&#123;bInterfaceClass&#125;==&quot;ff&quot;<br>    ATTRS&#123;bInterfaceNumber&#125;==&quot;00&quot;<br><br>  looking at parent device &#x27;/devices/pci0000:00/0000:00:14.0/usb3/3-3&#x27;:<br>    KERNELS==&quot;3-3&quot;<br>    SUBSYSTEMS==&quot;usb&quot;<br>    DRIVERS==&quot;usb&quot;<br>    ATTRS&#123;idProduct&#125;==&quot;ea60&quot;<br>    ATTRS&#123;bConfigurationValue&#125;==&quot;1&quot;<br>    ATTRS&#123;tx_lanes&#125;==&quot;1&quot;<br>    ATTRS&#123;bNumInterfaces&#125;==&quot; 1&quot;<br>    ATTRS&#123;maxchild&#125;==&quot;0&quot;<br>    ATTRS&#123;avoid_reset_quirk&#125;==&quot;0&quot;<br>    ATTRS&#123;devpath&#125;==&quot;3&quot;<br>    ATTRS&#123;bDeviceSubClass&#125;==&quot;00&quot;<br>    ATTRS&#123;bDeviceClass&#125;==&quot;00&quot;<br>    ATTRS&#123;ltm_capable&#125;==&quot;no&quot;<br>    ATTRS&#123;quirks&#125;==&quot;0x0&quot;<br>    ATTRS&#123;serial&#125;==&quot;0001&quot;<br>    ATTRS&#123;bDeviceProtocol&#125;==&quot;00&quot;<br>    ATTRS&#123;speed&#125;==&quot;12&quot;<br>    ATTRS&#123;busnum&#125;==&quot;3&quot;<br>    ATTRS&#123;bNumConfigurations&#125;==&quot;1&quot;<br>    ATTRS&#123;manufacturer&#125;==&quot;Silicon Labs&quot;<br>    ATTRS&#123;bMaxPacketSize0&#125;==&quot;64&quot;<br>    ATTRS&#123;version&#125;==&quot; 1.10&quot;<br>    ATTRS&#123;bcdDevice&#125;==&quot;0100&quot;<br>    ATTRS&#123;devnum&#125;==&quot;6&quot;<br>    ATTRS&#123;rx_lanes&#125;==&quot;1&quot;<br>    ATTRS&#123;authorized&#125;==&quot;1&quot;<br>    ATTRS&#123;removable&#125;==&quot;removable&quot;<br>    ATTRS&#123;product&#125;==&quot;CP2102 USB to UART Bridge Controller&quot;<br>    ATTRS&#123;configuration&#125;==&quot;&quot;<br>    ATTRS&#123;bMaxPower&#125;==&quot;100mA&quot;<br>    ATTRS&#123;urbnum&#125;==&quot;12&quot;<br>    ATTRS&#123;bmAttributes&#125;==&quot;80&quot;<br>    ATTRS&#123;idVendor&#125;==&quot;10c4&quot;<br><br>  looking at parent device &#x27;/devices/pci0000:00/0000:00:14.0/usb3&#x27;:<br>    KERNELS==&quot;usb3&quot;<br>    SUBSYSTEMS==&quot;usb&quot;<br>    DRIVERS==&quot;usb&quot;<br>    ATTRS&#123;devpath&#125;==&quot;0&quot;<br>    ATTRS&#123;authorized_default&#125;==&quot;1&quot;<br>    ATTRS&#123;ltm_capable&#125;==&quot;no&quot;<br>    ATTRS&#123;speed&#125;==&quot;480&quot;<br>    ATTRS&#123;bNumInterfaces&#125;==&quot; 1&quot;<br>    ATTRS&#123;configuration&#125;==&quot;&quot;<br>    ATTRS&#123;bMaxPower&#125;==&quot;0mA&quot;<br>    ATTRS&#123;bmAttributes&#125;==&quot;e0&quot;<br>    ATTRS&#123;avoid_reset_quirk&#125;==&quot;0&quot;<br>    ATTRS&#123;serial&#125;==&quot;0000:00:14.0&quot;<br>    ATTRS&#123;manufacturer&#125;==&quot;Linux 5.15.0-139-generic xhci-hcd&quot;<br>    ATTRS&#123;busnum&#125;==&quot;3&quot;<br>    ATTRS&#123;interface_authorized_default&#125;==&quot;1&quot;<br>    ATTRS&#123;bConfigurationValue&#125;==&quot;1&quot;<br>    ATTRS&#123;bDeviceClass&#125;==&quot;09&quot;<br>    ATTRS&#123;bMaxPacketSize0&#125;==&quot;64&quot;<br>    ATTRS&#123;quirks&#125;==&quot;0x0&quot;<br>    ATTRS&#123;bcdDevice&#125;==&quot;0515&quot;<br>    ATTRS&#123;idProduct&#125;==&quot;0002&quot;<br>    ATTRS&#123;tx_lanes&#125;==&quot;1&quot;<br>    ATTRS&#123;rx_lanes&#125;==&quot;1&quot;<br>    ATTRS&#123;product&#125;==&quot;xHCI Host Controller&quot;<br>    ATTRS&#123;urbnum&#125;==&quot;98&quot;<br>    ATTRS&#123;removable&#125;==&quot;unknown&quot;<br>    ATTRS&#123;bNumConfigurations&#125;==&quot;1&quot;<br>    ATTRS&#123;devnum&#125;==&quot;1&quot;<br>    ATTRS&#123;bDeviceProtocol&#125;==&quot;01&quot;<br>    ATTRS&#123;version&#125;==&quot; 2.00&quot;<br>    ATTRS&#123;idVendor&#125;==&quot;1d6b&quot;<br>    ATTRS&#123;maxchild&#125;==&quot;12&quot;<br>    ATTRS&#123;bDeviceSubClass&#125;==&quot;00&quot;<br>    ATTRS&#123;authorized&#125;==&quot;1&quot;<br><br>  looking at parent device &#x27;/devices/pci0000:00/0000:00:14.0&#x27;:<br>    KERNELS==&quot;0000:00:14.0&quot;<br>    SUBSYSTEMS==&quot;pci&quot;<br>    DRIVERS==&quot;xhci_hcd&quot;<br>    ATTRS&#123;local_cpus&#125;==&quot;ffff&quot;<br>    ATTRS&#123;dma_mask_bits&#125;==&quot;64&quot;<br>    ATTRS&#123;power_state&#125;==&quot;D0&quot;<br>    ATTRS&#123;device&#125;==&quot;0x51ed&quot;<br>    ATTRS&#123;subsystem_device&#125;==&quot;0x3037&quot;<br>    ATTRS&#123;ari_enabled&#125;==&quot;0&quot;<br>    ATTRS&#123;class&#125;==&quot;0x0c0330&quot;<br>    ATTRS&#123;msi_bus&#125;==&quot;1&quot;<br>    ATTRS&#123;vendor&#125;==&quot;0x8086&quot;<br>    ATTRS&#123;revision&#125;==&quot;0x01&quot;<br>    ATTRS&#123;local_cpulist&#125;==&quot;0-15&quot;<br>    ATTRS&#123;label&#125;==&quot;Onboard - Other&quot;<br>    ATTRS&#123;numa_node&#125;==&quot;-1&quot;<br>    ATTRS&#123;driver_override&#125;==&quot;(null)&quot;<br>    ATTRS&#123;consistent_dma_mask_bits&#125;==&quot;64&quot;<br>    ATTRS&#123;subsystem_vendor&#125;==&quot;0x8086&quot;<br>    ATTRS&#123;dbc&#125;==&quot;disabled&quot;<br>    ATTRS&#123;enable&#125;==&quot;1&quot;<br>    ATTRS&#123;broken_parity_status&#125;==&quot;0&quot;<br>    ATTRS&#123;irq&#125;==&quot;145&quot;<br>    ATTRS&#123;d3cold_allowed&#125;==&quot;1&quot;<br>    ATTRS&#123;index&#125;==&quot;7&quot;<br><br>  looking at parent device &#x27;/devices/pci0000:00&#x27;:<br>    KERNELS==&quot;pci0000:00&quot;<br>    SUBSYSTEMS==&quot;&quot;<br>    DRIVERS==&quot;&quot;<br>    ATTRS&#123;waiting_for_supplier&#125;==&quot;0&quot;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-在udev规则下写入串口信息"><a href="#3-在udev规则下写入串口信息" class="headerlink" title="3. 在udev规则下写入串口信息"></a>3. 在udev规则下写入串口信息</h4><p>如果没有相同ID设备的话可直接写入。</p>
+<p>其中<code>KERNEL==&quot;ttyUSB*&quot;</code>表明绑定的设备是串口，<code>ATTRS&#123;idVendor&#125;==&quot;10c4&quot;, ATTRS&#123;idProduct&#125;==&quot;ea60&quot;</code>是Step2中设备的信息，<code>MODE:=&quot;0777&quot;</code>给予设备最高权限，<code>SYMLINK+=&quot;ttyUSB_TTL2USB&quot;</code>为绑定后设备的名称。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">KERNEL==&quot;ttyUSB*&quot;, ATTRS&#123;idVendor&#125;==&quot;10c4&quot;, ATTRS&#123;idProduct&#125;==&quot;ea60&quot;, MODE:=&quot;0777&quot;, SYMLINK+=&quot;ttyUSB_TTL2USB&quot;<br></code></pre></td></tr></table></figure>
+
+<p>若有相同ID设备，则可再添加<code>ATTRS&#123;devpath&#125;==&quot;5.2&quot;</code>信息，该量一般与设备与电脑链接的端口号有关。</p>
+<h4 id="4-重启udev"><a href="#4-重启udev" class="headerlink" title="4. 重启udev"></a>4. 重启udev</h4><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo service udev reload<br>sudo service udev restart<br></code></pre></td></tr></table></figure>
+
+<p>再次查看串口设备，即可看到绑定成功后的名称。若还没成功，可尝试重启电脑或者热插拔设备。</p>
+<img src="../images/复现FAST-LIVO2/50.jpg" alt="绑定串口" style="zoom:50%;" />
 
 
-<h3 id="4-雷达设置"><a href="#4-雷达设置" class="headerlink" title="4. 雷达设置"></a>4. 雷达设置</h3><h4 id="Livox雷达时间同步说明"><a href="#Livox雷达时间同步说明" class="headerlink" title="Livox雷达时间同步说明"></a>Livox雷达时间同步说明</h4><p>参考:<a target="_blank" rel="noopener" href="https://github.com/Livox-SDK/Livox-SDK/wiki/livox-device-time-synchronization-manual-cn#%E9%99%84%E5%BD%95">https://github.com/Livox-SDK/Livox-SDK/wiki/livox-device-time-synchronization-manual-cn#%E9%99%84%E5%BD%95</a></p>
+
+<h3 id="5-雷达设置"><a href="#5-雷达设置" class="headerlink" title="5. 雷达设置"></a>5. 雷达设置</h3><h4 id="Livox雷达时间同步说明"><a href="#Livox雷达时间同步说明" class="headerlink" title="Livox雷达时间同步说明"></a>Livox雷达时间同步说明</h4><p>参考:<a target="_blank" rel="noopener" href="https://github.com/Livox-SDK/Livox-SDK/wiki/livox-device-time-synchronization-manual-cn#%E9%99%84%E5%BD%95">https://github.com/Livox-SDK/Livox-SDK/wiki/livox-device-time-synchronization-manual-cn#%E9%99%84%E5%BD%95</a></p>
 <p>Livox设备支持3种时间同步方式：</p>
 <ul>
 <li>PTP：IEEE 1588v2.0 PTP 网络协议同步；</li>
 <li>GPS：秒脉冲+GPRMC时间数据，组成GPS时间同步方式；</li>
 <li>PPS：秒脉冲同步，需要上层应用程序通过其他途径（如：uart）获取每个脉冲的时间信息，并修正点云时间。</li>
 </ul>
-<p>FAST-LIO只涉及GPS和PPS两种,只介绍这两种.</p>
+<p>FAST-LIO只涉及GPS和PPS两种,只介绍这两种。</p>
 <h5 id="GPS"><a href="#GPS" class="headerlink" title="GPS"></a>GPS</h5><p>GPS时钟源的PPS端口每秒发送一次硬件脉冲（PPS信号），随后数据端口发送一次对应这个脉冲上升沿的时间信息（GPRMC格式）。Livox设备接收到PPS信号上升沿，并由GPRMC数据解析出正确的时间信息后，会设置点云时间为GPS时间，并保持此时间基准持续累加，来实现和GPS设备的时间同步。</p>
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/17.png" alt="GPS原理图"></p>
 <p><strong>Livox Converter 2.0</strong>将GPS模块的时间信号（GPRMC）通过TTL转usb模块接入PC，PPS信号接入LiDAR转接盒同步口（Sync Port）。</p>
@@ -531,7 +553,7 @@
 <p>伪代码:</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// PPS Time Synchronization</span><br><span class="hljs-type">static</span> <span class="hljs-type">uint64_t</span> lidar_time_last;<br><span class="hljs-type">static</span> <span class="hljs-type">uint64_t</span> lidar_time_real;<br><br><span class="hljs-comment">// 1. Read the PPS rising edge time, Unit is nanosecond.</span><br><span class="hljs-type">uint64_t</span> pps_time_ns = get_pps_rising_nsecond();<br><span class="hljs-comment">// 2. Read LiDAR point time, Unit is nanosecond.</span><br><span class="hljs-type">uint64_t</span> lidar_time = get_lidar_pack_time();<br><span class="hljs-comment">// 3. Update real time.</span><br><span class="hljs-keyword">if</span> (lidar_time &lt; lidar_time_last)<br>&#123;<br>    <span class="hljs-comment">//LiDAR time jump indicates the generation of PPS rising edge.</span><br>    lidar_time_real = pps_time_ns + lidar_time%(<span class="hljs-number">1000000000</span>);<br>&#125;<br><span class="hljs-keyword">else</span><br>&#123;<br>    lidar_time_real += lidar_time - lidar_time_last;<br>&#125;<br><span class="hljs-comment">//Update history</span><br>lidar_time_last = lidar_time;<br></code></pre></td></tr></table></figure>
 
-<h4 id="雷达设置"><a href="#雷达设置" class="headerlink" title="雷达设置"></a>雷达设置</h4><h4 id="1-安装Livox-Viewer"><a href="#1-安装Livox-Viewer" class="headerlink" title="1. 安装Livox Viewer"></a>1. 安装Livox Viewer</h4><p> Livox Viewer 0.10.0(64bit) : <a target="_blank" rel="noopener" href="https://www.livoxtech.com/downloads">https://www.livoxtech.com/downloads</a></p>
+<h4 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h4><h4 id="1-安装Livox-Viewer"><a href="#1-安装Livox-Viewer" class="headerlink" title="1. 安装Livox Viewer"></a>1. 安装Livox Viewer</h4><p> Livox Viewer 0.10.0(64bit) : <a target="_blank" rel="noopener" href="https://www.livoxtech.com/downloads">https://www.livoxtech.com/downloads</a></p>
 <blockquote>
 <p>注：Livox Viewer2并不支持Avia</p>
 </blockquote>
@@ -542,15 +564,19 @@
 <img src="../images/复现FAST-LIVO2/48.jpg" style="zoom: 67%;" />
 
 <p>插上硬同步设备后,查看雷达的连接转态和数据的读取状态，来确认雷达是否已进入PPS同步状态</p>
-<img src="../images/复现FAST-LIVO2/49.png" style="zoom: 67%;" />
+<img src="../images/复现FAST-LIVO2/49.png" style="zoom: 50%;" />
 
-<p>1.livox_lidar_config.json中，修改参数值：</p>
-<h4 id="相机设置"><a href="#相机设置" class="headerlink" title="相机设置"></a>相机设置</h4><p>相机 : 海康相机MV-CS020-10UC</p>
+<h4 id="2-修改livox-lidar-config-json"><a href="#2-修改livox-lidar-config-json" class="headerlink" title="2. 修改livox_lidar_config.json"></a>2. 修改livox_lidar_config.json</h4><img src="../images/复现FAST-LIVO2/51.jpg" style="zoom: 50%;" />
+
+<h4 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h4><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs SHELL">roslaunch livox_ros_driver livox_lidar_rviz.launch<br></code></pre></td></tr></table></figure>
+
+<p>可以在自动弹出来的rviz中查看是否有点云正常输出和显示</p>
+<h3 id="6-相机设置"><a href="#6-相机设置" class="headerlink" title="6. 相机设置"></a>6. 相机设置</h3><p>相机 : 海康相机MV-CS020-10UC</p>
 <p>驱动 : MVS_STD_V3.0.1</p>
-<h5 id="1-安装驱动"><a href="#1-安装驱动" class="headerlink" title="1. 安装驱动"></a>1. 安装驱动</h5><p>海康威视工业相机SDK的ros驱动依赖MVS的库文件，先安装MVS客户端.</p>
+<h4 id="1-安装驱动"><a href="#1-安装驱动" class="headerlink" title="1. 安装驱动"></a>1. 安装驱动</h4><p>海康威视工业相机SDK的ros驱动依赖MVS的库文件，先安装MVS客户端.</p>
 <p>官方下载地址：<a href="https://gitee.com/link?target=https://www.hikrobotics.com/cn/machinevision/service/download/?module=0">https://www.hikrobotics.com/cn/machinevision/service/download/?module=0</a></p>
-<h5 id="2-下载和编译相机的雷达ros驱动"><a href="#2-下载和编译相机的雷达ros驱动" class="headerlink" title="2. 下载和编译相机的雷达ros驱动"></a>2. 下载和编译相机的雷达ros驱动</h5><p> (见<a href="#mvs_ros_pkg">NUC环境搭建 - 3.工作空间配置</a>)</p>
-<h5 id="3-调整配置文件"><a href="#3-调整配置文件" class="headerlink" title="3. 调整配置文件"></a>3. 调整配置文件</h5><p>路径 : mvs_ros_driver&#x2F;config</p>
+<h4 id="2-下载和编译相机的雷达ros驱动"><a href="#2-下载和编译相机的雷达ros驱动" class="headerlink" title="2. 下载和编译相机的雷达ros驱动"></a>2. 下载和编译相机的雷达ros驱动</h4><p> (见<a href="#mvs_ros_pkg">NUC环境搭建 - 3.工作空间配置</a>)</p>
+<h4 id="3-调整配置文件"><a href="#3-调整配置文件" class="headerlink" title="3. 调整配置文件"></a>3. 调整配置文件</h4><p>路径 : mvs_ros_driver&#x2F;config</p>
 <figure class="highlight yaml"><table><tr><td class="code"><pre><code class="hljs yaml"><span class="hljs-string">%YAML:1.0</span><br><br><span class="hljs-comment">#--------------------------------------------------------------------------------------------</span><br><span class="hljs-comment"># Camera Parameters. Adjust them!</span><br><span class="hljs-comment">#--------------------------------------------------------------------------------------------</span><br><span class="hljs-attr">SerialNumber:</span> <span class="hljs-string">&quot;DA2099368&quot;</span> <span class="hljs-comment"># Not needed for single camera. Specify serial number for multiple cameras. </span><br><span class="hljs-attr">TopicName:</span> <span class="hljs-string">&quot;left_camera/image&quot;</span><br><br><span class="hljs-attr">TriggerEnable:</span> <span class="hljs-number">1</span> <span class="hljs-comment"># 0 stands for Off, 1 stands for On</span><br><br><span class="hljs-attr">ExposureAutoMode:</span> <span class="hljs-number">0</span> <span class="hljs-comment"># 0 stands for Off, 1 stands for Once, 2 stands for Continues</span><br><span class="hljs-attr">ExposureTime:</span> <span class="hljs-number">5000</span> <span class="hljs-comment"># us</span><br><br><span class="hljs-comment"># ExposureAutoMode: 2</span><br><span class="hljs-comment"># AutoExposureTimeLower: 100</span><br><span class="hljs-comment"># AutoExposureTimeUpper: 20000</span><br><br><span class="hljs-attr">image_scale:</span> <span class="hljs-number">0.5</span> <span class="hljs-comment"># 1 0.5</span><br><span class="hljs-attr">GainAuto:</span> <span class="hljs-number">2</span> <span class="hljs-comment"># Gain Auto, 0 stands for Off, 1 stands for Once, 2 stands for Continues</span><br><span class="hljs-attr">Gain:</span> <span class="hljs-number">15</span> <span class="hljs-comment"># min: 0   max: 17.0166</span><br><span class="hljs-attr">Gamma:</span> <span class="hljs-number">0.7</span>  <span class="hljs-comment"># min: 0   max: 17.0166</span><br><span class="hljs-attr">GammaSelector:</span> <span class="hljs-number">1</span> <span class="hljs-comment"># 0 stands for user, 1 stands for sRGB</span><br><span class="hljs-comment"># GammaEnable: 1</span><br><br><span class="hljs-attr">PixelFormat:</span> <span class="hljs-number">0</span> <span class="hljs-comment"># 0: RGB8, 1: BayerRG8, 2: BayerRG12Packed, 3: BayerGB12Packed, 4: BayerGB8</span><br></code></pre></td></tr></table></figure>
 
 <p>最重要的参数是<strong>PixelFormat</strong>,需要根据相机型号调整。遍历一遍看哪个数值可用当然可以,代价是报错的时候不能理解其中原因,会造成很多麻烦。</p>
@@ -582,7 +608,7 @@
 </blockquote>
 </li>
 </ul>
-<h5 id="4-测试"><a href="#4-测试" class="headerlink" title="4. 测试"></a>4. 测试</h5><ul>
+<h4 id="4-测试"><a href="#4-测试" class="headerlink" title="4. 测试"></a>4. 测试</h4><ul>
 <li><p>如果需要<strong>单独测试相机驱动</strong>,需要把mvs_ros_driver&#x2F;config中的<strong>TriggerEnable参数改为0</strong>,否则节点无图像数据！</p>
 </li>
 <li><p>相机插NUC的<strong>USB3.0</strong>的插口</p>
@@ -593,7 +619,7 @@
 <p>rviz中查看图像是否正常输出．</p>
 <img src="../images/复现FAST-LIVO2/46.jpg" alt="报错" style="zoom: 33%;" /></li>
 </ul>
-<h3 id="烧录"><a href="#烧录" class="headerlink" title="烧录"></a>烧录</h3><ol>
+<h3 id="7-烧录"><a href="#7-烧录" class="headerlink" title="7. 烧录"></a>7. 烧录</h3><ol>
 <li><p>STLINK驱动安装</p>
 <p><a target="_blank" rel="noopener" href="https://docs.qq.com/doc/DT2hyS2ZjY21WQkZt">https://docs.qq.com/doc/DT2hyS2ZjY21WQkZt</a></p>
 </li>
@@ -619,17 +645,17 @@
 <img src="../images/复现FAST-LIVO2/29.png" alt="烧录过程6" style="zoom:50%;" />
 
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/30.png" alt="烧录过程7"></p>
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h4 id="跑包"><a href="#跑包" class="headerlink" title="跑包"></a>跑包</h4><p>HKU_Lecture_Center_02.bag</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h3 id="跑包"><a href="#跑包" class="headerlink" title="跑包"></a>跑包</h3><p>HKU_Lecture_Center_02.bag</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">roslaunch fast_livo mapping_avia.launch<br>rosbag play HKU_Lecture_Center_02.bag<br></code></pre></td></tr></table></figure>
 
-<h5 id="rviz"><a href="#rviz" class="headerlink" title="rviz"></a>rviz</h5><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/2.jpg" alt="2"></p>
+<h4 id="rviz"><a href="#rviz" class="headerlink" title="rviz"></a>rviz</h4><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/2.jpg" alt="2"></p>
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/3.jpg" alt="3"></p>
 <p>墙面与地面分界线清晰</p>
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/4.jpg" alt="7"></p>
 <p>图片处理(拉高亮度)后,可以看到墙面纹路,转角非常清晰</p>
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/5.jpg" alt="5"></p>
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/6.jpg" alt="6"></p>
-<h5 id="系统资源占用"><a href="#系统资源占用" class="headerlink" title="系统资源占用"></a>系统资源占用</h5><p>运行launch和rviz : 资源主要由rviz占用,且初始rviz config中点云queue数值极大,NUC很卡,可以把queue值适当改小.</p>
+<h4 id="系统资源占用"><a href="#系统资源占用" class="headerlink" title="系统资源占用"></a>系统资源占用</h4><p>运行launch和rviz : 资源主要由rviz占用,且初始rviz config中点云queue数值极大,NUC很卡,可以把queue值适当改小.</p>
 <table>
 <thead>
 <tr>
@@ -675,7 +701,7 @@
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/9.jpg" alt="9"></p>
 <p>只运行launch: </p>
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/10.jpg" alt="10"></p>
-<h5 id="里程计数据"><a href="#里程计数据" class="headerlink" title="里程计数据"></a>里程计数据</h5><p>纵轴单位(m) ,三条曲线分别是x轴,y轴,z轴里程计数据变化</p>
+<h4 id="里程计数据"><a href="#里程计数据" class="headerlink" title="里程计数据"></a>里程计数据</h4><p>纵轴单位(m) ,三条曲线分别是x轴,y轴,z轴里程计数据变化</p>
 <ul>
 <li><p>蓝色-x轴</p>
 </li>
@@ -688,8 +714,70 @@
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/11.jpg" alt="11"></p>
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/12.png" alt="12"></p>
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/13.jpg" alt="13"></p>
-<h5 id="处理时间"><a href="#处理时间" class="headerlink" title="处理时间"></a>处理时间</h5><p>参考该帧处理时间数量级</p>
+<h4 id="处理时间"><a href="#处理时间" class="headerlink" title="处理时间"></a>处理时间</h4><p>参考该帧处理时间数量级</p>
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/14.jpg" alt="14"></p>
+<p>###可行性初测试</p>
+<h4 id="修改参数"><a href="#修改参数" class="headerlink" title="修改参数"></a>修改参数</h4><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/53.png" alt="14"></p>
+<ul>
+<li><p>&#x2F;congfig&#x2F;avia.yaml: Avia雷达的参数配置</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/54.png" alt="14"></p>
+<blockquote>
+<ul>
+<li><p><strong>extrin_calib</strong> 中：</p>
+<ol>
+<li><p>extrinsic_T 和extrinsic_R 为雷达到IMU的外参（平移与旋转）</p>
+</li>
+<li><p>Rcl 和 Pcl 为相机到 LiDAR 的旋转矩阵和平移向量, 需要外参标定得出，更新到该位置即可</p>
+<p>-作者在issue中的原回答:</p>
+<p>The extrinsic_R in avia_resize.yaml doesn’t have to be an identity matrix.<br>extrinsic_R represents the rotation matrix of LiDAR frame w.r.t. IMU frame.<br>extrinsic_T represents the translation of LiDAR frame w.r.t. IMU frame.<br>If you set them correctly according to the physical meaning, there should be no wrong alignment of the image and LiDAR scan.</p>
+</li>
+</ol>
+</li>
+<li><p><strong>preprocess</strong> 预处理中：</p>
+<p>1.lidar_type： LiDAR 类型<br> 保持值仍为1 （1：Livox Avia &#x2F; Mid360）</p>
+<p>2.scan_line:  扫描线数量<br> 这里仍为6  （Avia：6，Mid360：4）</p>
+</li>
+<li><p><strong>time_offset</strong>时间偏移: </p>
+<p>-作者在issue中的原回答:</p>
+<p>img_time_offset: 0.1，在我们提供的<a target="_blank" rel="noopener" href="https://github.com/xuankuzcr/LIV_handhold">同步方案</a>中，LiDAR会将其时间戳存储到共享内存中，相机帧则会读取内存中最新的时间戳。由于LiDAR scan是一个段时间测量，需要等0.1秒扫完后才会将其header的时间戳存到内存里。此时被触发的相机读取的时间戳实际上是0.1秒前的，因此其真实采样时间戳需要+0.1s。 对于NTU-VIRAL数据集，我设置lidar_time_offset: -0.1，因为该数据集中的LiDAR scan提供的是帧末时间戳，而我们的系统需要的是header时间戳，因此需要-0.1s。这一判断是基于在静止条件下观察EKF估计出的位姿抖动程度得出的。 </p>
+<p>时间没对上不影响，只要在一个时间轴上就可以，evo会用高频的真值轨迹插值出LiDAR或相机采样时刻的位姿的。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>&#x2F;congfig&#x2F;camara_pinhole.yaml: 相机的参数配置</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs SHELL">cam_model: Pinhole<br>cam_width: 1624<br>cam_height: 1240<br>scale: 0.5<br>cam_fx: 1340.62925<br>cam_fy: 1340.84375<br>cam_cx: 821.09<br>cam_cy: 647.1655<br>cam_d0: -0.0482<br>cam_d1: 0.0739<br>cam_d2: 0.0<br>cam_d3: 0.0<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>除了要修改雷达的内参参数外,还要注意<code>cam_width</code> &#x2F; <code>cam_height</code> &#x2F; <code>scale</code> 三个参数 :</p>
+<ul>
+<li>在 mvs_ros_driver &#x2F; config &#x2F; left_camera_trigger.yaml中,scale默认为0.5,camara_pinhole.yaml中的值需要与其保持一致</li>
+<li>mvs_ros_driver中默认不修改相机图像大小,<code>cam_width</code> &#x2F; <code>cam_height</code> 为相机原尺寸</li>
+</ul>
+</blockquote>
+<h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><p>启动雷达：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">roslaunch livox_ros_driver livox_lidar_msg.launch<br></code></pre></td></tr></table></figure>
+
+<p>注意：这里我们启动的是Avia雷达的自定义消息格式，而非PointCloud2格式</p>
+<p>启动相机:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">roslaunch mvs_ros_pkg mvs_camera_trigger.launch<br></code></pre></td></tr></table></figure>
+
+<p>Fast Livo2主节点启动:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">roslaunch fast_livo mapping_avia.launch<br></code></pre></td></tr></table></figure>
+
+<p>建图效果，如下方所示：</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/52.jpg" alt="14"></p>
+<h4 id="包数据分析"><a href="#包数据分析" class="headerlink" title="包数据分析"></a>包数据分析</h4><p>对齐效果 :</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/56.jpg" alt="14"></p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/55.jpg" alt="14"></p>
+<blockquote>
+<ul>
+<li>雷达 &#x2F; imu &#x2F; 图像均为10hz</li>
+<li>图像和雷达时间差约为30ms,查看官方包也是这样的偏差,目前暂时不清楚这个时间差意味着什么</li>
+</ul>
+</blockquote>
 
         </div>
         
