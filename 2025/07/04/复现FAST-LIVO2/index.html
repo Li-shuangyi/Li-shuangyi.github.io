@@ -256,7 +256,7 @@
 </ol>
 <img src="../images/复现FAST-LIVO2/35.png" alt="图3-前向传播与反向传播示意图" style="zoom: 33%;" />
 
-<p style="text-align:center;">图3-前向传播与反向传播示意图</p>										
+<p style="text-align:center;">图3-前向传播与反向传播示意图</p>									
 
 <p>​	1. 前向传播：KF在预测阶段将噪声$W_i$ 设为0，预测$t_k-1$ 到$t_k$ 这段时间每个IMU输入时的状态。由KF预测可得	此时状态量为$\hat{x}$，状态量对应的协方差$\hat{P}$作为更新阶段的先验。</p>
 <p>​	2. 反向传播 : 补偿激光雷达运动畸变，确保所有的点都是在tk时刻观测到的。</p>
@@ -270,8 +270,7 @@
 <li><p>地图结构 Map Structure</p>
 <img src="../images/复现FAST-LIVO2/37.png" alt="图5-Voxel Map示意图" style="zoom: 33%;" />
 
-<p>​                                           图5-Voxel Map示意图</p>
-</li>
+<p style="text-align:center;">图5-Voxel Map示意图</p></li>
 </ol>
 <p>​	<strong>自适应体素结构</strong>,按照哈希表和每个哈希条目的八叉树组织。</p>
 <p>​	哈希表管理根体素,每一个根体素为0.5x0.5x0.5m的固定维度,每个根体素包含一个八叉树结构。叶体素代表一个局部平面,存储一个平面特征(即平面中心、法向量和不确定性),以及一组位于该平面上的激光雷达原始点。<strong>叶体素的不同大小使其能够表示不同尺度的局部平面,从而适应具有不同结构的环境</strong>。部分点与三级图像块(8×8图块大小)相连(即视觉地图点),收敛的视觉地图点仅与参考块关联，未收敛的点与参考块和其他可见块都关联。</p>
@@ -727,25 +726,101 @@
 
 
 
+<h2 id="标定"><a href="#标定" class="headerlink" title="标定"></a>标定</h2><h3 id="相机内参标定"><a href="#相机内参标定" class="headerlink" title="相机内参标定"></a>相机内参标定</h3><p>张正友平面标定法</p>
+<ol>
+<li><p>准备标定素材</p>
+<p>海康相机不能直接用opencv打开,必须调用mvs_ros_driver包,在自己写的订阅相机图片节点捕获图像.</p>
+<blockquote>
+<p>注意mvs_ros_driver发布图片话题时有scale &#x3D; 0.5,后面标定得到的参数需要*2。</p>
+</blockquote>
+</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/*</span><br><span class="hljs-comment">订阅相机图像话题并截图的ros_node</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;ros/ros.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sensor_msgs/Image.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cv_bridge/cv_bridge.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;opencv2/opencv.hpp&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;mutex&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;boost/filesystem.hpp&gt;</span></span><br><br><span class="hljs-keyword">namespace</span> fs = boost::filesystem;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">ImageCapture</span><br>&#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">ImageCapture</span>(ros::NodeHandle&amp; nh, <span class="hljs-type">const</span> std::string&amp; save_dir)<br>        : <span class="hljs-built_in">save_dir_</span>(save_dir)<br>    &#123;<br>        sub_ = nh.<span class="hljs-built_in">subscribe</span>(<span class="hljs-string">&quot;/left_camera/image&quot;</span>, <span class="hljs-number">1</span>, &amp;ImageCapture::imageCallback, <span class="hljs-keyword">this</span>);<br>        <span class="hljs-built_in">ROS_INFO</span>(<span class="hljs-string">&quot;等待按下空格键保存图像，按 &#x27;q&#x27; 退出&quot;</span>);<br><br>        <span class="hljs-keyword">if</span> (!fs::<span class="hljs-built_in">exists</span>(save_dir_))<br>        &#123;<br>            fs::<span class="hljs-built_in">create_directories</span>(save_dir_);<br>            <span class="hljs-built_in">ROS_INFO</span>(<span class="hljs-string">&quot;创建保存目录: %s&quot;</span>, save_dir_.<span class="hljs-built_in">c_str</span>());<br>        &#125;<br><br>        cv::<span class="hljs-built_in">namedWindow</span>(<span class="hljs-string">&quot;View&quot;</span>, cv::WINDOW_NORMAL);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">spin</span><span class="hljs-params">()</span></span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-function">ros::Rate <span class="hljs-title">rate</span><span class="hljs-params">(<span class="hljs-number">30</span>)</span></span>;<br>        <span class="hljs-keyword">while</span> (ros::<span class="hljs-built_in">ok</span>())<br>        &#123;<br>            &#123;<br>                <span class="hljs-function">std::lock_guard&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(mutex_)</span></span>;<br>                <span class="hljs-keyword">if</span> (!latest_image_.<span class="hljs-built_in">empty</span>())<br>                &#123;<br>                    cv::<span class="hljs-built_in">imshow</span>(<span class="hljs-string">&quot;View&quot;</span>, latest_image_);<br>                &#125;<br>            &#125;<br><br>            <span class="hljs-type">int</span> key = cv::<span class="hljs-built_in">waitKey</span>(<span class="hljs-number">1</span>);<br>            <span class="hljs-keyword">if</span> (key == <span class="hljs-number">32</span>) <span class="hljs-comment">// 空格</span><br>            &#123;<br>                <span class="hljs-built_in">saveImage</span>();<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (key == <span class="hljs-string">&#x27;q&#x27;</span> || key == <span class="hljs-string">&#x27;Q&#x27;</span>)<br>            &#123;<br>                <span class="hljs-built_in">ROS_INFO</span>(<span class="hljs-string">&quot;用户退出程序&quot;</span>);<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br><br>            ros::<span class="hljs-built_in">spinOnce</span>();<br>            rate.<span class="hljs-built_in">sleep</span>();<br>        &#125;<br>    &#125;<br><br><span class="hljs-keyword">private</span>:<br>    ros::Subscriber sub_;<br>    cv::Mat latest_image_;<br>    std::mutex mutex_;<br>    std::string save_dir_;<br><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">imageCallback</span><span class="hljs-params">(<span class="hljs-type">const</span> sensor_msgs::ImageConstPtr&amp; msg)</span></span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">try</span><br>        &#123;<br>            cv::Mat image = cv_bridge::<span class="hljs-built_in">toCvShare</span>(msg, <span class="hljs-string">&quot;bgr8&quot;</span>)-&gt;image;<br>            <span class="hljs-function">std::lock_guard&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(mutex_)</span></span>;<br>            latest_image_ = image.<span class="hljs-built_in">clone</span>();<br>        &#125;<br>        <span class="hljs-built_in">catch</span> (cv_bridge::Exception&amp; e)<br>        &#123;<br>            <span class="hljs-built_in">ROS_ERROR</span>(<span class="hljs-string">&quot;cv_bridge 异常: %s&quot;</span>, e.<span class="hljs-built_in">what</span>());<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">saveImage</span><span class="hljs-params">()</span></span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-function">std::lock_guard&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(mutex_)</span></span>;<br>        <span class="hljs-keyword">if</span> (!latest_image_.<span class="hljs-built_in">empty</span>())<br>        &#123;<br>            std::string filename = save_dir_ + <span class="hljs-string">&quot;/image_&quot;</span> + std::<span class="hljs-built_in">to_string</span>(ros::Time::<span class="hljs-built_in">now</span>().<span class="hljs-built_in">toNSec</span>()) + <span class="hljs-string">&quot;.jpg&quot;</span>;<br>            cv::<span class="hljs-built_in">imwrite</span>(filename, latest_image_);<br>            <span class="hljs-built_in">ROS_INFO</span>(<span class="hljs-string">&quot;图像已保存为 %s&quot;</span>, filename.<span class="hljs-built_in">c_str</span>());<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            <span class="hljs-built_in">ROS_WARN</span>(<span class="hljs-string">&quot;没有图像可保存&quot;</span>);<br>        &#125;<br>    &#125;<br>&#125;;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>** argv)</span></span><br><span class="hljs-function"></span>&#123;<br>    ros::<span class="hljs-built_in">init</span>(argc, argv, <span class="hljs-string">&quot;image_capture_node&quot;</span>);<br>    <span class="hljs-function">ros::NodeHandle <span class="hljs-title">nh</span><span class="hljs-params">(<span class="hljs-string">&quot;~&quot;</span>)</span></span>;<br><br>    <span class="hljs-comment">// 获取保存目录参数（默认当前目录）</span><br>    std::string save_dir;<br>    nh.<span class="hljs-built_in">param</span>&lt;std::string&gt;(<span class="hljs-string">&quot;save_dir&quot;</span>, save_dir, <span class="hljs-string">&quot;./&quot;</span>);<br><br>    <span class="hljs-function">ImageCapture <span class="hljs-title">ic</span><span class="hljs-params">(nh, save_dir)</span></span>;<br>    ic.<span class="hljs-built_in">spin</span>();<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<ol start="2">
+<li>使用MATLAB进行标定:</li>
+</ol>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/77.png" alt="图40-在matlab中选择标定"></p>
+<p style="text-align:center;">图40-在matlab中选择标定</p>
+
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/78.png" alt="图41-标定过程"></p>
+<p style="text-align:center;">图41-标定过程</p>
+
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/79.png" alt="图42-标定得到的数据"></p>
+<p style="text-align:center;">图42-标定得到的数据</p>
+
+<blockquote>
+<p>得到参数:</p>
+<p>&gt;&gt; cameraParams.IntrinsicMatrix</p>
+<p>   671.9949         0          0         </p>
+<p>   0                672.0204   0  </p>
+<p>  410.0420    323.3874  1.0000 </p>
+<p> &gt;&gt; cameraParams.RadialDistortion     -0.0572    0.0895</p>
+</blockquote>
+<p>对应camera_pinhole.yaml中</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">cam_model:</span> <span class="hljs-string">Pinhole</span><br><span class="hljs-attr">cam_width:</span> <span class="hljs-number">1624</span><br><span class="hljs-attr">cam_height:</span> <span class="hljs-number">1240</span><br><span class="hljs-attr">scale:</span> <span class="hljs-number">0.5</span><br><span class="hljs-attr">cam_fx:</span> <span class="hljs-number">1343.9898</span><br><span class="hljs-attr">cam_fy:</span> <span class="hljs-number">1344.0408</span><br><span class="hljs-attr">cam_cx:</span> <span class="hljs-number">820.0840</span><br><span class="hljs-attr">cam_cy:</span> <span class="hljs-number">646.7748</span><br><span class="hljs-attr">cam_d0:</span> <span class="hljs-number">-0.0572</span><br><span class="hljs-attr">cam_d1:</span> <span class="hljs-number">0.0895</span><br><span class="hljs-attr">cam_d2:</span> <span class="hljs-number">0.0</span><br><span class="hljs-attr">cam_d3:</span> <span class="hljs-number">0.0</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="外参标定"><a href="#外参标定" class="headerlink" title="外参标定"></a>外参标定</h3><ul>
+<li><p>将相机内参同步到<code>FAST-Calib/config/qr_params.yaml</code>中。</p>
+</li>
+<li><p>运行roslaunch livox_ros_driver livox_lidar_msg<br>在<code>/FAST-Calib/calib_data</code> 下运行 <code> rosbag record -a</code></p>
+</li>
+<li><p>拍照当前相机图片</p>
+<p>标定数据组织如下 (data.txt为自行记录标定数据,不需要预先创建)</p>
+</li>
+</ul>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/80.jpg" alt="图43-FAST-Calib标定数据组织"></p>
+<p style="text-align:center;">图43-FAST-Calib标定数据组织</p>
+
+<p>运行:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">roslaunch fast_calib calib.launch<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意修改qr_params.yaml中和filter相关的参数.</p>
+<p>否则会报错 :</p>
+<p>[pcl::TransformationEstimationSVD::estimateRigidTransformation] Number or points in source (0) differs than target (4)! [Result] RMSE:  [computeRMSE] Point cloud sizes do not match, cannot compute RMSE.  -1.0000 m</p>
+</blockquote>
+<p>参考qr_params.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># Camera intrinsics  </span><br>  <span class="hljs-comment"># mid360</span><br>  <span class="hljs-comment"># fx: 522.123514287681</span><br>  <span class="hljs-comment"># fy: 522.275153384482</span><br>  <span class="hljs-comment"># cx: 773.466430504725</span><br>  <span class="hljs-comment"># cy: 534.053165700174</span><br>  <span class="hljs-comment"># k1: 0.00324949759262203</span><br>  <span class="hljs-comment"># k2: -0.0171040538369167</span><br>  <span class="hljs-comment"># p1: 0.000669657443377146</span><br>  <span class="hljs-comment"># p2: -0.000350205468789575</span><br><br>  <span class="hljs-comment"># avia</span><br>  <span class="hljs-attr">fx:</span> <span class="hljs-number">1343.9898</span><br>  <span class="hljs-attr">fy:</span> <span class="hljs-number">1344.0408</span><br>  <span class="hljs-attr">cx:</span> <span class="hljs-number">820.0840</span><br>  <span class="hljs-attr">cy:</span> <span class="hljs-number">646.7748</span><br>  <span class="hljs-attr">k1:</span> <span class="hljs-number">-0.0572</span><br>  <span class="hljs-attr">k2:</span> <span class="hljs-number">0.0895</span><br>  <span class="hljs-attr">p1:</span> <span class="hljs-number">0</span><br>  <span class="hljs-attr">p2:</span> <span class="hljs-number">0</span><br><br>  <span class="hljs-comment"># ouster</span><br>  <span class="hljs-comment"># fx: 1466.16500795563</span><br>  <span class="hljs-comment"># fy: 1465.32657394431</span><br>  <span class="hljs-comment"># cx: 1214.39964380518</span><br>  <span class="hljs-comment"># cy: 1010.97681425650</span><br>  <span class="hljs-comment"># k1: -0.0458344972140773</span><br>  <span class="hljs-comment"># k2: 0.0896961240772692</span><br>  <span class="hljs-comment"># p1: -0.000731746350601389</span><br>  <span class="hljs-comment"># p2: -0.000201478932371979</span><br><br><span class="hljs-comment"># Calibration target parameters</span><br>  <span class="hljs-attr">marker_size:</span> <span class="hljs-number">0.17</span> <span class="hljs-comment"># ArUco marker size (our test data uses 0.16m; adjust to match your marker size)</span><br>  <span class="hljs-attr">delta_width_qr_center:</span> <span class="hljs-number">0.55</span> <span class="hljs-comment"># Half the distance between the centers of two markers in the horizontal direction </span><br>  <span class="hljs-attr">delta_height_qr_center:</span> <span class="hljs-number">0.35</span> <span class="hljs-comment"># Half the distance between the centers of two markers in the vertical direction</span><br>  <span class="hljs-attr">delta_width_circles:</span> <span class="hljs-number">0.5</span> <span class="hljs-comment"># Distance between the centers of two circles in the horizontal direction</span><br>  <span class="hljs-attr">delta_height_circles:</span> <span class="hljs-number">0.4</span> <span class="hljs-comment"># Distance between the centers of two circles in the vertical direction</span><br>  <span class="hljs-attr">circle_radius:</span> <span class="hljs-number">0.12</span> <span class="hljs-comment"># Radius of the circle </span><br><br><span class="hljs-comment"># Distance filter</span><br>  <span class="hljs-attr">x_min:</span> <span class="hljs-number">1.8</span><br>  <span class="hljs-attr">x_max:</span> <span class="hljs-number">2.4</span><br>  <span class="hljs-attr">y_min:</span> <span class="hljs-number">-1</span><br>  <span class="hljs-attr">y_max:</span> <span class="hljs-number">1.0</span><br>  <span class="hljs-attr">z_min:</span> <span class="hljs-number">-0.2</span> <span class="hljs-comment"># avia and mid360: -0.5 ouster: -0.8</span><br>  <span class="hljs-attr">z_max:</span> <span class="hljs-number">2.5</span><br><br><span class="hljs-comment"># Input</span><br>  <span class="hljs-attr">lidar_topic:</span> <span class="hljs-string">&quot;/livox/lidar&quot;</span> <span class="hljs-comment"># /ouster/points /livox/lidar</span><br>  <span class="hljs-attr">bag_path:</span> <span class="hljs-string">&quot;$(find fast_calib)/calib_data/1.bag&quot;</span><br>  <span class="hljs-attr">image_path:</span> <span class="hljs-string">&quot;$(find fast_calib)/calib_data/1.png&quot;</span><br><br><span class="hljs-comment"># Output</span><br>  <span class="hljs-attr">output_path:</span> <span class="hljs-string">&quot;$(find fast_calib)/output&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>标定结果:</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/82.png" alt="图44-FAST-Calib标定的点云"></p>
+<p style="text-align:center;">图44-FAST-Calib标定的点云</p>
+
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/83.png" alt="图45-FAST-Calib标定的彩色图像"></p>
+<p style="text-align:center;">图45-FAST-Calib标定的彩色图像</p>
+
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/81.png" alt="图46-FAST-Calib得到的数据"></p>
+<p style="text-align:center;">图46-FAST-Calib得到的数据</p>
+
+<blockquote>
+<p>输出:</p>
+<p>[Result] Extrinsic parameters T_cam_lidar:<br>-0.096829 -0.994963 -0.025938 -1.142585<br>-0.081987  0.033945 -0.996055 -0.876730<br> 0.991919 -0.094320 -0.084861  2.192050<br> 0.000000  0.000000  0.000000  1.000000</p>
+<p>对应的Rcl和Pcl:</p>
+<p>Rcl: [-0.096829, -0.994963, -0.025938,<br>      -0.081987,  0.033945, -0.996055,<br>       0.991919, -0.094320, -0.084861]<br>Pcl: [-1.142585, -0.876730, 2.192050]</p>
+<p>和真值偏移很大,彩色点云图中也有畸变,怀疑是标定板形变,以及标定板没有按照FAST-Calib官方推荐固定并悬挂的原因.</p>
+</blockquote>
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h3 id="跑包"><a href="#跑包" class="headerlink" title="跑包"></a>跑包</h3><p>HKU_Lecture_Center_02.bag</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">roslaunch fast_livo mapping_avia.launch<br>rosbag play HKU_Lecture_Center_02.bag<br></code></pre></td></tr></table></figure>
 
-<h4 id="建图精度"><a href="#建图精度" class="headerlink" title="建图精度"></a>建图精度</h4><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/2.jpg" alt="图40-rviz-1"></p>
-<p style="text-align:center;">图40-rviz-1</p>
+<h4 id="建图精度"><a href="#建图精度" class="headerlink" title="建图精度"></a>建图精度</h4><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/2.jpg" alt="图47-rviz-1"></p>
+<p style="text-align:center;">图47-rviz-1</p>
 
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/3.jpg" alt="图41-rviz-2"></p>
-<p style="text-align:center;">图41-rviz-2</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/3.jpg" alt="图48-rviz-2"></p>
+<p style="text-align:center;">图48-rviz-2</p>
 
 <p>墙面与地面分界线清晰</p>
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/4.jpg" alt="图42-rviz-3"></p>
-<p style="text-align:center;">图42-rviz-3</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/4.jpg" alt="图49-rviz-3"></p>
+<p style="text-align:center;">图49-rviz-3</p>
 
 <p>图片处理(拉高亮度)后,可以看到墙面纹路,转角非常清晰</p>
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/5.jpg" alt="图43-rviz-4"></p>
-<p style="text-align:center;">图43-rviz-4</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/5.jpg" alt="图50-rviz-4"></p>
+<p style="text-align:center;">图50-rviz-4</p>
 
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/6.jpg" alt="图44-rviz-5"></p>
-<p style="text-align:center;">图44-rviz-5</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/6.jpg" alt="图51-rviz-5"></p>
+<p style="text-align:center;">图51-rviz-5</p>
 
 
 
@@ -795,18 +870,18 @@
 <td align="center">进程使用的物理内存占系统总内存的百分比</td>
 </tr>
 </tbody></table>
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/7.jpg" alt="图45-htop查看资源占用"></p>
-<p style="text-align:center;">图45-htop查看资源占用</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/7.jpg" alt="图52-htop查看资源占用"></p>
+<p style="text-align:center;">图52-htop查看资源占用</p>
 
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/8.jpg" alt="图46-fast-livo2运行占用资源"></p>
-<p style="text-align:center;">图46-fast-livo2运行占用资源</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/8.jpg" alt="图53-fast-livo2运行占用资源"></p>
+<p style="text-align:center;">图53-fast-livo2运行占用资源</p>
 
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/9.jpg" alt="图47-fast-livo2的rviz占用资源"></p>
-<p style="text-align:center;">图47-fast-livo2的rviz占用资源</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/9.jpg" alt="图54-fast-livo2的rviz占用资源"></p>
+<p style="text-align:center;">图54-fast-livo2的rviz占用资源</p>
 
 <p>只运行launch: </p>
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/10.jpg" alt="图48-只运行launch系统占用资源"></p>
-<p style="text-align:center;">图48-只运行launch系统占用资源</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/10.jpg" alt="图55-只运行launch系统占用资源"></p>
+<p style="text-align:center;">图55-只运行launch系统占用资源</p>
 
 
 
@@ -820,31 +895,31 @@
 <p>取最后一段平稳曲线部分放大 : 静态波动在厘米级,峰峰值4-6cm</p>
 </li>
 </ul>
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/11.jpg" alt="图48-里程计数据总览"></p>
-<p style="text-align:center;">图48-里程计数据总览</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/11.jpg" alt="图56-里程计数据总览"></p>
+<p style="text-align:center;">图56-里程计数据总览</p>
 
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/12.png" alt="图49-里程计数据细节(图48蓝色框部分)"></p>
-<p style="text-align:center;">图49-里程计数据细节(图48蓝色框部分)</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/12.png" alt="图57-里程计数据细节(图56蓝色框部分)"></p>
+<p style="text-align:center;">图57-里程计数据细节(图56蓝色框部分)</p>
 
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/13.jpg" alt="图50-里程计数据统计(图49中数据部分)"></p>
-<p style="text-align:center;">图50-里程计数据统计(图49中数据部分)</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/13.jpg" alt="图58-里程计数据统计(统计图57中数据部分)"></p>
+<p style="text-align:center;">图58-里程计数据统计(统计图57中数据部分)</p>
 
 
 
 <h4 id="处理时间"><a href="#处理时间" class="headerlink" title="处理时间"></a>处理时间</h4><p>参考该帧处理时间数量级</p>
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/14.jpg" alt="图51-处理时间参考"></p>
-<p style="text-align:center;">图51-处理时间参考</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/14.jpg" alt="图59-处理时间参考"></p>
+<p style="text-align:center;">图59-处理时间参考</p>
 
 
 
 <p>###可行性初测试</p>
-<h4 id="修改参数"><a href="#修改参数" class="headerlink" title="修改参数"></a>修改参数</h4><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/53.png" alt="图52-fast-livo2文件结构"></p>
-<p style="text-align:center;">图52-fast-livo2文件结构</p>
+<h4 id="修改参数"><a href="#修改参数" class="headerlink" title="修改参数"></a>修改参数</h4><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/53.png" alt="图60-fast-livo2文件结构"></p>
+<p style="text-align:center;">图60-fast-livo2文件结构</p>
 
 <ul>
 <li><p>&#x2F;congfig&#x2F;avia.yaml: Avia雷达的参数配置</p>
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/54.png" alt="图53-雷达参数配置文件"></p>
-<p style="text-align:center;">图53-雷达参数配置文件</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/54.png" alt="图61-雷达参数配置文件"></p>
+<p style="text-align:center;">图61-雷达参数配置文件</p>
 
 <blockquote>
 <ul>
@@ -875,7 +950,7 @@
 <p>相机原始图像尺寸大小 : 1624*1240</p>
 </li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs SHELL">cam_model: Pinhole<br>cam_width: 1624<br>cam_height: 1240<br>scale: 0.5<br>cam_fx: 1340.62925<br>cam_fy: 1340.84375<br>cam_cx: 821.09<br>cam_cy: 647.1655<br>cam_d0: -0.0482<br>cam_d1: 0.0739<br>cam_d2: 0.0<br>cam_d3: 0.0<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs SHELL">cam_model: Pinhole<br>cam_width: 1624<br>cam_height: 1240<br>scale: 0.5<br>cam_fx: 1343.9898<br>cam_fy: 1344.0408<br>cam_cx: 820.0840<br>cam_cy: 646.7748<br>cam_d0: -0.0572<br>cam_d1: 0.0895<br>cam_d2: 0.0<br>cam_d3: 0.0<br></code></pre></td></tr></table></figure>
 
 <blockquote>
 <p>除了要修改雷达的内参参数外,还要注意<code>cam_width</code> &#x2F; <code>cam_height</code> &#x2F; <code>scale</code> 三个参数 :</p>
@@ -896,15 +971,15 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">roslaunch fast_livo mapping_avia.launch<br></code></pre></td></tr></table></figure>
 
 <p>建图效果，如下方所示：</p>
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/52.jpg" alt="图54-实时rviz"></p>
-<p style="text-align:center;">图54-实时rviz</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/52.jpg" alt="图62-实时rviz"></p>
+<p style="text-align:center;">图62-实时rviz</p>
 
 <h4 id="包数据分析"><a href="#包数据分析" class="headerlink" title="包数据分析"></a>包数据分析</h4><p>对齐效果 :</p>
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/56.jpg" alt="图55-包对齐总览"></p>
-<p style="text-align:center;">图55-包对齐总览</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/56.jpg" alt="图63-包对齐总览"></p>
+<p style="text-align:center;">图63-包对齐总览</p>
 
-<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/55.jpg" alt="图56-包对齐细节"></p>
-<p style="text-align:center;">图56-包对齐细节</p>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/55.jpg" alt="图64-包对齐细节"></p>
+<p style="text-align:center;">图64-包对齐细节</p>
 
 <blockquote>
 <ul>
@@ -912,109 +987,131 @@
 <li>图像和雷达时间差约为30ms,查看官方包也是这样的偏差,目前暂时不清楚这个时间差意味着什么</li>
 </ul>
 </blockquote>
-<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h3 id="完全测试"><a href="#完全测试" class="headerlink" title="完全测试"></a>完全测试</h3><h4 id="硬件设备"><a href="#硬件设备" class="headerlink" title="硬件设备"></a>硬件设备</h4><img src="../images/复现FAST-LIVO2/59.jpg" alt="图57-硬件设备设计图" style="zoom:50%;" />
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h3 id="完全测试"><a href="#完全测试" class="headerlink" title="完全测试"></a>完全测试</h3><h4 id="硬件设备"><a href="#硬件设备" class="headerlink" title="硬件设备"></a>硬件设备</h4><img src="../images/复现FAST-LIVO2/59.jpg" alt="图65-硬件设备设计图" style="zoom:50%;" />
 
-<p style="text-align:center;">图57-硬件设备设计图</p>
+<p style="text-align:center;">图65-硬件设备设计图</p>
 
-<img src="../images/复现FAST-LIVO2/57.jpg" alt="图58-硬件设备实物图" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/57.jpg" alt="图66-硬件设备实物图" style="zoom:50%;" />
 
-<p style="text-align:center;">图58-硬件设备实物图</p>
+<p style="text-align:center;">图66-硬件设备实物图</p>
 
-<img src="../images/复现FAST-LIVO2/58.jpg" alt="图59-硬件设备实物图" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/58.jpg" alt="图67-硬件设备实物图" style="zoom:50%;" />
 
-<p style="text-align:center;">图59-硬件设备实物图</p>
+<p style="text-align:center;">图67-硬件设备实物图</p>
 
 <p>设备标注:</p>
-<img src="../images/复现FAST-LIVO2/76.jpeg" alt="图60-硬件设备标注" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/76.jpeg" alt="图68-硬件设备标注" style="zoom:50%;" />
 
-<p style="text-align:center;">图60-硬件设备标注</p>
+<p style="text-align:center;">图68-硬件设备标注</p>
 
 <p>设备接线:</p>
-<img src="../images/复现FAST-LIVO2/75.jpeg" alt="图61-设备接线标注" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/75.jpeg" alt="图69-设备接线标注" style="zoom:50%;" />
 
-<p style="text-align:center;">图61-设备接线标注</p>
+<p style="text-align:center;">图69-设备接线标注</p>
 
 <p>设备供电:</p>
-<p>待补图~</p>
-<p style="text-align:center;">图62-设备供电展示</p>
+<ol>
+<li><p>使用一块4S航模电池为雷达 &#x2F; NUC供电</p>
+<ul>
+<li><p>4S航模电池直供NUC</p>
+</li>
+<li><p>4S航模电池经过Livox Converter 2.0降压连接雷达</p>
+</li>
+</ul>
+</li>
+<li><p>NUC为相机 &#x2F; 屏幕供电</p>
+<ol>
+<li><p>使用一块4S航模电池为雷达 &#x2F; NUC供电</p>
+<ol>
+<li>4S航模电池直供NUC</li>
+<li>4S航模电池经过Livox Converter 2.0降压连接雷达</li>
+</ol>
+</li>
+<li><p>NUC为相机 &#x2F; 屏幕供电</p>
+</li>
+</ol>
+</li>
+</ol>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/84.png" alt="图70-设备供电展示"></p>
+<p style="text-align:center;">图70-设备供电展示</p>
 
 
 
 <h4 id="建图精度-1"><a href="#建图精度-1" class="headerlink" title="建图精度"></a>建图精度</h4><p>表现 : 基本可以看清大色块纹理,也许需要更准确的标定数据?<strong>(存疑)</strong></p>
-<img src="../images/复现FAST-LIVO2/62.jpg" alt="图63-复杂墙面建图总览" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/62.jpg" alt="图71-复杂墙面建图总览" style="zoom:50%;" />
 
-<p style="text-align:center;">图63-复杂墙面建图总览</p>
+<p style="text-align:center;">图71-复杂墙面建图总览</p>
 
-<img src="../images/复现FAST-LIVO2/60.png" alt="图64-复杂墙面建图细节-1" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/60.png" alt="图72-复杂墙面建图细节-1" style="zoom:50%;" />
 
-<p style="text-align:center;">图64-复杂墙面建图细节-1</p>
+<p style="text-align:center;">图72-复杂墙面建图细节-1</p>
 
-<img src="../images/复现FAST-LIVO2/61.png" alt="图65-复杂墙面建图细节-2" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/61.png" alt="图73-复杂墙面建图细节-2" style="zoom:50%;" />
 
-<p style="text-align:center;">图65-复杂墙面建图细节-2</p>
+<p style="text-align:center;">图73-复杂墙面建图细节-2</p>
 
-<img src="../images/复现FAST-LIVO2/63.jpg" alt="图66-大号文字墙面建图" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/63.jpg" alt="图74-大号文字墙面建图" style="zoom:50%;" />
 
-<p style="text-align:center;">图66-大号文字墙面建图</p>
+<p style="text-align:center;">图74-大号文字墙面建图</p>
 
 
 
 <h4 id="回环精度"><a href="#回环精度" class="headerlink" title="回环精度"></a>回环精度</h4><p>表现 : 长距离回环 z轴有1.8m左右的漂移, x轴,y轴回环较为稳定</p>
-<img src="../images/复现FAST-LIVO2/64.png" alt="图67-回环路径展示" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/64.png" alt="图75-回环路径展示" style="zoom:50%;" />
 
-<p style="text-align:center;">图67-回环路径展示</p>
+<p style="text-align:center;">图75-回环路径展示</p>
 
-<img src="../images/复现FAST-LIVO2/65.png" alt="图68-回环里程计数据-z轴" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/65.png" alt="图76-回环里程计数据-z轴" style="zoom:50%;" />
 
-<p style="text-align:center;">图68-回环里程计数据-z轴</p>
+<p style="text-align:center;">图76-回环里程计数据-z轴</p>
 
-<img src="../images/复现FAST-LIVO2/66.png" alt="图68-回环里程计数据-x轴(蓝)/y轴(绿)" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/66.png" alt="图77-回环里程计数据-x轴(蓝)/y轴(绿)" style="zoom:50%;" />
 
-<p style="text-align:center;">图68-回环里程计数据-x轴(蓝)/y轴(绿)</p>
+<p style="text-align:center;">图77-回环里程计数据-x轴(蓝)/y轴(绿)</p>
 
 
 
 <h4 id="不同场景"><a href="#不同场景" class="headerlink" title="不同场景"></a>不同场景</h4><ol>
 <li><p>12分钟+室内+室外</p>
 <p>表现 : 里程计数据基本平滑 , 室外相机有过曝情况 , 代码里没有看到和论文中对应的自动调整曝光的部分,也没有发布自动曝光话题 <strong>(存疑)</strong></p>
-<img src="../images/复现FAST-LIVO2/71.jpg" alt="图69-室外场景实时rviz" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/71.jpg" alt="图78-室外场景实时rviz" style="zoom:50%;" />
 
-<p style="text-align:center;">图69-室外场景实时rviz</p>
+<p style="text-align:center;">图78-室外场景实时rviz</p>
 
-<img src="../images/复现FAST-LIVO2/67.jpg" alt="图70-室外场景里程计数据总览" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/67.jpg" alt="图79-室外场景里程计数据总览" style="zoom:50%;" />
 
-<p style="text-align:center;">图70-室外场景里程计数据总览</p>
+<p style="text-align:center;">图79-室外场景里程计数据总览</p>
 
-<img src="../images/复现FAST-LIVO2/68.png" alt="图71-室外场景里程计数据细节" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/68.png" alt="图80-室外场景里程计数据细节" style="zoom:50%;" />
 
-<p style="text-align:center;">图71-室外场景里程计数据细节</p>
+<p style="text-align:center;">图80-室外场景里程计数据细节</p>
 </li>
 <li><p>室内</p>
 <p>表现 : 玻璃会影响建图精度,从开发空间进入密闭空间(推门走进楼梯间)易造成错误建图</p>
-<img src="../images/复现FAST-LIVO2/72.jpg" alt="图72-室内场景rviz-1" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/72.jpg" alt="图81-室内场景rviz-1" style="zoom:50%;" />
 
-<p style="text-align:center;">图72-室内场景rviz-1</p>
+<p style="text-align:center;">图81-室内场景rviz-1</p>
 
-<img src="../images/复现FAST-LIVO2/73.jpg" alt="图73-室内场景rviz-2" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/73.jpg" alt="图82-室内场景rviz-2" style="zoom:50%;" />
 
-<p style="text-align:center;">图73-室内场景rviz-2</p>
+<p style="text-align:center;">图82-室内场景rviz-2</p>
 
-<img src="../images/复现FAST-LIVO2/74.jpg" alt="图74-室内场景rviz-3" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/74.jpg" alt="图83-室内场景rviz-3" style="zoom:50%;" />
 
-<p style="text-align:center;">图74-室内场景rviz-3</p>
+<p style="text-align:center;">图83-室内场景rviz-3</p>
 </li>
 <li><p>楼梯间</p>
 <p>表现 : 跑飞,窗户处建图错误</p>
 <p>推测 : 楼梯间狭窄且全为白墙,特征点少,avia雷达1-2m处点云质量差,存在盲区</p>
 </li>
 </ol>
-<img src="../images/复现FAST-LIVO2/69.jpg" alt="图75-楼梯间rviz-1" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/69.jpg" alt="图84-楼梯间rviz-1" style="zoom:50%;" />
 
-<p style="text-align:center;">图75-楼梯间rviz-1</p>
+<p style="text-align:center;">图84-楼梯间rviz-1</p>
 
-<img src="../images/复现FAST-LIVO2/70.jpg" alt="图76-楼梯间rviz-2" style="zoom:50%;" />
+<img src="../images/复现FAST-LIVO2/70.jpg" alt="图85-楼梯间rviz-2" style="zoom:50%;" />
 
-<p style="text-align:center;">图76-楼梯间rviz-2</p>
+<p style="text-align:center;">图85-楼梯间rviz-2</p>
 
         </div>
         
