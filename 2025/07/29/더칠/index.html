@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    p{
+        margin-top: 0 !important;
+        margin-bottom: 1rem !important;
+        font-size: 1.1rem;
+    }
+    figure{
+        margin: 0 !important;
+    }
+    pre{
+        padding: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    td{
+        padding: 0 !important;
+        margin-bottom: 1rem !important;
+    }
+    h1,h2,h3,h4,h5,h6{
+        margin-top: 0 !important;
+        margin-bottom: 1rem !important;
+    }
+    @media (min-width: 1024px) {
+        #middle-box{
+            min-width: 56rem;
+        }
+    
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ether Blog - 더칠</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/toc.css">
+    
+<header class="bg-black text-hacker-white py-4 font-dos font-extrabold">
+    <div class="container mx-auto flex items-center justify-between space-x-8">
+    
+      <h1 class="text-2xl font-bold ml-[100px] md:ml-0 animate-pulse text-hacker-color1 md:mr-[20%]">
+        <a href="/" class="hover:text-white transition-colors select-none">
+          Ether Blog
+        </a>
+      </h1>
+  
+    <!-- 大屏幕 -->
+      <nav class="hidden md:block">
+        <ul class="flex space-x-6">
+          
+            <li>
+              <a href="/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Home
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Archives
+              </a>
+            </li>
+          
+            <li>
+              <a href="/categories/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Categories
+              </a>
+            </li>
+          
+            <li>
+              <a href="/tags/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Tags
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                About
+              </a>
+            </li>
+          
+            <li>
+              <a href="/rss.xml" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                RSS
+              </a>
+            </li>
+          
+        </ul>
+      </nav>
+  
+      <!-- 小屏幕 -->
+      <button id="menu-toggle" class="block md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  
+    <!-- 折叠菜单 -->
+    <nav id="mobile-menu" class="hidden bg-black">
+      <ul class="space-y-2 py-4 px-6">
+        
+          <li>
+            <a href="/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Home
+            </a>
+          </li>
+        
+          <li>
+            <a href="/archives/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Archives
+            </a>
+          </li>
+        
+          <li>
+            <a href="/categories/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Categories
+            </a>
+          </li>
+        
+          <li>
+            <a href="/tags/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Tags
+            </a>
+          </li>
+        
+          <li>
+            <a href="/about/" class="block text-white hover:text-hacker-color1 transition-colors">
+              About
+            </a>
+          </li>
+        
+          <li>
+            <a href="/rss.xml" class="block text-white hover:text-hacker-color1 transition-colors">
+              RSS
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+  
+    <!-- RSS Link -->
+    <link rel="alternate" type="application/rss+xml" title=" RSS" href="/rss.xml" />
+  </header>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/search.js"></script>
+  <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    menuToggle.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.remove("hidden");
+        } else {
+        mobileMenu.classList.add("hidden");
+        }
+    });
+    });
+
+  </script>
+  
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+<body class="bg-black text-hacker-color3 container mx-auto" style="overflow-x:hidden">
+    <!-- 文章标题 -->
+    <h1 class="text-5xl text-hacker-color1 font-bold font-dos my-6 text-center">더칠</h1>
+
+    <!-- 发布时间 -->
+    <p class="text-hacker-color3 text-center text-sm mb-4">
+        2025-07-29
+    </p>
+
+    <!-- 文章内容 -->
+    <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight" style="display: flex;">
+        <div id="middle-box">
+            <h1 id="Current-To-Do"><a href="#Current-To-Do" class="headerlink" title="Current To Do"></a>Current To Do</h1><p>文献调研：</p>
+<ul>
+<li><p><input checked="" disabled="" type="checkbox"> 
+Focus on 运动的云台相机+LiDAR的状态估计问题：</p>
+<p>（1）有没有直接相关的可以用的工作？</p>
+<p>（2）有没有类似的可以参考的工作？采用什么样的解决范式?</p>
+</li>
+</ul>
+<p>硬件验证：</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> （1）设计手持平台。</li>
+<li><input checked="" disabled="" type="checkbox"> （2）调试云台。</li>
+</ul>
+<p>雷达相机配准:</p>
+<ul>
+<li><p><input disabled="" type="checkbox"> 
+(1)  重构LCCNet库,在KITTI数据集上验证</p>
+</li>
+<li><p><input disabled="" type="checkbox"> 
+(2)  在手持设备上录数据集</p>
+</li>
+<li><p><input disabled="" type="checkbox"> 
+(3)  训练,在云台相机上验证</p>
+</li>
+</ul>
+<h1 id="任务规划"><a href="#任务规划" class="headerlink" title="任务规划"></a>任务规划</h1><h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>硬件：</p>
+<ol>
+<li>云台：自稳，利于拍摄，变换视角<br>对比<strong>多个固定视角相机</strong>，引入额外成本&#x2F;重量，无人机测绘成像质量无法保证。<br>对比<strong>鱼眼相机</strong>，角分辨率低，点云着色精细程度低，模糊。</li>
+<li>云台单目相机（兼顾成本重量成像质量，通过云台控制获得360°视野）+ mid360</li>
+</ol>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>1.精确估计正在运动相机与雷达坐标系外参</p>
+<p>（LIV SLAM综述 变动云台相机与雷达外参估计 有则复现测试效果，如果效果好，改变重点方向至自主探索）</p>
+<h2 id="Setting"><a href="#Setting" class="headerlink" title="Setting"></a>Setting</h2><p>云台本身粗略位姿（时延+噪声） 动捕-真值LIO+VIO 因子图优化 LVI-SAM (LIO+VINS)</p>
+<h1 id="文献调研"><a href="#文献调研" class="headerlink" title="文献调研"></a>文献调研</h1><h2 id="第一阶段"><a href="#第一阶段" class="headerlink" title="第一阶段"></a>第一阶段</h2><p>综述</p>
+<ol>
+<li>基于深度学习的融合方案</li>
+<li><strong>&lt;&lt;Automatic targetless LiDAR–camera calibration: a survey&gt;&gt;</strong></li>
+</ol>
+<p>​	Automatic targetless LiDAR–camera calibration</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>是否用标定板</th>
+<th>是否需要人工操作</th>
+<th>典型应用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Manual Target-based</td>
+<td>✅ 有标定板</td>
+<td>✅ 人工干预</td>
+<td>多视角棋盘格标定、人工点选角点</td>
+</tr>
+<tr>
+<td>Automatic Target-based</td>
+<td>✅ 有标定板</td>
+<td>❌ 自动识别</td>
+<td>自动识别 ArUco 标签、球形靶等</td>
+</tr>
+<tr>
+<td>Manual Targetless</td>
+<td>❌ 无标定板</td>
+<td>✅ 人工点选匹配</td>
+<td>人工选择特征点对、手动 PnP 配准</td>
+</tr>
+<tr>
+<td>Automatic Targetless</td>
+<td>❌ 无标定板</td>
+<td>❌ 全自动</td>
+<td>利用场景几何、图像相似性或学习方法自动完成</td>
+</tr>
+</tbody></table>
+<p>Automatic Targetless分类</p>
+<table>
+<thead>
+<tr>
+<th>方法类别</th>
+<th>适用环境</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>信息论</td>
+<td>特征稀少</td>
+<td>不依赖显式特征，适用性强</td>
+<td>优化复杂，可能陷入局部最优</td>
+</tr>
+<tr>
+<td>特征</td>
+<td>特征丰富</td>
+<td>精度高，易解释</td>
+<td>对特征提取依赖大</td>
+</tr>
+<tr>
+<td>自运动</td>
+<td>动态平台</td>
+<td>可利用运动信息标定</td>
+<td>不适用于静态平台</td>
+</tr>
+<tr>
+<td>学习</td>
+<td>数据多、资源足</td>
+<td>泛化强、自动化程度高</td>
+<td>数据和计算资源需求大</td>
+</tr>
+</tbody></table>
+<p><strong>基于自运动</strong></p>
+<ol>
+<li><p>基于手眼的方法</p>
+</li>
+<li><p>基于三维结构估计的方法</p>
+</li>
+<li><p>motion-guided method   computes the 2D parameters (x, y, yaw) from sensors’ incremental motions,</p>
+</li>
+</ol>
+<p><strong>基于学习</strong> : DXQ-Net &#x2F; RGKCNet模型 &#x2F; 混合学习</p>
+<ol start="3">
+<li><p>&lt;&lt;Camera, LiDAR, and IMU Based Multi-Sensor Fusion SLAM: A Survey&gt;&gt; </p>
+<p>LVI-SAM &#x2F; R3LIVE</p>
+</li>
+<li><p>&lt;&lt;LiDAR, IMU, and camera fusion for simultaneous localization and mapping: a systematic review&gt;&gt;</p>
+<p><strong>LIV</strong></p>
+<p>Online Calibration</p>
+<p>IMU作为中介：（如 Zuo et al. 2019, 2020）利用 IMU 作为桥梁，同时进行 IMU 与 LiDAR、IMU 与相机的标定。方法是在测量模型中引入外参，并将 IMU 测量传播到校正后的时间点。</p>
+<p>两阶段标定： Wang and Ma (2022) 提出先对相机-IMU（CI）子模块进行标定，再通过插值将 CI 的位姿估计用于 LiDAR-IMU（LI）标定。</p>
+<p>R3LIVE 系统：只进行 IMU 与相机的在线标定，并在相机的测量模型中引入时间偏差参数。</p>
+<p>新同步方法：Tong et al. (2024) 提出了一种关键帧导向的数据同步方法，用于对齐 LiDAR 和相机的数据。</p>
+</li>
+<li><p>&lt;&lt;SLAM Overview: From Single Sensor to Heterogeneous Fusion&gt;&gt;</p>
+</li>
+</ol>
+<ul>
+<li><p>基于不确定性 : KF &#x2F; 图优化 &#x2F; 松耦合 &#x2F; 紧耦合	</p>
+</li>
+<li><p>基于传统特征 : 基于ORB-SLAM框架 </p>
+</li>
+<li><p>基于深度学习 : CNN &#x2F; DNN &#x2F; 拟合图像深度估计方法LIMO: Lidar-Monocular Visual Odometry &#x2F; 三层BP神经网络 Improved SLAM Merged 2D and 3D Sensors for Mobile Robots &#x2F; 基于深度学习的回环检测算法 Role of Deep Learning in Loop Closure Detection for Visual and Lidar SLAM: A Survey.</p>
+<p>LCCNet是 目前标定效果最好的神经网络,今年刚刚提出的ATOP 网络增加了注意力机制,其标定效果也值得关注。在未 来的发展中,注意力机制和优化算法是一个可以借鉴的 模块。与其他网络的迭代复杂度相比,目前制作的网络 更擅长实现轻量化,其最快响应时间平均可达0.073 s。</p>
+</li>
+</ul>
+<p>多传感器融合</p>
+<p>&lt;&lt;Multi-sensor Fusion Simultaneous Localization and  Mapping: A Systematic Review&gt;&gt;</p>
+<ol>
+<li><p>LC-SLAM</p>
+<p>Online Calibration 实时估计 LiDAR 与相机之间的外参（</p>
+<ol>
+<li>特征匹配法（Feature-based）：<ul>
+<li>Zhu 等人（2021）：提取 LiDAR 的深度、反射率和轮廓，与图像轮廓进行 ICP 对齐。</li>
+<li>限制：要求 LiDAR 和相机视场（FOV）有重叠，受环境限制大。</li>
+</ul>
+</li>
+<li>轨迹残差优化法（Trajectory Residual Optimization）：<ul>
+<li>Chou 和 Chou（2022）：通过运动轨迹中的误差残差来优化外参，不依赖 FOV 重叠。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<p>Data Association : 将来自 LiDAR 的 3D 点与相机的 2D 图像信息有效匹配，用于姿态估计与地图构建。</p>
+<ol>
+<li><p>图像平面或中间帧投影：</p>
+<ul>
+<li>Graeter 等人（2018）LIMO：将 LiDAR 投影到图像平面，进行前景分割和局部平面拟合以获取深度。</li>
+<li>Zhang 等人（2017）DEMO：将 2D 图像特征投影到单位球面，与 LiDAR 深度匹配。</li>
+<li>中间帧：通常指以相机为中心的单位球面（适用于多视角处理）。</li>
+</ul>
+</li>
+<li><p>基于学习的深度完成（Learning-based Depth Completion）：</p>
+<ul>
+<li>Aydemir 等人（2022）：提出自监督混合融合框架，降低纯旋转引起的误差。</li>
+<li>An 等人（2022）：将点云转换为深度图，与 RGB 图像共同输入到姿态估计网络。</li>
+<li>Liu 等人（2024）：设计双向融合网络，用于处理视觉与 LiDAR 的模态差异。</li>
+</ul>
+</li>
+<li><p>LIC-SLAM</p>
+<p>VIL-SLAM：使用 CI-SLAM 初始化 LiDAR 映射，闭环增强中不涉及模态协同。</p>
+<p>SuperOdometry：引入 IMU 中心的三因子图结构（LI-SLAM、CI-SLAM、LIC-SLAM）进行统一优化。</p>
+<p>R3LIVE &#x2F; FAST-LIVO：通过光度误差融合。</p>
+<p>LVI-SAM ：基于因子图设计融合框架。</p>
+<p>mVIL-Fusion：基于双滑动窗口设计融合框架。</p>
+</li>
+</ol>
+<p>基于滤波（Filter-based）</p>
+<ul>
+<li>MSCKF、IESKF 框架。</li>
+<li>多数系统起源于 IMU 传播，然后用 LiDAR 和相机观测更新状态。</li>
+<li>R2LIVE、R3LIVE、FAST-LIVO。</li>
+</ul>
+<p>基于优化（Optimization-based）</p>
+<ul>
+<li>以因子图形式融合各模态信息，进行批量图优化。</li>
+<li>LVI-SAM（融合 VINS-Mono 与 LIO-SAM）、mVIL-Fusion、CLIC（引入连续时间平滑）等。</li>
+</ul>
+<p>退化检测（Degeneracy）</p>
+<ul>
+<li>使用 Hessian 特征值判断状态不可观（如 CompSLAM）。</li>
+<li>使用深度差、特征数等指标拒绝不可信观测（如 GR-Fusion、Switch-SLAM）。</li>
+</ul>
+<p>数据关联（Data Association）</p>
+<ul>
+<li>核心是将 LiDAR 深度与图像像素对齐。</li>
+<li>方法包括：<ul>
+<li>LiDAR 点投影到图像平面</li>
+<li>使用 C-frame 或体素图（Voxel map）辅助关联</li>
+<li>使用视觉子图与当前帧重投影误差估计深度（如 CoCoLIC）</li>
+<li>处理遮挡与 LiDAR 重叠（如 FAST-LIVO）</li>
+</ul>
+</li>
+</ul>
+<p>特征融合（Feature Fusion）</p>
+<ul>
+<li>利用 LiDAR 和相机之间的共视特征进行联合跟踪和表示。</li>
+<li>VILENS 引入统一的 3D 特征表示，R3LIVE 用光度残差优化 RGB 点云。</li>
+</ul>
+<p>在线标定（Online Calibration）</p>
+<ul>
+<li>多数 LIC-SLAM 系统实现 LiDAR-IMU 与 Camera-IMU 的在线标定。</li>
+<li>标定方式包括：<ul>
+<li>时间偏移建模（如 R3LIVE）</li>
+<li>分阶段标定法（如 Yang &amp; Ma）</li>
+<li>IMU 传播并嵌入外参模型（如 Zuo 等）</li>
+</ul>
+</li>
+</ul>
+<p>跨领域方法引入</p>
+<ul>
+<li>引入强化学习（Livo 使用 Actor-Critic 调节传感器权重）。</li>
+<li>深度学习用于建模感知质量、辅助估计。</li>
+<li>模糊逻辑系统处理不确定性与故障（ Nam 和 Gon-Woo 的 Type-2 模糊模型）。</li>
+</ul>
+<p>云台 </p>
+<p><strong>拓展 : 多相机标定 DCC问题</strong></p>
+<ol>
+<li><p><strong>&lt;&lt;Autonomous Active Calibration of a Dynamic Camera Cluster using  Next-Best-View&gt;&gt;</strong></p>
+<p>纯相机,自标定</p>
+<p>手眼标定</p>
+<blockquote>
+<p>V. Pradeep, K. Konolige, and E. Berger, “Calibrating a multi-arm multi-sensor robot: A bundle adjustment approach,” in International Symposium on Experimental Robotics (ISER), 12&#x2F;2010 2010.</p>
+</blockquote>
+<p>Active Vision 系统 &#x2F; handdeye和Kinematic校准方法 &#x2F; 主动DCC校准 &#x2F; Next-Best-View</p>
+</li>
+</ol>
+<p>​	Setting : 不需要对配置空间进行离散化，而是在配置空间上进行连续优化，以选择次优视图。</p>
+<ul>
+<li><p>限制 :</p>
+<ul>
+<li><p>依赖准确的关节角度测量</p>
+<p>现有基于next-best-view的DCC标定方法通常假设机械臂或云台的关节角度是已知且准确的，用于计算相机的位姿和规划下一视角。但在实际中，关节角度传感器（编码器）可能不存在或数据不准确，导致标定受限。</p>
+</li>
+<li><p>视角采样受限</p>
+<p>next-best-view算法通过选择“局部最优”的下一视角来减少参数不确定性，但如果机械结构的运动范围有限或者存在物理阻碍，可能无法覆盖所有理想视角，影响标定质量。</p>
+</li>
+<li><p>计算复杂度高和实时性低</p>
+</li>
+<li><p>需要良好的初始估计</p>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li><p><strong>&lt;&lt;Encoderless Gimbal Calibration of Dynamic Multi-Camera Clusters&gt;&gt;</strong></p>
+<p>以前的工作 : 依赖于编码器反馈来提取万向节电机的位置,需要关节角度来确定静态相机和驱动相机之间的运动学链。多旋翼无人机 (UAV) 上的许多现成万向节要么不提供关节角度信息,要么提供不精确的关节 角度测量,无法用于获得准确的 DCC 校准。</p>
+<p>本文工作 : <strong>encoderless DCC</strong></p>
+<ol>
+<li>同时估计DCC的标定参数和每个观测配置下执行机构的关节角度。不再需要关节角度信息，该标定方法可以应用于任何类型的执行机构，从而使</li>
+<li>在<code>Keyframe-based visual–inertial odometry using nonlinear optimization</code>中提出的基础上进行了扩展，将标定得到的DCC参数引入系统中，从而在估计VIO位姿状态的同时，估计云台的关节角度。</li>
+</ol>
+</li>
+</ol>
+<p>实验结果：采用DCC的整体位姿估计精度与SCC相当，且在性能上无显著差异。</p>
+<p>云台相机的主动视角选择策略 :  Playle </p>
+<blockquote>
+<p>[26] N. Playle, “Improving the performance of monocular visual simultaneous  localisation and mapping through the use of a gimballed camera,”  Master’s thesis, University of Toronto (Canada), 2015.</p>
+</blockquote>
+<p>局限 : </p>
+<ul>
+<li>动态相机禁用了3D-2D RANSAC步骤</li>
+</ul>
+<p>​	原本OKVIS算法中的3D-2D RANSAC用于剔除异常匹配，提高估计鲁棒性，依赖于固定的相机外参。但动态相机的外参是随时间变化的，RANSAC会剔除掉正是估计关节角度所需的关键观测，导致无法准确估计动态外参。</p>
+<ul>
+<li>缺乏更优的两阶段优化策略</li>
+</ul>
+<p>​	当前方法未采用先不剔除异常值、估计动态外参，再用更新的外参重新优化的两阶段策略，限制了精度提升。</p>
+<ul>
+<li>关节角度估计存在明显的时间滞后</li>
+</ul>
+<p>​	滞后尚未被充分解决。</p>
+<ul>
+<li>未使用运动模型或IMU输入</li>
+</ul>
+<p>​	估计仅基于视觉数据，没有利用云台IMU信息或运动模型，限制了估计的时效性和准确度。</p>
+<ol start="3">
+<li><strong>&lt;&lt;External Extrinsic Calibration of Multi-Modal Imaging Sensors: A Review&gt;&gt;</strong></li>
+</ol>
+<p>时间同步</p>
+<p>(K. Römer, P. Blum, and L. Meier, ‘‘Time synchronization and calibration in wireless sensor networks,’’ in Handbook of Sensor Networks: Algorithms and Architectures. Hoboken, NJ, USA: Wiley, 2005, pp. 199–237.)提出了针对缺乏硬件同步功能的设备的方法。该方法涉及使用时间 插值来实现时间同步。记录每个设备的采样时间和频率信息,使用插值算法推断每个设备的时间戳,最终将它们拟合到时间曲线中。这种方法需要考虑设备之间的采样频率差异和延迟,以获得更准确的时间同步结果。</p>
+<p>帧速率不稳定,被动同步。(E. Olson, ‘‘A passive solution to the sensor synchronization problem,’’ in Proc. IEEE&#x2F;RSJ Int. Conf. Intell. Robots Syst., Oct. 2010, pp. 1059–1064.)</p>
+<p>基于运动的方法 </p>
+<p>ICP和里程表方法的使用仍然较多,特 征匹配主要用于细化参数。</p>
+<p>现有方法主要涉及传感器结构之间的匹配对应关系。包括里程计技术,例如Ishikawa等[109]和Park等[110]提出的视觉里程计、LiDAR里程计、GNSS里程计和惯性测量单元(IMU)等。根据传感器之间自运动信息的使用和现有文 献,基于自运动的方法主要可分为手眼标定和基于三维结构标定。</p>
+<p><strong>手眼标定</strong></p>
+<p>最常用 : quaternion representation proposed by Liao and Liu </p>
+<p>Q. Liao and M. Liu, ‘‘Extrinsic calibration of 3D range finder and camera without auxiliary object or human intervention,’’ in Proc. IEEE Int. Conf. Real-Time Comput. Robot. (RCAR), Aug. 2019, pp. 42–47.</p>
+<p><strong>基于结构的 3D 标定</strong></p>
+<p>SFM(J. Iglhaut, C. Cabo, S. Puliti, L. Piermattei, J. O’Connor, and J. Rosette, ‘‘Structure from motion photogrammetry in forestry: A review,’’ Current Forestry Rep., vol. 5, no. 3, pp. 155–168, Sep. 2019.)从一系列 2D 图像中估计场景的 3D 结构。使用迭代最近点 (ICP) 算法将 SFM 点云与 LiDAR 点 云对齐,从而获得外部参数的初始估计。</p>
+<p>SFM限制 : 将图像转换为3D点云可能会导 致点云稀疏,导致匹配率降低,如果再次使用ICP算法 ,误差会增加。可能的解决方案:将图像转换为点云时进行上采样</p>
+<p>(J. Li, B. Yang, C. Chen, R. Huang, Z. Dong, and W. Xiao, ‘‘Automatic registration of panoramic image sequence and mobile laser scanning data using semantic features,’’ ISPRS J. Photogramm. Remote Sens., vol. 136, pp. 41–57, Feb. 2018.)提出了一种点云和图像 中语义特征的自动匹配方法,他们通过最大化两者之间 的重叠面积来细化参数,这样即使点云数量很少,也可 以通过重叠区域来迭代参数。此外,Nagy等(B. Nagy, L. Kovács, and C. Benedek, ‘‘SFM and semantic information based online targetless camera-LiDAR self-calibration,’’ in Proc. IEEE Int. Conf. Image Process. (ICIP), Sep. 2019, pp. 1317–1321.)在点 云配准阶段也利用了语义信息</p>
+<ol start="4">
+<li><p>&lt;&lt;Real-Time Temporal and Rotational Calibration of  Heterogeneous Sensors Using Motion  Correlation Analysis&gt;&gt;</p>
+<ul>
+<li>提出了一种统一的、实时的时间错位校准方法，用于使用鲁棒的三维运动相关分析来进行异构多传感器组合。</li>
+<li>基于相同三维相关分析机制中的时间校准结果，推导出外在旋转校准的闭式解。</li>
+</ul>
+<p>实时标定 :</p>
+<p>[27] T. Qin and S. Shen, “Online temporal calibration for monocular visualinertial systems,” in Proc. IEEE&#x2F;RSJ Int. Conf. Intell. Robots Syst., 2018, pp. 3662–3669.</p>
+</li>
+</ol>
+<p>背景 : </p>
+<ul>
+<li>传感器延迟（latency）普遍存在，不同传感器的延迟不一致，导致时间偏移（temporal offset）。</li>
+<li>时间偏移会严重影响传感器融合的质量。</li>
+<li>现有方法大多集中于<strong>估计时间偏移</strong>，而不是直接建模和处理传感器内部延迟。</li>
+</ul>
+<p>IMU-相机标定方法 ：</p>
+<ul>
+<li>[29]：使用B样条拟合轨迹，联合优化时间、空间外参（计算量大）。M. Fleps, E. Mair, O. Ruepp, M. Suppa, and D. Burschka, “Optimization based IMU camera calibration,” in Proc. IEEE&#x2F;RSJ Int. Conf. Intell. Robots Syst., 2011, pp. 3297–3304.</li>
+<li>Kalibr [28]：最知名工具箱，批处理最大似然法，联合估计时间偏移+相机轨迹+外参，并估计不确定性。后来拓展到LiDAR、IMU等多种组合。P. Furgale, J. Rehder, and R. Siegwart, “Unified temporal and spatial calibration for multi-sensor systems,” in Proc. IEEE&#x2F;RSJ Int. Conf. Intell. Robots Syst., 2013, pp. 1280–1286.</li>
+<li>[8]：先用1D旋转速率做时间初始化，再用闭式手眼法做外参估计，但精度有限，仅用于初始化。E. Mair, M. Fleps, M. Suppa, and D. Burschka, “Spatio-temporal initialization for IMU to camera registration,” in Proc. IEEE Int. Conf. Robot. Biomimetics, 2011, pp. 557–564.</li>
+<li>[42]：使用粒子群优化做目标无关的标定（不依赖环境平面，支持非凸优化）；Z. Taylor and J. Nieto, “Automatic calibration of Lidar and camera images using normalized mutual information,” in Proc. IEEE Int. Conf. Robot. Autom., 2013.</li>
+</ul>
+<p>现有方法存在的问题 : </p>
+<ul>
+<li>闭式解难用于时间偏移估计，大多数只能用于空间外参。</li>
+<li>迭代优化方法精度高，但计算量大，依赖良好初始值。</li>
+<li>大部分方法默认数据已同步，无法同时处理时间+空间不一致的问题。</li>
+</ul>
+<p>本文方法：基于3D运动相关分析（motion correlation），进行更鲁棒、更精确的时间-空间标定，精度接近优化方法，但计算效率更高。</p>
+<ul>
+<li>不依赖目标板（targetless）</li>
+<li>实时、高效</li>
+<li>精度可媲美优化方法</li>
+</ul>
+<p>避免了常见的1D互相关或常速度假设的局限性</p>
+<ol start="5">
+<li><p>&lt;&lt;Robust Online Calibration of LiDAR and Camera  Based on Cross-Modal Graph Neural Network&gt;&gt;</p>
+<p>非正则标定框架,将标定问题视为稀疏图匹配问题。提出了一种包括跨模型图网络和多级图形约束在内的综合图结构,以准确估计标定参数。</p>
+</li>
+<li><p>&lt;&lt;Whole‐body motion planning and tracking of a mobile robot  with a gimbal RGB‐D camera for outdoor 3D exploration&gt;&gt;</p>
+</li>
+</ol>
+<p>3D重建自主探索 云台相机 主动slam</p>
+<p>基于地形感知MPC的视点跟踪控制器,以保证移动云台相 机的视点跟踪精度,提高在崎岖地形上的定位和探索鲁棒性</p>
+<p>第一阶段总结方向 : </p>
+<ol>
+<li><strong>无目标的实时校准方法 targetless real-time calibration methods - 基于自运动</strong></li>
+<li>DCC问题</li>
+<li><strong>无目标的实时校准方法 targetless real-time calibration methods - 基于学习</strong></li>
+<li>在线标定 (感觉只是用于修正微小偏移,恐怕不能用于实时改变外参)</li>
+</ol>
+<h2 id="第二阶段"><a href="#第二阶段" class="headerlink" title="第二阶段"></a>第二阶段</h2><h3 id="基于自运动"><a href="#基于自运动" class="headerlink" title="基于自运动"></a>基于自运动</h3><p> targetless real-time calibration methods - 基于自运动</p>
+<p><strong>&lt;&lt;Automatic targetless LiDAR–camera calibration: a survey&gt;&gt;</strong></p>
+<p>一些方法试图找到激光雷达生成的轨迹与相机生成的轨迹之间的对应关系,使用激光雷达和视觉里程计技术,或IMU和GNSS测量 (Taylor 和 Nieto 2015;Ishikawa et al. 2018;Park et al. 2020).</p>
+<ul>
+<li>Taylor Z, Nieto J (2015) Motion-based calibration of multimodal sensor arrays. In: 2015 IEEE international conference on robotics and automation (ICRA). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/icra.2015.7139872">https://doi.org/10.1109/icra.2015.7139872</a></li>
+<li>Ishikawa R, Oishi T, Ikeuchi K (2018) LiDAR and camera calibration using motions estimated by sensor fusion odometry. In: 2018 IEEE&#x2F;RSJ international conference on intelligent robots and systems (IROS). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/iros.2018.8593360">https://doi.org/10.1109/iros.2018.8593360</a></li>
+<li>&#x2F;&#x2F; Park C, Moghadam P, Kim S, Sridharan S, Fookes C (2020) Spatiotemporal camera-LiDAR calibration: a targetless and structureless approach. IEEE Robot Autom Lett 5(2):1556–1563. <a target="_blank" rel="noopener" href="https://doi.org/10">https://doi.org/10</a>. 1109&#x2F;lra.2020.2969164</li>
+</ul>
+<p>还有一些方法利用运动结构(SfM)方法从图像序列 中估计3D结构,从而将3D-2D LiDAR-相机数据配准转换为3D-3D案例(Swart et al. 2 011;Nagy et al. 2019a)</p>
+<ul>
+<li>Swart A, Broere J, Veltkamp R, Tan R (2011) Refined non-rigid registration of a panoramic image sequence to a LiDAR point cloud. In: Photogrammetric image analysis. Springer, Berlin, pp 73–84. <a target="_blank" rel="noopener" href="https://doi/">https://doi</a>. org&#x2F;10.1007&#x2F;978-3-642-24393-6_7</li>
+<li>Nagy B, Kovacs L, Benedek C (2019a) Online targetless end-to-end camera-LIDAR self-calibration. In: 2019 16th international conference on machine vision applications (MVA). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.23919/mva.2019.8757887">https://doi.org/10.23919/mva.2019.8757887</a></li>
+</ul>
+<p>手眼标定方法</p>
+<p>三个阶段 : </p>
+<p>Estimation of each sensor’s motion传感器位姿估计</p>
+<ul>
+<li><p>LiDAR : ICP&amp;雷达里程计 LOAM ORB-SLAM</p>
+</li>
+<li><p>相机 : SfM and visual odometry</p>
+<ul>
+<li><p>SFM : 存在尺度不确定性（scale ambiguity）在给定多张2D图像的情况下，SfM可以同时估计相机的位姿（位置和朝向）和稀疏的三维点云重建。</p>
+<ul>
+<li>Taylor Z, Nieto J (2015) Motion-based calibration of multimodal sensor arrays. In: 2015 IEEE international conference on robotics and automation (ICRA). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/icra.2015.7139872">https://doi.org/10.1109/icra.2015.7139872</a></li>
+<li>Park C, Moghadam P, Kim S, Sridharan S, Fookes C (2020) Spatiotemporal camera-LiDAR calibration: a targetless and structureless approach. IEEE Robot Autom Lett 5(2):1556–1563. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/lra.2020.2969164">https://doi.org/10.1109/lra.2020.2969164</a></li>
+</ul>
+</li>
+<li><p>视觉里程计（Visual Odometry, VO） 的方法估计相机运动，利用连续图像帧（视频序列）。</p>
+</li>
+</ul>
+<p>  ORB-SLAM</p>
+<ul>
+<li><p>Shi C, Huang K, Yu Q, Xiao J, Lu H, Xie C (2019a) Extrinsic calibration and odometry for camera-LiDAR systems. IEEE Access 7:120106–120116. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/access.2019.2937909">https://doi.org/10.1109/access.2019.2937909</a></p>
+</li>
+<li><p>Shi S, Wang X, Li H (2019b) PointRCNN: 3d object proposal generation and detection from point cloud. In: 2019 IEEE&#x2F;CVF conference on computer vision and pattern recognition (CVPR). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/cvpr.2019.00086">https://doi.org/10.1109/cvpr.2019.00086</a></p>
+</li>
+<li><p><strong>Liao Q, Liu M (2019) Extrinsic calibration of 3d range finder and camera without auxiliary object or human intervention. In: 2019 IEEE international conference on real-time computing and robotics (RCAR). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/rcar47638.2019.9044146">https://doi.org/10.1109/rcar47638.2019.9044146</a></strong></p>
+</li>
+<li><p>纯粹基于视觉的运动估计会面临尺度不确定性问题，需要依赖其他方法来解决尺度恢复问题 : </p>
+<ul>
+<li>Taylor Z, Nieto J (2016) Motion-based calibration of multimodal sensor extrinsics and timing offset estimation. IEEE Trans Rob 32(5):1215–1229. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/tro.2016.2596771">https://doi.org/10.1109/tro.2016.2596771</a></li>
+<li>Ishikawa R, Oishi T, Ikeuchi K (2018) LiDAR and camera calibration using motions estimated by sensor fusion odometry. In: 2018 IEEE&#x2F;RSJ international conference on intelligent robots and systems (IROS). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/iros.2018.8593360">https://doi.org/10.1109/iros.2018.8593360</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Estimation of the extrinsic parameter外参初值计算</p>
+<ul>
+<li>Taylor Z, Nieto J (2015) Motion-based calibration of multimodal sensor arrays. In: 2015 IEEE international conference on robotics and automation (ICRA). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/icra.2015.7139872">https://doi.org/10.1109/icra.2015.7139872</a></li>
+</ul>
+<p>Refinement of extrinsic parameter外参优化</p>
+<p>运动估计的偏差会影响校准结果并导致不准确</p>
+<p>需要利用周围环境中的外观信息，如几何边缘对齐减少此类误差。</p>
+<ul>
+<li>利用图像和点云中的线特征，通过特征匹配来细化校准参数 :</li>
+</ul>
+<p>Liao Q, Liu M (2019) Extrinsic calibration of 3d range finder and camera without auxiliary object or human intervention. In: 2019 IEEE international conference on real-time computing and robotics (RCAR). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/rcar47638.2019.9044146">https://doi.org/10.1109/rcar47638.2019.9044146</a></p>
+<ul>
+<li><p>对齐边缘 : </p>
+<p>Levinson J, Thrun S (2013) Automatic online calibration of cameras and lasers. In: Robotics: science and systems IX. Robotics: Science and Systems Foundation. <a target="_blank" rel="noopener" href="https://doi.org/10.15607/rss.2013.ix.029">https://doi.org/10.15607/rss.2013.ix.029</a></p>
+</li>
+<li><p>关联两种模态的数据强度 : </p>
+<p>Pandey G, McBride JR, Savarese S, Eustice RM (2012) Automatic targetless extrinsic calibration of a 3d lidar and camera by maximizing mutual information. In: Twenty-sixth AAAI conference on artificial intelligence. <a target="_blank" rel="noopener" href="https://doi.org/10.1609/aaai.v26i1.8379">https://doi.org/10.1609/aaai.v26i1.8379</a></p>
+</li>
+<li><p>传感器融合里程计 : </p>
+<p>Ishikawa R, Oishi T, Ikeuchi K (2018) LiDAR and camera calibration using motions estimated by sensor fusion odometry. In: 2018 IEEE&#x2F;RSJ international conference on intelligent robots and systems (IROS). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.110">https://doi.org/10.110</a> 9&#x2F;iros.2018.8593360</p>
+</li>
+<li><p>Intensity matching : 通过互信息度量将 LiDAR 反射率与相机图像强度对齐</p>
+<ul>
+<li>Shi C, Huang K, Yu Q, Xiao J, Lu H, Xie C (2019a) Extrinsic calibration and odometry for camera-LiDAR systems. IEEE Access 7:120106–120116. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/access.2019.2937909">https://doi.org/10.1109/access.2019.2937909</a></li>
+<li>Shi S, Wang X, Li H (2019b) PointRCNN: 3d object proposal generation and detection from point cloud. In: 2019 IEEE&#x2F;CVF conference on computer vision and pattern recognition (CVPR). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/cvpr.2019.00086">https://doi.org/10.1109/cvpr.2019.00086</a></li>
+</ul>
+</li>
+<li><p>Depth matching : 激光雷达深度图 中的任意点应与相机深度图中相同像素坐标的像素绑定</p>
+<p>Xu H, Lan G, Wu S, Hao Q (2019) Online intelligent calibration of cameras and LiDARs for autonomous driving systems. In: 2019 IEEE intelligent transportation systems conference (ITSC). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/itsc.2019.8916872">https://doi.org/10.1109/itsc.2019.8916872</a></p>
+</li>
+<li><p>Color matching : 最小化当前帧和前一帧中点颜色之间的平均差异。</p>
+<p>Taylor Z, Nieto J (2016) Motion-based calibration of multimodal sensor extrinsics and timing offset estimation. IEEE Trans Rob 32(5):1215–1229. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/tro.2016.2596771">https://doi.org/10.1109/tro.2016.2596771</a></p>
+</li>
+<li><p>3D–2D point matching : 使用激光雷达相机外部参数进行3D-2D预测后,使用非线性优化改进结果。</p>
+<p>Park C, Moghadam P, Kim S, Sridharan S, Fookes C (2020) Spatiotemporal camera-LiDAR calibration: a targetless and structureless approach. IEEE Robot Autom Lett 5(2):1556–1563. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/lra.2020.2969164">https://doi.org/10.1109/lra.2020.2969164</a></p>
+</li>
+</ul>
+<p><img src="/../images/%EB%8D%94%EC%B9%A0/1.png" alt="图1-基于手眼的激光雷达-相机校准方法"></p>
+<p style="text-align:center;">图1-基于手眼的激光雷达-相机校准方法</p>
+
+<p>基于三维结构估计的方法</p>
+<p>一种基于从全景图像和点云中提取的语义特征的自动配准方法 :即使点云数量很少,也可 以通过重叠区域来迭代参数</p>
+<p><strong>Li J, Yang B, Chen C, Huang R, Dong Z, Xiao W (2018) Automatic registration of panoramic image sequence and mobile laser scanning data using semantic features. ISPRS J Photogramm Remote Sens 136:41–57. <a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.isprsjprs.2017.12.005">https://doi.org/10.1016/j.isprsjprs.2017.12.005</a></strong></p>
+<p>一种具有对象级注册的外在校准方法,根据目标检测结 果在生成的点云和 LiDAR 点云之间引入目标级对齐 </p>
+<ul>
+<li><strong>Nagy B, Kovacs L, Benedek C (2019a) Online targetless end-to-end camera-LIDAR self-calibration. In: 2019 16th international conference on machine vision applications (MVA). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.23919/mva.2019.8757887">https://doi.org/10.23919/mva.2019.8757887</a></strong> </li>
+<li><strong>Nagy B, Kovacs L, Benedek C (2019b) SFM and semantic information based online targetless camera-LIDAR self-calibration. In: 2019 IEEE international conference on image processing (ICIP). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/icip.2019.8804299">https://doi.org/10.1109/icip.2019.8804299</a></strong></li>
+</ul>
+<p>在注册阶段的优化方面对他们之前的工作 进行了扩展。在对象级配准步骤之后,使用点级 ICP 方法设法减少配准误差, 然后在非均匀有理基样条近似的基础上引入基于曲线的非刚性点云配准细化步骤</p>
+<p>Nagy B, Benedek C (2020) On-the-fly camera and lidar calibration. Remote Sens 12(7):1137. <a target="_blank" rel="noopener" href="https://doi.org/10.3390/rs12071137">https://doi.org/10.3390/rs12071137</a></p>
+<p>利用SFM方法通过点云对齐 和SIFT来找到感兴趣点的精确结果 : A. Swart, J. Broere, R. Veltkamp, and R. Tan, ‘‘Refined non-rigid registration of a panoramic image sequence to a LiDAR point cloud,’’ in Proc. ISPRS Conf. Photogramm. Image Anal. Berlin, Germany: Springer, Oct. 2011, pp. 73–84.</p>
+<p>使用光束块精确的外部参数后使用3D-3D对准, 以便匹配 : W. Moussa, M. Abdel-Wahab, and D. Fritsch, ‘‘Automatic fusion of digital images and laser scanner data for heritage preservation,’’ in Proc. 4th Int. Conf. Prog. Cultural Heritage Preservation. Limassol, Cyprus: Springer, Oct.&#x2F;Nov. 2012, pp. 76–85.</p>
+<p>连续场景信息和 SFM（Structure from Motion）+ ICP（Iterative Closest Point）来进行初始外参估计: </p>
+<p>L. Wang, Z. Xiao, D. Zhao, T. Wu, and B. Dai, ‘‘Automatic extrinsic calibration of monocular camera and LiDAR in natural scenes,’’ in Proc. IEEE Int. Conf. Inf. Autom. (ICIA), Aug. 2018, pp. 997–1002.</p>
+<p>其他方法</p>
+<p>将高斯-Helmert模型应用于多传感器外在校准:</p>
+<p>Huang K, Stachniss C (2017) Extrinsic multi-sensor calibration for mobile robots using the gauss-helmert model. In: 2017 IEEE&#x2F;RSJ international conference on intelligent robots and systems (IROS). IEEE. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/iros.2017.8205952">https://doi.org/10.1109/iros.2017.8205952</a></p>
+<p>运动引导方法,用于自动校准两个多模态传感器:</p>
+<p>Castorena J, Puskorius GV, Pandey G (2020) Motion guided LiDAR-camera self-calibration and accelerated depth upsampling for autonomous vehicles. J Intell Robot Syst 100(3–4):1129–1138. <a target="_blank" rel="noopener" href="https://doi.org/10.1007/s10846-020-01233-w">https://doi.org/10.1007/s10846-020-01233-w</a></p>
+<p>结合快速局部和全局优化方法来估计结果 : </p>
+<p>Horn M, Wodtko T, Buchholz M, Dietmayer K (2021) Online extrinsic calibration based on per-sensor egomotion using dual quaternions. IEEE Robot Autom Lett 6(2):982–989. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/lra.2021.3056352">https://doi.org/10.1109/lra.2021.3056352</a></p>
+<h3 id="基于学习"><a href="#基于学习" class="headerlink" title="基于学习"></a>基于学习</h3><table>
+<thead>
+<tr>
+<th>模型简称</th>
+<th>是否开源</th>
+<th>发表时间</th>
+<th>发表期刊</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RegNet</td>
+<td><a href="%5Bhttps://github.com/aaronlws95/regnet%5D(https://link.zhihu.com/?target=https://github.com/aaronlws95/regnet)">非官方</a></td>
+<td>2017</td>
+<td>IV</td>
+</tr>
+<tr>
+<td>CalibNet</td>
+<td><a href="%5Bhttps://epiception.github.io/CalibNet%5D(https://link.zhihu.com/?target=https://epiception.github.io/CalibNet)">官方</a></td>
+<td>2018</td>
+<td>IROS</td>
+</tr>
+<tr>
+<td>CMRNet</td>
+<td>&#x2F;</td>
+<td>2019</td>
+<td>ITS</td>
+</tr>
+<tr>
+<td>RGGNet</td>
+<td><a href="%5Bhttps://github.com/KleinYuan/RGGNet%5D(https://link.zhihu.com/?target=https://github.com/KleinYuan/RGGNet)">官方</a></td>
+<td>2020</td>
+<td>RA-L</td>
+</tr>
+<tr>
+<td>CalibRCNN</td>
+<td><a href="%5Bhttps://github.com/zjut-jianhuazhang/CalibRCNN%5D(https://link.zhihu.com/?target=https://github.com/zjut-jianhuazhang/CalibRCNN)">官方部分代码</a></td>
+<td>2020</td>
+<td>IROS</td>
+</tr>
+<tr>
+<td>CalibDNN</td>
+<td>&#x2F;</td>
+<td>2021</td>
+<td>SPIE</td>
+</tr>
+<tr>
+<td>LCCNet</td>
+<td><a href="%5Bhttps://github.com/LvXudong-HIT/LCCNet%5D(https://link.zhihu.com/?target=https://github.com/LvXudong-HIT/LCCNet)">官方</a></td>
+<td>2021</td>
+<td>CVPR</td>
+</tr>
+<tr>
+<td>CFNet</td>
+<td>&#x2F;</td>
+<td>2021</td>
+<td>Sensors</td>
+</tr>
+<tr>
+<td>DXQ-Net</td>
+<td>&#x2F;</td>
+<td>2022</td>
+<td>arXiv preprint</td>
+</tr>
+</tbody></table>
+<p>LCCNet性能是开源的方法中最好的一个, miscalibration的范围在±1.5m和±20°时达到了0.297cm和0.017°的标定精度（绝对平均误差），在单个GPU（GP100）上的运行时间为24ms。故初步想法为采用该方式进行雷达相机配准。</p>
+<h1 id="A8mini云台相机"><a href="#A8mini云台相机" class="headerlink" title="A8mini云台相机"></a>A8mini云台相机</h1><h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><p>通信方式 : UDP</p>
+<p>获取图像 : 拉取RTSP流,存在1s左右延迟,是否会有影响存疑</p>
+<h2 id="相机库"><a href="#相机库" class="headerlink" title="相机库"></a>相机库</h2><p>网址 : <a target="_blank" rel="noopener" href="https://github.com/Li-shuangyi/SIYIA8mini_SDK">https://github.com/Li-shuangyi/SIYIA8mini_SDK</a></p>
+<p>函数介绍 : </p>
+<p>查看接口只需看public</p>
+<ul>
+<li>类的初始化</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs C++"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 构造函数</span><br><span class="hljs-comment"> */</span><br><span class="hljs-built_in">A8_Grabber</span>();<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 析构函数</span><br><span class="hljs-comment"> */</span><br>~<span class="hljs-built_in">A8_Grabber</span>()&#123;&#125;;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>设置相机</li>
+</ul>
+<p>修改分辨率&#x2F;码率&#x2F;运动模式</p>
+<p>分辨率只支持特定格式:1080p(1920×1080),720p(1280×720)</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs C++"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 初始化A8_mini相机</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span></span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 关闭A8_mini相机</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">close</span><span class="hljs-params">()</span></span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 展示A8_mini相机参数</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">displayCameraParam</span><span class="hljs-params">()</span></span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 设置A8_mini相机参数</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">setCameraParam</span><span class="hljs-params">(<span class="hljs-type">int</span> height = <span class="hljs-number">720</span>, <span class="hljs-type">int</span> width = <span class="hljs-number">1280</span>, <span class="hljs-type">int</span> bitrate = <span class="hljs-number">1570</span>, <span class="hljs-type">uint8_t</span> motionMode = <span class="hljs-number">4</span>)</span></span>;    <br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>初始化图像</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 用默认参数初始化并开启RTSP流</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * @param timeout_ms 超时时间</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">initGrabber</span><span class="hljs-params">(<span class="hljs-type">size_t</span> timeout_ms = <span class="hljs-number">1000</span>)</span></span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>获取图像</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 获取图像</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * @return cv::Mat 获取到的图像</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function">cv::Mat <span class="hljs-title">getImg</span><span class="hljs-params">()</span></span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>设置云台姿态</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs C++"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 设置云台姿态角度 (CMD_ID: 0x0E)</span><br><span class="hljs-comment"> * @param yaw 目标偏航角度 (度，精度1位小数，范围：A8 mini为-135.0~135.0度)</span><br><span class="hljs-comment"> * @param pitch 目标俯仰角度 (度，精度1位小数，范围：A8 mini为-90.0~25.0度)</span><br><span class="hljs-comment"> * @return bool 设置是否成功</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">setGimbalAttitude</span><span class="hljs-params">(<span class="hljs-type">float</span> yaw, <span class="hljs-type">float</span> pitch)</span></span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>​    获取云台姿态</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief 获取云台姿态数据 (CMD_ID: 0x0D)</span><br><span class="hljs-comment"> * @return GimbalAttitudeData 返回当前云台姿态数据，获取失败时所有值为0</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function">GimbalAttitudeData <span class="hljs-title">getGimbalAttitude</span><span class="hljs-params">()</span></span>;<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="雷达相机配准"><a href="#雷达相机配准" class="headerlink" title="雷达相机配准"></a>雷达相机配准</h1><h2 id="复现LCCNet"><a href="#复现LCCNet" class="headerlink" title="复现LCCNet"></a>复现LCCNet</h2><h3 id="论文"><a href="#论文" class="headerlink" title="论文"></a>论文</h3><h3 id="重构代码"><a href="#重构代码" class="headerlink" title="重构代码"></a>重构代码</h3><p>官方github仓库 : <a target="_blank" rel="noopener" href="https://github.com/IIPCVLAB/LCCNet">https://github.com/IIPCVLAB/LCCNet</a></p>
+<blockquote>
+<p>Requirements 要求</p>
+<ul>
+<li>python 3.6 (recommend to use <a target="_blank" rel="noopener" href="https://www.anaconda.com/">Anaconda</a>)</li>
+<li>PyTorch&#x3D;&#x3D;1.0.1.post2</li>
+<li>Torchvision&#x3D;&#x3D;0.2.2</li>
+<li>Install requirements and dependencies</li>
+</ul>
+</blockquote>
+<p>该Requirements版本过于古早,许多旧版本已停止维护，新版 CUDA、驱动和系统库不再兼容，需要重构。</p>
+<p>新版LCCNet代码 : <a target="_blank" rel="noopener" href="https://github.com/Li-shuangyi/LCCNet.git">https://github.com/Li-shuangyi/LCCNet.git</a></p>
+<h1 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h1><p>数据集准备 :</p>
+<p>10000张 20个sequences,对应20个不同外参</p>
+<p>1个sequence中含有500个data , 一个sequence的rosbag录13分钟左右</p>
+<ul>
+<li><p>室内 : 室外&#x3D;2 : 1</p>
+</li>
+<li><p>数据 : 验证 : 测试 &#x3D; 20 : 1 :2</p>
+</li>
+</ul>
+<p>USB相机调试</p>
+<p>用 v4l2 工具查询相机驱动支持的参数范围</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">v4l2-ctl -d /dev/video2 --all<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">Driver Info:<br>	Driver name      : uvcvideo<br>	Card type        : USB 2.0 Camera: HD USB Camera<br>	Bus info         : usb-0000:00:14.0-1.3<br>	Driver version   : 5.15.85<br>	Capabilities     : 0x84a00001<br>		Video Capture<br>		Metadata Capture<br>		Streaming<br>		Extended Pix Format<br>		Device Capabilities<br>	Device Caps      : 0x04200001<br>		Video Capture<br>		Streaming<br>		Extended Pix Format<br>Priority: 2<br>Video input : 0 (Camera 1: ok)<br>Format Video Capture:<br>	Width/Height      : 640/480<br>	Pixel Format      : &#x27;YUYV&#x27; (YUYV 4:2:2)<br>	Field             : None<br>	Bytes per Line    : 1280<br>	Size Image        : 614400<br>	Colorspace        : sRGB<br>	Transfer Function : Rec. 709<br>	YCbCr/HSV Encoding: ITU-R 601<br>	Quantization      : Default (maps to Limited Range)<br>	Flags             : <br>Crop Capability Video Capture:<br>	Bounds      : Left 0, Top 0, Width 640, Height 480<br>	Default     : Left 0, Top 0, Width 640, Height 480<br>	Pixel Aspect: 1/1<br>Selection Video Capture: crop_default, Left 0, Top 0, Width 640, Height 480, Flags: <br>Selection Video Capture: crop_bounds, Left 0, Top 0, Width 640, Height 480, Flags: <br>Streaming Parameters Video Capture:<br>	Capabilities     : timeperframe<br>	Frames per second: 30.000 (30/1)<br>	Read buffers     : 0<br>                     brightness 0x00980900 (int)    : min=-64 max=64 step=1 default=0 value=50<br>                       contrast 0x00980901 (int)    : min=0 max=64 step=1 default=32 value=20<br>                     saturation 0x00980902 (int)    : min=0 max=128 step=1 default=60 value=60<br>                            hue 0x00980903 (int)    : min=-40 max=40 step=1 default=0 value=0<br> white_balance_temperature_auto 0x0098090c (bool)   : default=1 value=1<br>                          gamma 0x00980910 (int)    : min=72 max=500 step=1 default=100 value=72<br>                           gain 0x00980913 (int)    : min=0 max=100 step=1 default=0 value=0<br>           power_line_frequency 0x00980918 (menu)   : min=0 max=2 default=1 value=1<br>				0: Disabled<br>				1: 50 Hz<br>				2: 60 Hz<br>      white_balance_temperature 0x0098091a (int)    : min=2800 max=6500 step=1 default=4600 value=4600 flags=inactive<br>                      sharpness 0x0098091b (int)    : min=0 max=6 step=1 default=2 value=2<br>         backlight_compensation 0x0098091c (int)    : min=0 max=2 step=1 default=1 value=1<br>                  exposure_auto 0x009a0901 (menu)   : min=0 max=3 default=3 value=3<br>				1: Manual Mode<br>				3: Aperture Priority Mode<br>              exposure_absolute 0x009a0902 (int)    : min=1 max=5000 step=1 default=157 value=5000 flags=inactive<br>         exposure_auto_priority 0x009a0903 (bool)   : default=0 value=1<br><br></code></pre></td></tr></table></figure>
+
+<p>其中曝光相关部分：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">exposure_auto 0x009a0901 (menu)   : min=0 max=3 default=3 value=3<br>    1: Manual Mode<br>    3: Aperture Priority Mode<br><br>exposure_absolute 0x009a0902 (int)    : min=1 max=5000 step=1 default=157 value=5000 flags=inactive<br></code></pre></td></tr></table></figure>
+
+<p>exposure_auto</p>
+<ul>
+<li>当前值 <code>3</code> 表示自动曝光。</li>
+<li>如果要自己控制曝光，需要先把它改成 <code>1</code>（手动模式）。</li>
+</ul>
+<p>exposure_absolute</p>
+<ul>
+<li>范围：min&#x3D;1，max&#x3D;5000，步长&#x3D;1。</li>
+<li><code>flags=inactive</code> 表示现在是自动模式，所以这个值无法直接修改。</li>
+</ul>
+<h2 id="坞-USB相机内参"><a href="#坞-USB相机内参" class="headerlink" title="坞-USB相机内参"></a>坞-USB相机内参</h2><p>camera_matrix: </p>
+<p>780.469849105843	0	626.437330638860<br>0	775.368847217801	365.941771807725<br>0	0	1</p>
+<p>dist_coeffs &#x3D; [0.0393591422301209	-0.0496894143888718 0 0 0 ]</p>
+<h2 id="FAST-Calib"><a href="#FAST-Calib" class="headerlink" title="FAST-Calib"></a>FAST-Calib</h2><p><strong>激光雷达到相机</strong>的外参转换关系</p>
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>00-05序列训练出模型checkpoint_r1.00_t0.10_e263_0.006.tar,在06序列测试效果:</p>
+<p>![951812eb9a4c4946214b9d673cffcdd](..&#x2F;..&#x2F;..&#x2F;.deepinwine&#x2F;Spark-weixin&#x2F;dosdevices&#x2F;c:&#x2F;users&#x2F;qi&#x2F;Documents&#x2F;WeChat Files&#x2F;wxid_ytt3frlwah0322&#x2F;FileStorage&#x2F;Temp&#x2F;951812eb9a4c4946214b9d673cffcdd.png)</p>
+
+        </div>
+        
+            <div class="post-container">
+            <aside class="toc-container">
+                <button class="toc-toggle">文章目录</button>
+                <nav class="toc" id="toc"></nav>
+            </aside>
+        </div>
+        
+    </div>
+
+
+    <!-- 返回主页链接 -->
+    <div class="text-center my-8">
+        <a href="/" class="text-hacker-color1 underline hover:text-hacker-color2">← Back to Home</a>
+    </div>
+
+      
+      <script src="/js/toc.js"></script>  <!-- 引入 TOC 逻辑 -->
+      
+      
+
+    <footer class="bg-black text-gray-400 py-4">
+    <div class="container mx-auto text-center">
+      <p>© <span id="current-year"></span>  Li-shuangyi 
+        <br> Powered by <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://github.com/m310ct/hexo-theme-hexploit">Hexpolit</a></p>
+    </div>
+  </footer>
+  
+  <script> 
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
+  
+
+
+</body>
+</html>
