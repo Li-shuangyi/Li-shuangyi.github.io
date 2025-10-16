@@ -217,8 +217,7 @@
 <li><p>紧密耦合: 点到平面残差和图像光度误差与误差状态iKF中的IMU传播紧密耦合。</p>
 </li>
 <li><p>ikdTree添加新点至全局映射。</p>
-<img src="../images/复现FAST-LIVO2/1.png" alt="图1-FAST-LIVO系统概述图" style="zoom: 50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/1.png" alt="图1-FAST-LIVO系统概述图"></p>
 <p style="text-align:center;">图1-FAST-LIVO系统概述图</p></li>
 </ul>
 <h3 id="FAST-LIVO2"><a href="#FAST-LIVO2" class="headerlink" title="FAST-LIVO2"></a>FAST-LIVO2</h3><h4 id="新贡献"><a href="#新贡献" class="headerlink" title="新贡献"></a>新贡献</h4><ol>
@@ -236,7 +235,8 @@
 </li>
 <li><p>问题 : 激光雷达近距离盲区造成激光雷达点测量缺失,FAST-LIVO中未考虑该问题。</p>
 <p>解决方案 : 提出按需进行体素射线投射的方法，以增强系统在因激光雷达近距离盲区造成的激光雷达点测量缺失情况下的鲁棒性。 </p>
-<img src="../images/复现FAST-LIVO2/34.png" alt="图2-FAST-LIVO2系统概述图" style="zoom:67%;" /></li>
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/34.png" alt="图2-FAST-LIVO2系统概述图"></p>
+</li>
 </ol>
 <p style="text-align:center;">图2-FAST-LIVO2系统概述图</p>												
 
@@ -254,29 +254,25 @@
 <li><p>传播 Propagation</p>
 </li>
 </ol>
-<img src="../images/复现FAST-LIVO2/35.png" alt="图3-前向传播与反向传播示意图" style="zoom: 33%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/35.png" alt="图3-前向传播与反向传播示意图"></p>
 <p style="text-align:center;">图3-前向传播与反向传播示意图</p>									
 
 <p>​	1. 前向传播：KF在预测阶段将噪声$W_i$ 设为0，预测$t_k-1$ 到$t_k$ 这段时间每个IMU输入时的状态。由KF预测可得	此时状态量为$\hat{x}$，状态量对应的协方差$\hat{P}$作为更新阶段的先验。</p>
 <p>​	2. 反向传播 : 补偿激光雷达运动畸变，确保所有的点都是在tk时刻观测到的。</p>
 <p>​	运动畸变 : 由于激光雷达在移动过程中分时采点，若忽略每个点的具体采集时间,统一视为同一时刻采样，会导致	点云在空间上的扭曲或错位。</p>
-<img src="../images/复现FAST-LIVO2/36.png" alt="图4-反向传播示意图" style="zoom:67%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/36.png" alt="图4-反向传播示意图"></p>
 <p style="text-align:center;">图4-反向传播示意图</p>
 
 <p>​	3. 顺序更新 : 利用激光雷达测量细化的状态将被更新地图的几何结构，该状态将在视觉更新被进一步收敛，其中	视觉更新将在每个金字塔层面上进行，每层都要收敛。最终得到的状态被用于传播新到来的IMU测量，并更新地	图的视觉结构（纹理）。</p>
 <h4 id="Section-5-局部建图"><a href="#Section-5-局部建图" class="headerlink" title="Section 5 局部建图"></a>Section 5 局部建图</h4><ol>
 <li><p>地图结构 Map Structure</p>
-<img src="../images/复现FAST-LIVO2/37.png" alt="图5-Voxel Map示意图" style="zoom: 33%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/37.png" alt="图5-Voxel Map示意图"></p>
 <p style="text-align:center;">图5-Voxel Map示意图</p></li>
 </ol>
 <p>​	<strong>自适应体素结构</strong>,按照哈希表和每个哈希条目的八叉树组织。</p>
 <p>​	哈希表管理根体素,每一个根体素为0.5x0.5x0.5m的固定维度,每个根体素包含一个八叉树结构。叶体素代表一个局部平面,存储一个平面特征(即平面中心、法向量和不确定性),以及一组位于该平面上的激光雷达原始点。<strong>叶体素的不同大小使其能够表示不同尺度的局部平面,从而适应具有不同结构的环境</strong>。部分点与三级图像块(8×8图块大小)相连(即视觉地图点),收敛的视觉地图点仅与参考块关联，未收敛的点与参考块和其他可见块都关联。</p>
 <p>​	为了防止地图大小无限增长,设置初始地图范围后, 在该范围进行进行探测和建图，当雷达探测范围触碰到范围边界，局部地图范围会在该边界方向上移动d距离。存储的A处点云数据将被重置为C处的数据,保持内存大小固定。每次ESIKF更新后检查一次地图是否移动。</p>
-<img src="../images/复现FAST-LIVO2/38.png" alt="图6-局部地图滑动示意图" style="zoom: 50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/38.png" alt="图6-局部地图滑动示意图"></p>
 <p style="text-align:center;">图6-局部地图滑动示意图</p>
 
 <p><em>在(a)中,灰色矩形是初 始地图区域,长度为 L。红色圆圈是以 p0 为中心的初始 检测区域。在(b)中,检测区域移动到新位置 p1,在此位 置触碰到地图边界。地图区域移动到新位置(蓝色矩形) ,移动距离为 d。在(c)中,内存空间B保持不变。存储绿色区域的内存空间A被重置为(b)中的蓝色区域C。</em></p>
@@ -391,8 +387,7 @@
 <p>最后,通过检查这两种体素中包含的地图点并进行视场检查,得到当前的视觉子图。</p>
 </li>
 <li><p>按需投射 :</p>
-<img src="../images/复现FAST-LIVO2/39.png" alt="图7-按需体素光线投射的示意图" style="zoom: 67%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/39.png" alt="图7-按需体素光线投射的示意图"></p>
 <p style="text-align:center;">图7-按需体素光线投射的示意图</p>
 
 <p>当雷达距离目标太近而没有点返回时&#x2F;摄像机FOV可能不会被激光雷达FOV完全覆盖。流程如下 :</p>
@@ -410,8 +405,7 @@
 </ol>
 </li>
 <li><p>视觉地图点中离群点剔除</p>
-<img src="../images/复现FAST-LIVO2/40.png" alt="图8-剔除离群点示意图" style="zoom: 67%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/40.png" alt="图8-剔除离群点示意图"></p>
 <p style="text-align:center;">图8-剔除离群点示意图</p>
 
 <p>存在的问题: 将会严重降低图像对齐精度</p>
@@ -579,13 +573,11 @@
 
 <p>相机线说明 :</p>
 <p>相机的电源及 I&#x2F;O 接口为 6-pin P7 接口。</p>
-<img src="../images/复现FAST-LIVO2/32.png" alt="图13-相机同步线线序图" style="zoom:67%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/32.png" alt="图13-相机同步线线序图"></p>
 <p style="text-align:center;">图13-相机同步线线序图</p>
 
 <p>Livox Converter 2.0 同步线说明 :</p>
-<img src="../images/复现FAST-LIVO2/33.png" alt="图14-雷达同步线线序图" style="zoom:67%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/33.png" alt="图14-雷达同步线线序图"></p>
 <p style="text-align:center;">图14-雷达同步线线序图</p>
 
 
@@ -610,8 +602,7 @@
 <h4 id="4-重启udev"><a href="#4-重启udev" class="headerlink" title="4. 重启udev"></a>4. 重启udev</h4><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">sudo service udev reload<br>sudo service udev restart<br></code></pre></td></tr></table></figure>
 
 <p>再次查看串口设备，即可看到绑定成功后的名称。若还没成功，可尝试重启电脑或者热插拔设备。</p>
-<img src="../images/复现FAST-LIVO2/50.jpg" alt="图15-绑定串口显示" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/50.jpg" alt="图15-绑定串口显示"></p>
 <p style="text-align:center;">图15-绑定串口显示</p>
 
 
@@ -631,8 +622,7 @@
 <p style="text-align:center;">图17-GPS信号示意图</p>
 
 <p><strong>Livox Converter 2.0</strong>将GPS模块的时间信号（GPRMC）通过TTL转usb模块接入PC，PPS信号接入LiDAR转接盒同步口（Sync Port）。</p>
-<img src="../images/复现FAST-LIVO2/18.png" alt="图18-Livox Converter 2.0连线图" style="zoom: 67%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/18.png" alt="图18-Livox Converter 2.0连线图"></p>
 <p style="text-align:center;">图18-Livox Converter 2.0连线图</p>
 
 <h5 id="PPS"><a href="#PPS" class="headerlink" title="PPS"></a>PPS</h5><p>Livox LiDAR每次接收到PPS信号的上升沿后，会将当前时刻的点云时间置为0，然后重新开始计时直到下一个PPS脉冲到来,利用这个特性，来实现PPS脉冲对LiDAR时间的同步。</p>
@@ -644,22 +634,18 @@
 <p>注：Livox Viewer2并不支持Avia</p>
 </blockquote>
 <p>以太网设置:</p>
-<img src="../images/复现FAST-LIVO2/47.jpg" alt="图19-Livox雷达以太网设置" style="zoom: 50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/47.jpg" alt="图19-Livox雷达以太网设置"></p>
 <p style="text-align:center;">图19-Livox雷达以太网设置</p>
 
 <p>点击左上角播放按钮,出现点云.</p>
-<img src="../images/复现FAST-LIVO2/48.jpg" alt="图20-Livox Viewer点云示意图" style="zoom: 67%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/48.jpg" alt="图20-Livox Viewer点云示意图"></p>
 <p style="text-align:center;">图20-Livox Viewer点云示意图</p>
 
 <p>插上硬同步设备后,查看雷达的连接转态和数据的读取状态，来确认雷达是否已进入PPS同步状态 <strong>(在这里不能修改TIme Sync &#x2F; PPS State,此设置为连接硬同步后自动触发)</strong></p>
-<img src="../images/复现FAST-LIVO2/49.png" alt="图21-Livox Viewer设置状态图" style="zoom: 50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/49.png" alt="图21-Livox Viewer设置状态图"></p>
 <p style="text-align:center;">图21-Livox Viewer设置状态图</p>
 
-<h4 id="2-修改livox-lidar-config-json"><a href="#2-修改livox-lidar-config-json" class="headerlink" title="2. 修改livox_lidar_config.json"></a>2. 修改livox_lidar_config.json</h4><img src="../images/复现FAST-LIVO2/51.jpg" alt= "图22-livox_lidar_config.json参数设置" style="zoom: 50%;" />
-
+<h4 id="2-修改livox-lidar-config-json"><a href="#2-修改livox-lidar-config-json" class="headerlink" title="2. 修改livox_lidar_config.json"></a>2. 修改livox_lidar_config.json</h4><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/51.jpg" alt="图22-livox_lidar_config.json参数设置"></p>
 <p style="text-align:center;">图22-livox_lidar_config.json参数设置</p>
 
 <h4 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试"></a>3. 测试</h4><figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs SHELL">roslaunch livox_ros_driver livox_lidar_rviz.launch<br></code></pre></td></tr></table></figure>
@@ -683,23 +669,19 @@
 
 <p>​	看似这个相机支持RGB8 &#x2F; BayerRG8 &#x2F; BayerRG12Packed, PixelFormat选择0&#x2F;1&#x2F;2都可以, 实则不然。</p>
 <p>​	当选择1或2的时候,运行<code>roslaunch mvs_ros_driver mvs_camera_trigger.launch</code>时, 出现报错 :</p>
-<img src="../images/复现FAST-LIVO2/42.jpg" alt="图24-mvs_camera_trigger报错图" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/42.jpg" alt="图24-mvs_camera_trigger报错图"></p>
 <p style="text-align:center;">图24-mvs_camera_trigger报错图</p>
 
 <p>​	针对这个报错, 打开MVS的官方图形化界面看一下 : </p>
 <p>​	图形化界面参数太多了,再查阅海康机器人USB3.0工业面阵相机用户手册,发现Gamma参数应该在Analog Control 属性中.</p>
-<img src="../images/复现FAST-LIVO2/43.png" alt="图25-海康相机用户手册详细参数" style="zoom:33%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/43.png" alt="图25-海康相机用户手册详细参数"></p>
 <p style="text-align:center;">图25-海康相机用户手册详细参数</p>
 
 <p>​	在Bayer RG 8 &#x2F; BayerRG12Packed模式下 , 没有Gamma这个参数 ．只有在RGB8模式下才有Gamma参数．</p>
-<img src="../images/复现FAST-LIVO2/44.jpg" alt="图26-海康相机图形化界面参数" style="zoom: 80%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/44.jpg" alt="图26-海康相机图形化界面参数"></p>
 <p style="text-align:center;">图26-海康相机图形化界面参数</p>
 
-<img src="../images/复现FAST-LIVO2/45.jpg" alt="图27-海康相机图形化界面参数" style="zoom: 80%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/45.jpg" alt="图27-海康相机图形化界面参数"></p>
 <p style="text-align:center;">图27-海康相机图形化界面参数</p>
 
 <p>​	探究一下原理：</p>
@@ -721,8 +703,7 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">roslaunch mvs_ros_pkg mvs_camera_trigger.launch<br></code></pre></td></tr></table></figure>
 
 <p>rviz中查看图像是否正常输出．</p>
-<img src="../images/复现FAST-LIVO2/46.jpg" alt="图28-mvs_camera_trigger的rviz界面" style="zoom: 33%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/46.jpg" alt="图28-mvs_camera_trigger的rviz界面"></p>
 <p style="text-align:center;">图28-mvs_camera_trigger的rviz界面</p></li>
 </ul>
 <h3 id="7-烧录"><a href="#7-烧录" class="headerlink" title="7. 烧录"></a>7. 烧录</h3><ol>
@@ -733,16 +714,13 @@
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/20.png" alt="图29-烧录硬件连接原理图"></p>
 <p style="text-align:center;">图29-烧录硬件连接原理图</p>
 
-<img src="../images/复现FAST-LIVO2/21.jpg" alt="图30-实物图(stlink正面)" style="zoom: 25%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/21.jpg" alt="图30-实物图(stlink正面)"></p>
 <p style="text-align:center;">图30-实物图(stlink正面)</p></li>
 </ol>
-<img src="../images/复现FAST-LIVO2/22.jpg" alt="图31-实物图(stlink侧面)" style="zoom: 25%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/22.jpg" alt="图31-实物图(stlink侧面)"></p>
 <p style="text-align:center;">图31-实物图(stlink侧面)</p>
 
-<img src="../images/复现FAST-LIVO2/23.jpg" alt="图32-实物图(stm32背面)" style="zoom: 25%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/23.jpg" alt="图32-实物图(stm32背面)"></p>
 <p style="text-align:center;">图32-实物图(stm32背面)</p>
 
 <ol start="3">
@@ -750,23 +728,19 @@
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/24.png" alt="图33-烧录步骤-1"></p>
 <p style="text-align:center;">图33-烧录步骤-1</p></li>
 </ol>
-<img src="../images/复现FAST-LIVO2/25.png" alt="图34-烧录步骤-2" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/25.png" alt="图34-烧录步骤-2"></p>
 <p style="text-align:center;">图34-烧录步骤-2</p>
 
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/26.png" alt="图35-烧录步骤-3"></p>
 <p style="text-align:center;">图35-烧录步骤-3</p>
 
-<img src="../images/复现FAST-LIVO2/27.png" alt="图36-烧录步骤-4" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/27.png" alt="图36-烧录步骤-4"></p>
 <p style="text-align:center;">图36-烧录步骤-4</p>
 
-<img src="../images/复现FAST-LIVO2/28.png" alt="图37-烧录步骤-5" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/28.png" alt="图37-烧录步骤-5"></p>
 <p style="text-align:center;">图37-烧录步骤-5</p>
 
-<img src="../images/复现FAST-LIVO2/29.png" alt="图38-烧录步骤-6" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/29.png" alt="图38-烧录步骤-6"></p>
 <p style="text-align:center;">图38-烧录步骤-6</p>
 
 <p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/30.png" alt="图39-烧录步骤-7"></p>
@@ -1032,29 +1006,23 @@
 <blockquote>
 <ul>
 <li>雷达 &#x2F; imu &#x2F; 图像均为10hz</li>
-<li>图像和雷达时间差约为30ms,查看官方包也是这样的偏差,目前暂时不清楚这个时间差意味着什么</li>
 </ul>
 </blockquote>
-<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h3 id="完全测试"><a href="#完全测试" class="headerlink" title="完全测试"></a>完全测试</h3><h4 id="硬件设备"><a href="#硬件设备" class="headerlink" title="硬件设备"></a>硬件设备</h4><img src="../images/复现FAST-LIVO2/59.jpg" alt="图65-硬件设备设计图" style="zoom:50%;" />
-
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h3 id="完全测试"><a href="#完全测试" class="headerlink" title="完全测试"></a>完全测试</h3><h4 id="硬件设备"><a href="#硬件设备" class="headerlink" title="硬件设备"></a>硬件设备</h4><p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/59.jpg" alt="图65-硬件设备设计图"></p>
 <p style="text-align:center;">图65-硬件设备设计图</p>
 
-<img src="../images/复现FAST-LIVO2/57.jpg" alt="图66-硬件设备实物图" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/57.jpg" alt="图66-硬件设备实物图"></p>
 <p style="text-align:center;">图66-硬件设备实物图</p>
 
-<img src="../images/复现FAST-LIVO2/58.jpg" alt="图67-硬件设备实物图" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/58.jpg" alt="图67-硬件设备实物图"></p>
 <p style="text-align:center;">图67-硬件设备实物图</p>
 
 <p>设备标注:</p>
-<img src="../images/复现FAST-LIVO2/76.jpeg" alt="图68-硬件设备标注" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/76.jpeg" alt="图68-硬件设备标注"></p>
 <p style="text-align:center;">图68-硬件设备标注</p>
 
 <p>设备接线:</p>
-<img src="../images/复现FAST-LIVO2/75.jpeg" alt="图69-设备接线标注" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/75.jpeg" alt="图69-设备接线标注"></p>
 <p style="text-align:center;">图69-设备接线标注</p>
 
 <p>设备供电:</p>
@@ -1086,35 +1054,28 @@
 
 
 <h4 id="建图精度-1"><a href="#建图精度-1" class="headerlink" title="建图精度"></a>建图精度</h4><p>表现 : 基本可以看清大色块纹理,也许需要更准确的标定数据?<strong>(存疑)</strong></p>
-<img src="../images/复现FAST-LIVO2/62.jpg" alt="图71-复杂墙面建图总览" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/62.jpg" alt="图71-复杂墙面建图总览"></p>
 <p style="text-align:center;">图71-复杂墙面建图总览</p>
 
-<img src="../images/复现FAST-LIVO2/60.png" alt="图72-复杂墙面建图细节-1" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/60.png" alt="图72-复杂墙面建图细节-1"></p>
 <p style="text-align:center;">图72-复杂墙面建图细节-1</p>
 
-<img src="../images/复现FAST-LIVO2/61.png" alt="图73-复杂墙面建图细节-2" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/61.png" alt="图73-复杂墙面建图细节-2"></p>
 <p style="text-align:center;">图73-复杂墙面建图细节-2</p>
 
-<img src="../images/复现FAST-LIVO2/63.jpg" alt="图74-大号文字墙面建图" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/63.jpg" alt="图74-大号文字墙面建图"></p>
 <p style="text-align:center;">图74-大号文字墙面建图</p>
 
 
 
 <h4 id="回环精度"><a href="#回环精度" class="headerlink" title="回环精度"></a>回环精度</h4><p>表现 : 长距离回环 z轴有1.8m左右的漂移, x轴,y轴回环较为稳定</p>
-<img src="../images/复现FAST-LIVO2/64.png" alt="图75-回环路径展示" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/64.png" alt="图75-回环路径展示"></p>
 <p style="text-align:center;">图75-回环路径展示</p>
 
-<img src="../images/复现FAST-LIVO2/65.png" alt="图76-回环里程计数据-z轴" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/65.png" alt="图76-回环里程计数据-z轴"></p>
 <p style="text-align:center;">图76-回环里程计数据-z轴</p>
 
-<img src="../images/复现FAST-LIVO2/66.png" alt="图77-回环里程计数据-x轴(蓝)/y轴(绿)" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/66.png" alt="图77-回环里程计数据-x轴(蓝)&#x2F;y轴(绿)"></p>
 <p style="text-align:center;">图77-回环里程计数据-x轴(蓝)/y轴(绿)</p>
 
 
@@ -1122,30 +1083,24 @@
 <h4 id="不同场景"><a href="#不同场景" class="headerlink" title="不同场景"></a>不同场景</h4><ol>
 <li><p>12分钟+室内+室外</p>
 <p>表现 : 里程计数据基本平滑 , 室外相机有过曝情况 , 代码里没有看到和论文中对应的自动调整曝光的部分,也没有发布自动曝光话题 <strong>(存疑)</strong></p>
-<img src="../images/复现FAST-LIVO2/71.jpg" alt="图78-室外场景实时rviz" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/71.jpg" alt="图78-室外场景实时rviz"></p>
 <p style="text-align:center;">图78-室外场景实时rviz</p>
 
-<img src="../images/复现FAST-LIVO2/67.jpg" alt="图79-室外场景里程计数据总览" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/67.jpg" alt="图79-室外场景里程计数据总览"></p>
 <p style="text-align:center;">图79-室外场景里程计数据总览</p>
 
-<img src="../images/复现FAST-LIVO2/68.png" alt="图80-室外场景里程计数据细节" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/68.png" alt="图80-室外场景里程计数据细节"></p>
 <p style="text-align:center;">图80-室外场景里程计数据细节</p>
 </li>
 <li><p>室内</p>
 <p>表现 : 玻璃会影响建图精度,从开发空间进入密闭空间(推门走进楼梯间)易造成错误建图</p>
-<img src="../images/复现FAST-LIVO2/72.jpg" alt="图81-室内场景rviz-1" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/72.jpg" alt="图81-室内场景rviz-1"></p>
 <p style="text-align:center;">图81-室内场景rviz-1</p>
 
-<img src="../images/复现FAST-LIVO2/73.jpg" alt="图82-室内场景rviz-2" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/73.jpg" alt="图82-室内场景rviz-2"></p>
 <p style="text-align:center;">图82-室内场景rviz-2</p>
 
-<img src="../images/复现FAST-LIVO2/74.jpg" alt="图83-室内场景rviz-3" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/74.jpg" alt="图83-室内场景rviz-3"></p>
 <p style="text-align:center;">图83-室内场景rviz-3</p>
 </li>
 <li><p>楼梯间</p>
@@ -1153,12 +1108,10 @@
 <p>推测 : 楼梯间狭窄且全为白墙,特征点少,avia雷达1-2m处点云质量差,存在盲区</p>
 </li>
 </ol>
-<img src="../images/复现FAST-LIVO2/69.jpg" alt="图84-楼梯间rviz-1" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/69.jpg" alt="图84-楼梯间rviz-1"></p>
 <p style="text-align:center;">图84-楼梯间rviz-1</p>
 
-<img src="../images/复现FAST-LIVO2/70.jpg" alt="图85-楼梯间rviz-2" style="zoom:50%;" />
-
+<p><img src="/../images/%E5%A4%8D%E7%8E%B0FAST-LIVO2/70.jpg" alt="图85-楼梯间rviz-2"></p>
 <p style="text-align:center;">图85-楼梯间rviz-2</p>
 
         </div>
