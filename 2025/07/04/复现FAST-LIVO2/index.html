@@ -511,11 +511,22 @@
 </li>
 <li><p>OpenCV&gt;&#x3D;4.2, Follow <a target="_blank" rel="noopener" href="http://opencv.org/">Opencv Installation</a>.</p>
 </li>
+<li><p><a target="_blank" rel="noopener" href="https://connecthkuhk-my.sharepoint.com/:u:/g/personal/zhengcr_connect_hku_hk/Ed0Xq17d6udNqYn4vkR71bQBFz0z6_Kru3cz1gD95FIgrQ?e=FPvfkT">MVS-2.1.2</a> </p>
+</li>
 <li><p>Livox_SDK2 :</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">git clone https://github.com/Livox-SDK/Livox-SDK2.git<br>cd ./Livox-SDK2/<br>mkdir build<br>cd build<br>cmake .. &amp;&amp; make -j<br>sudo make install<br></code></pre></td></tr></table></figure>
 </li>
 <li><p>Sophus : Sophus Installation for the non-templated&#x2F;double-only version.</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">git clone https://github.com/strasdat/Sophus.git<br>cd Sophus<br>git checkout a621ff<br>mkdir build &amp;&amp; cd build &amp;&amp; cmake ..<br>make<br>sudo make install<br></code></pre></td></tr></table></figure></li>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell">git clone https://github.com/strasdat/Sophus.git<br>cd Sophus<br>git checkout a621ff<br>mkdir build &amp;&amp; cd build &amp;&amp; cmake ..<br>make<br>sudo make install<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>如果 Sophus 编译报错:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs c++">/Sophus/sophus/so<span class="hljs-number">2.</span>cpp:<span class="hljs-number">32</span>:<span class="hljs-number">26</span>: error: lvalue required as left operand of assignment<br>   <span class="hljs-number">32</span> |   unit_complex_.<span class="hljs-built_in">real</span>() = <span class="hljs-number">1.</span>;<br>      |                          ^~<br>/Sophus/sophus/so<span class="hljs-number">2.</span>cpp:<span class="hljs-number">33</span>:<span class="hljs-number">26</span>: error: lvalue required as left operand of assignment<br>   <span class="hljs-number">33</span> |   unit_complex_.<span class="hljs-built_in">imag</span>() = <span class="hljs-number">0.</span>;<br>      |                          ^~<br></code></pre></td></tr></table></figure>
+
+<p>参考<a target="_blank" rel="noopener" href="https://github.com/hku-mars/FAST-LIVO2/issues/339">issue</a>,把so2.cpp中30-34行改为:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs c++">SO2::<span class="hljs-built_in">SO2</span>()<br>&#123;<br>  unit_complex_.<span class="hljs-built_in">real</span>(<span class="hljs-number">1.</span>);<br>  unit_complex_.<span class="hljs-built_in">imag</span>(<span class="hljs-number">0.</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>重新编译即可.</p>
+</li>
 </ul>
 <h3 id="3-工作空间配置"><a href="#3-工作空间配置" class="headerlink" title="3. 工作空间配置"></a>3. 工作空间配置</h3><p>Avia只支持livox_ros_driver</p>
 <p>livox_ros_driver可以不着急先编译,等最后一起build</p>
