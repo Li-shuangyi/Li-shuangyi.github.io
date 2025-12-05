@@ -175,9 +175,9 @@
               <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
                 2025-12-03
               </p>
-              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
-                项目名称 : SHAC复现论文阅读...
-              </p>
+                <p class="post-excerpt text-hacker-color3 group-hover:text-white truncate">
+                  项目名称 : SHAC复现论文阅读
+                </p>
             </a>
           </div>
         
@@ -189,9 +189,31 @@
               <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
                 2025-10-09
               </p>
-              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
-                BASH文件切换环境# &amp;gt;&amp;gt;&amp;gt; switch environment &amp;gt;&amp;gt;&amp;gt;# &amp;gt;&amp;gt;&amp;gt; conda initialize &amp;gt;&amp;gt;&amp;gt;# !! Contents within this block are managed by &amp;#x27;conda init&amp;#x27; !!function use_conda() &amp;#123;    __conda_setup=&amp;quot;$(&amp;#x27;/home/xx/anaconda3/bin/conda&amp;#x27; &amp;#x27;shell.bash&amp;#x27; &amp;#x27;hook&amp;...
-              </p>
+                <p class="post-excerpt text-hacker-color3 group-hover:text-white truncate">
+                  BASH文件切换环境# &amp;gt;&amp;gt;&amp;gt; switch environment &amp;gt;&amp;gt;&amp;gt;# &amp;gt;&amp;gt;&amp;gt; conda initialize &amp;gt;&amp;gt;&amp;gt;# !! Contents within this block are managed by &amp;#x27;conda init&amp;#x27; !!function use_conda() &amp;#123;    __conda_setup=&amp;quot;$(&amp;#x27;/home/xx/anaconda3/bin/conda&amp;#x27; &amp;#x27;shell.bash&amp;#x27; &amp;#x27;hook&amp;#x27; 2&amp;gt; /dev/null)&amp;quot;    if [ $? -eq 0 ]; then        eval &amp;quot;$__conda_setup&amp;quot;    else        if [ -f &amp;quot;/home/xx/anaconda3/etc/profile.d/conda.sh&amp;quot; ]; then            . &amp;quot;/home/xx/anaconda3/etc/profile.d/conda.sh&amp;quot;        else            export PATH=&amp;quot;/home/xx/anaconda3/bin:$PATH&amp;quot;        fi    fi    unset __conda_setup    conda activate LCCNet2    echo &amp;quot;Conda 环境已激活&amp;quot;&amp;#125;# &amp;lt;&amp;lt;&amp;lt; conda initialize &amp;lt;&amp;lt;&amp;lt;# &amp;gt;&amp;gt;&amp;gt; fishros initialize &amp;gt;&amp;gt;&amp;gt;function use_ros() &amp;#123;    source /opt/ros/noetic/setup.bash    echo &amp;quot;ROS 环境已激活&amp;quot;&amp;#125;# &amp;lt;&amp;lt;&amp;lt; fishros initialize &amp;lt;&amp;lt;&amp;lt;
+
+新的终端默认不source任何环境。在终端中输入use_conda 启动conda环境，输入 use_ros 启动ros环境。
+COKKI数据集准备小主机运行livox_ws下的脚本”record.sh”
+本地处理
+把bag放在[COKKIBag](../../../home/qi/ros_ws/src/COKKIDataset/COKKIBag)路径下，命名为“xx_indoor”或“xx_outdoor”。
+
+在PrepareCOKKI功能包中，修改/config/bag_exporter_config.yaml中bag_path&amp;#x2F;image_save_path&amp;#x2F;bin_save_path参数。
+
+运行launch文件：
+roslaunch cokkidataset cokkidataset.launch
+
+在/home/qi/home/qi/ros_ws/src/COKKIDataset/sequences/xx中筛选图片，确保点云和图片一一对应。将同一序列的indoor和outdoor数据放在一起，使用rename.py修改当前数据集ID。
+
+
+VSCODE插件Bookmarks用于代码标记及标记之间的跳转。
+在当前工作区中按ctrl+shift+p，输入bookmarks自定义快捷键：
+
+ctrl+alt+shift+k：标记&amp;#x2F;取消标记（蓝色标记图标）
+shift+j：跳转到上一个标记
+shift+l：跳转到下一个标记
+
+
+                </p>
             </a>
           </div>
         
@@ -203,8 +225,8 @@
               <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
                 2025-07-04
               </p>
-              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
-                项目名称 : FAST-LIVO2复现任务规划
+                <p class="post-excerpt text-hacker-color3 group-hover:text-white truncate">
+                  项目名称 : FAST-LIVO2复现任务规划
 设备:
 
 Livox AVIA
@@ -236,8 +258,918 @@ VIO 子系统: 提取当前 FoV 中的视觉子映射,剔除异常值。
 
 视觉对齐: 稀疏直接图像对齐,比较光流误差。
 
-紧密耦合: 点到平面残差和图像光度误差与误差状态iK...
-              </p>
+紧密耦合: 点到平面残差和图像光度误差与误差状态iKF中的IMU传播紧密耦合。
+
+ikdTree添加新点至全局映射。
+
+图1-FAST-LIVO系统概述图
+
+FAST-LIVO2新贡献
+问题 : 激光雷达和视觉测量之间维度不匹配 (测量维度 &amp;#x2F; 数据类型 &amp;#x2F; 分布特性) , 而 FAST-LIVO中使用异步更新。
+解决方案 : ESIKF框架,惯顺序更新(sequential update)。
+
+问题 : FAST-LIVO中假设图像块中所有像素共享相同深度,该假设降低了对齐中仿射变换的准确性。
+解决方案 : 使用并进一步优化来自激光雷达点的平面先验。
+
+问题: FAST-LIVO 基于与当前视图的接近度选择参考块,导致参考块低质量,降低了准确性。
+解决方案 : 提出了一种参考块 Reference Patch 更新策略 ,通过选择具有大视差和足够纹理细节的高质量内点参考块提高图像对齐的准确性。
+
+问题 : 环境光照变化会降低图像对齐中的收敛性,FAST-LIVO中未解决该问题。
+解决方案 : 在线曝光时间估计。
+
+问题 : 激光雷达近距离盲区造成激光雷达点测量缺失,FAST-LIVO中未考虑该问题。
+解决方案 : 提出按需进行体素射线投射的方法，以增强系统在因激光雷达近距离盲区造成的激光雷达点测量缺失情况下的鲁棒性。 
+
+
+
+图2-FAST-LIVO2系统概述图												
+
+Section 4 顺序更新的ESIKF
+扫描重组 Scan Recombination
+
+将$t_k-1$时刻到$t_k$时刻的所有激光点都合并到$t_k$时刻。
+将高频、连续采样的LiDAR原始点云数据，按照相机采样时刻进行分割，从而得到与相机采样时刻对应的独立LiDAR扫描帧。    
+
+通过硬同步使雷达和相机采样一致
+激光雷达和相机在$t_k-1$ 时刻同时触发采集，但相机在瞬间完成采集，激光雷达则在$t_k$时刻才完成一帧数据。虽然触发时间相同，系统实际处理的是$t_k$时刻图像与延迟 $t$ (约100ms) 的激光雷达帧。
+
+
+
+传播 Propagation
+
+
+
+图3-前向传播与反向传播示意图									
+
+​	1. 前向传播：KF在预测阶段将噪声$W_i$ 设为0，预测$t_k-1$ 到$t_k$ 这段时间每个IMU输入时的状态。由KF预测可得此时状态量为$\hat{x}$，状态量对应的协方差$\hat{P}$作为更新阶段的先验。
+​	2. 反向传播 : 补偿激光雷达运动畸变，确保所有的点都是在tk时刻观测到的。
+​	运动畸变 : 由于激光雷达在移动过程中分时采点，若忽略每个点的具体采集时间,统一视为同一时刻采样，会导致点云在空间上的扭曲或错位。
+
+图4-反向传播示意图
+
+​	3. 顺序更新 : 利用激光雷达测量细化的状态将被更新地图的几何结构，该状态将在视觉更新被进一步收敛，其中	视觉更新将在每个金字塔层面上进行，每层都要收敛。最终得到的状态被用于传播新到来的IMU测量，并更新地	图的视觉结构（纹理）。
+Section 5 局部建图
+地图结构 Map Structure
+
+图5-Voxel Map示意图
+
+​	自适应体素结构,按照哈希表和每个哈希条目的八叉树组织。
+​	哈希表管理根体素,每一个根体素为0.5x0.5x0.5m的固定维度,每个根体素包含一个八叉树结构。叶体素代表一个局部平面,存储一个平面特征(即平面中心、法向量和不确定性),以及一组位于该平面上的激光雷达原始点。叶体素的不同大小使其能够表示不同尺度的局部平面,从而适应具有不同结构的环境。部分点与三级图像块(8×8图块大小)相连(即视觉地图点),收敛的视觉地图点仅与参考块关联，未收敛的点与参考块和其他可见块都关联。
+​	为了防止地图大小无限增长,设置初始地图范围后, 在该范围进行进行探测和建图，当雷达探测范围触碰到范围边界，局部地图范围会在该边界方向上移动d距离。存储的A处点云数据将被重置为C处的数据,保持内存大小固定。每次ESIKF更新后检查一次地图是否移动。
+
+图6-局部地图滑动示意图
+
+在(a)中,灰色矩形是初 始地图区域,长度为 L。红色圆圈是以 p0 为中心的初始 检测区域。在(b)中,检测区域移动到新位置 p1,在此位 置触碰到地图边界。地图区域移动到新位置(蓝色矩形) ,移动距离为 d。在(c)中,内存空间B保持不变。存储绿色区域的内存空间A被重置为(b)中的蓝色区域C。
+
+几何构造及更新 : 基于ESIKF对激光雷达点测量构建和更新实现	
+在ESIKF中的激光雷达更新后,将激光雷达扫描的所有点注册到全局坐标系中。对于每个注册的激光雷达点,确定其在哈希图中的根体素位置。
+
+如果不存在,用新点初始化该体素并将其索引到哈希图中。
+
+如果确定的体素已经存在于地图中, 将该点附加到现有体素中。
+
+
+在所有扫描中的点分配完成后,进行几何构建和更新。
+
+对于新创建的体素
+通过奇异值分解来确定其所有包含的点是否位于一个平面上。
+
+如果是,计算中心点 $ q &amp;#x3D; p ̄$ 、平面法线 $n$ 和平面的协方差矩阵$ Σ_{n,q} $。$ Σ_{n,q} $ 用于表征平面不确定性 (平面不确定性源于姿态估计的不确定性和点测量噪声)。
+如果不是,体素将不断细分为八个更小的八分体,直到子体素中的点被确定为形成一个平面或达到最大层数。达到最大层数后,叶体素中的点将被丢弃。
+地图仅包含被识别为平面的体素(根体素或子体素)。
+
+
+对于已存在的体素
+评估新的点和已有的点能否构建为一个平面
+
+如果否：和前面一样，对体素进行划分。
+如果是：更新平面参数和协方差。
+一旦平面参数是收敛的，该平面将被视为成熟面，平面参数将被视为固定，平面上的新点将被丢弃。
+
+
+平面上的激光雷达点生成视觉地图点
+
+对于成熟的平面,最近的50个雷达点是生成视觉地图点的候选者。
+
+对于未成熟的平面,所有雷达点都是候选者。
+
+视觉地图点生成过程将识别其中一些候选点作为视觉地图点,并将它们与图像块附加以进行图像对齐。
+
+
+
+
+
+视觉地图点生成和更新
+选择地图中的候选激光雷达点用于生成和更新。(详见第Section 7-1)
+候选点条件:
+
+在当前帧视角可见
+在当前图像中表现出显著灰度梯度
+
+在视觉更新后,将候选点投影到当前图像上,并在每个体素中保留最小深度的候选点作为局部平面。将当前图像划分为每个30 × 30像素的均匀网格单元。
+
+若一个栅格元没有包含任何投影到这的视觉地图点,则使用带有最高灰度梯度的候选点新建一个新的视觉地图点。将该点与当前图像块、估计的当前状态（位姿&amp;#x2F;曝光时间）以及平面法向量相关联。与视觉地图点相关联的块有三个相同大小的层（每层11x11像素）,构成块金字塔。
+
+若一个栅格元包含了投影的视觉地图点，并满足以下条件之一就添加新的块到当前视觉地图点上:
+
+超过20帧没有添加新的块到视觉地图点。
+视觉地图点在当前帧中的像素位置比其在上一个块的位置相差至少40像素（晃得太厉害，点在屏幕里移动了一大段距离，重新拍一张）。
+
+
+
+地图点将拥有视角分布均匀的有效块Patch。
+
+Reference Patch 参考块更新 : 一个视觉地图点会拥有不止一个块。需要选择一个作为参考块用于视觉更新中的图像对齐，基于光度相似性和视角给每个块 f 评分。在所有附加到视觉地图点的Patch中,得分最高的Patch被更新为参考块。
+
+
+   上述评分机制倾向于选择:
+	1. 外观与大多数其他补丁相似(以NCC为标准)的参考补丁, 以避免动态目标上的补丁;
+	2. 视角方向与平面正交,从而在高分辨率下保持纹理细节。
+
+   FAST-LIVO 中的参考块更新策略直接选择与当前帧视角方向差异最小的补丁,导致所选参考补丁与当前帧非常接近,从而对当前姿态更新施加了弱约束。
+
+法向量细化
+每个视觉地图点都被假设位于一个小的局部平面上。（以前的研究假设像素块上的所有像素拥有同样深度）
+使用源于雷达点的平面参数取得更好的精度(详见第Section 5-2)。 
+平面法向量对于视觉更新过程中的图像仿射变换对齐至关重要,平面法向量细化能够增强仿射变换的精度。 
+具体：通过最小化参考块与视觉地图点关联的其他块之间的光度误差，来优化参考块中的平面法向量。
+
+
+Section 6 激光雷达测量模型用于ESIKF LiDAR更新的LiDAR测量模型$y_l &amp;#x3D; h_l(x, v_l)$。
+
+点到平面的雷达测量模型
+
+投影无畸变点到世界系;
+
+确定该世界点所在哈希图的根&amp;#x2F;子体素，并构建观测公式
+如果没有体素被发现或该体素不包含平面则丢弃该点。 否则，构建该体素中平面与这个点的观测公式。 假设一个激光真值点，准确的到世界系变换阵，这个点与平面中心点应该是在一个平面上的。
+
+带入激光点测量和噪声，平面法向量估计和中心点估计及协方差,
+得到测量噪声的形式:$v_l&amp;#x3D;(δ^L\mathbf{p}_j,δ\mathbf{n}_j,δ\mathbf{q}_j)$
+
+
+
+带有光束发散效应的Lidar测量噪声
+测量噪声主要由两个元素构成，飞行时间导致的测距不确定性和编码导致的轴承方向不确定性，除此外，还有激光的发散角度。随着方位方向与法向量之间的角度 $φ$的增加，激光雷达点的测距不确定性显著增加，而方位方向的不确定性不受影响。当从地面和墙面选的点更多时，位姿估计的精度更高。 $φ$越小越好。
+
+
+Section 7 视觉测量模型用于ESIKF视觉更新的视觉测量模型$y_c &amp;#x3D; h_c(x, v_c)$。
+1.视觉地图点选择
+为了视觉更新中的稀疏对齐，首先选择合适的视觉地图点。 
+
+使用体素和投射查询来提取当前相机FoV中的可见的地图点集合（视觉的子地图）。 
+
+来自这个子地图中视觉地图点将被挑选并剔除离群点。 
+
+这个过程能够为视觉测量模型中构建视觉光度误差提供一个精细的视觉地图点集合。
+
+可见体素的查询 : 
+问题: 地图中体素数量庞大,从地图中的大量体素中确定当前帧FoV中的地图体素困难。
+解决：利用当前LiDAR扫描直接命中的体素作为候选，大幅减少需处理的体素数量。 
+实现：1、使用测量的点位置来查询体素哈希表
+​       2、筛选上一图像帧中通过相同体素查询和光线投射确认为可见的地图点所命中的体素。 
+最后,通过检查这两种体素中包含的地图点并进行视场检查,得到当前的视觉子图。
+
+按需投射 :
+
+图7-按需体素光线投射的示意图
+
+当雷达距离目标太近而没有点返回时&amp;#x2F;摄像机FOV可能不会被激光雷达FOV完全覆盖。流程如下 :
+
+图像划分将图像划分为30x30的均匀栅格元，投影体素查询获得的视觉地图点到栅格元上。
+
+对未被占据栅格元的射线投射对于每个未被视觉地图点占据的栅格元，光线沿着中心像素向后投射，其中采样点沿着光线在深度方向上从dmin到dmax均匀分布
+
+降低计算量相机机体系下每个光线上的采样点的位置都被预先算好了。
+
+处理每个采样点对每个采样点，评估其对应的体素状态：若该体素包含投影后位于此网格单元内的地图点，则将这些地图点纳入视觉子地图，并终止当前射线的处理。否则：继续射线上的下一个采样点，直到达到最大深度DMAX。
+
+所有未被占据栅格元处理完成获得了一组在整个图像上分布的视觉地图点集合。
+
+
+
+视觉地图点中离群点剔除
+
+图8-剔除离群点示意图
+
+存在的问题: 将会严重降低图像对齐精度
+​    (1) 在当前帧中被遮挡
+​    (2) 存在深度不连续性
+​    (3) 拥有这些点的参考块采集视角过大
+​    (4) 在当前帧中观测视角过大
+
+投影所有点–解决问题1
+在雷达更新后，将子图中的所有视觉地图点用位姿投影至当前帧，并在每个栅格元中保留深度最小的点。
+
+深度图–解决问题2
+将当前雷达帧的点投影至当前帧生成深度图，用9x9的邻域在深度图中比较视觉地图点的深度，并判断遮挡和深度变化。被占据的&amp;#x2F;深度不连续的点将被剔除。
+
+点移除–解决问题3&amp;amp;4
+移除参考块与当前块的视角太大（法向量与从视觉地图点到块光学中心的方向之间的角度超过80°）的点。
+
+
+
+
+
+
+
+稀疏直接的视觉测量模型
+
+上面提取的视觉地图点 {$G_{pi}$} 用于构建视觉测量模型。 其基本原理是,利用真值状态将地图点投影至当前图像，参考块与当前块之间的光度误差应当为0. 
+要根据测量方程估算反向曝光时间 $τ_k$，将初始反向曝光时间固定为 $τ_0$ &amp;#x3D; 1 ，以消除方程在所有反向曝光时间都为零时的退化现象。后续帧的估计反向曝光时间是相对于第一帧的曝光时间。测量方程被用于三个层次的视觉更新步骤,估计的状态随后用于生成可视化地图点和更新参考块。
+代码框架雷达点云格式
+// roslaunch livox_ros_driver livox_lidar.launch / livox_ros_driver2所有launchstruct LivoxPoint &amp;#123;    float x;    float y;    float z;    uint8_t reflectivity;   // 反射率    uint8_t tag;            // 标志位    uint8_t line;           // 扫描线编号&amp;#125;;// roslaunch livox_ros_driver livox_lidar_msg.launchstruct CustomMsg &amp;#123;    uint64_t timebase;      // 当前包的基准时间    uint32_t point_num;     // 点数    uint8_t  lidar_id;      // 雷达ID    uint8_t  rsvd[3];       // 保留    std::vector&amp;lt;LivoxPoint&amp;gt; points;&amp;#125;;
+
+结构体：
+struct StatesGroup&amp;#123;    M3D rot_end;     // 姿态（旋转矩阵），表示当前时刻的坐标系方向    V3D pos_end;     // 位置（世界系坐标）    V3D vel_end;     // 速度（世界系坐标）    double inv_expo_time; // 逆曝光时间 (通常和相机或雷达扫描速度相关)    V3D bias_g;      // 陀螺仪零偏    V3D bias_a;      // 加速度计零偏    V3D gravity;     // 重力向量（世界坐标系下的估计）    Matrix&amp;lt;double, DIM_STATE, DIM_STATE&amp;gt; cov; // 状态协方差&amp;#125;;
+
+
+
+LIVMapper.h &amp;#x2F; LIVMapper.cppLIVMapper类：//------------初始化----------------------// 初始化Subscribers和Publishersvoid LIVMapper::initializeSubscribersAndPublishers(ros::NodeHandle &amp;amp;nh, image_transport::ImageTransport &amp;amp;it);// 初始化参数void LIVMapper::initializeComponents();// 文件初始化void initializeFiles();// 对齐重力void LIVMapper::gravityAlignment();// 处理第一帧void handleFirstFrame();// 选择当前模式（LIO/VIO/LIVO）void stateEstimationAndMapping();// 处理VIO帧外部接口void handleVIO();// 处理LIO帧外部接口void handleLIO();// 处理IMU数据外部接口void processImu();/**    sync_packages → 时间切割LiDAR → 数据准备 → handleLIO → SLAM处理                                          ↓                                      handleVIO → 视觉处理**/// 多传感器数据同步// LIO处理：IMU切分// VIO处理：图像时间同步至LIObool sync_packages(LidarMeasureGroup &amp;amp;meas);// 前向传播void prop_imu_once(StatesGroup &amp;amp;imu_prop_state, const double dt, V3D acc_avr, V3D angvel_avr);// imu状态传播回调函数void imu_prop_callback(const ros::TimerEvent &amp;amp;e);// 将LiDAR点云从机体坐标系变换到世界坐标系void transformLidar(const Eigen::Matrix3d rot, const Eigen::Vector3d t, const PointCloudXYZI::Ptr &amp;amp;input_cloud, PointCloudXYZI::Ptr &amp;amp;trans_cloud);// 将单个点云从机体坐标系变换到世界坐标系void pointBodyToWorld(const PointType &amp;amp;pi, PointType &amp;amp;po);// 将单个RGB点云从机体坐标系变换到世界坐标系void RGBpointBodyToWorld(PointType const *const pi, PointType *const po);// 点云回调函数// LivoxPoint格式void standard_pcl_cbk(const sensor_msgs::PointCloud2::ConstPtr &amp;amp;msg);// CustomMsg格式void livox_pcl_cbk(const livox_ros_driver::CustomMsg::ConstPtr &amp;amp;msg_in);// imu回调函数void imu_cbk(const sensor_msgs::Imu::ConstPtr &amp;amp;msg_in);// 图像回调函数void img_cbk(const sensor_msgs::ImageConstPtr &amp;amp;msg_in);
+
+
+
+IMU_Processing.h &amp;#x2F; IMU_Processing.cpp// 结构体 class ImuProcess//  IMU数据处理主函数（外部接口）void ImuProcess::Process2(LidarMeasureGroup &amp;amp;lidar_meas, StatesGroup &amp;amp;stat, PointCloudXYZI::Ptr cur_pcl_un_);// 点云去畸变（前向传播+反向传播）void ImuProcess::UndistortPcl(LidarMeasureGroup &amp;amp;lidar_meas, StatesGroup &amp;amp;state_inout, PointCloudXYZI &amp;amp;pcl_out);
+
+
+
+vio.h &amp;#x2F; vio.cpp// 结构体 VIOManager// 更新当前帧，将系统的IMU状态转换为相机帧的变换矩阵void VIOManager::updateFrameState(StatesGroup state);// 网格// 特征检测：新帧图像 → 网格划分 → 每个网格内检测特征 → 控制特征密度// 特征匹配：当前帧特征 → 定位网格 → 在对应网格内搜索匹配 → 提高匹配效率void VIOManager::processFrame(cv::Mat &amp;amp;img, vector&amp;lt;pointWithVar&amp;gt; &amp;amp;pg, const unordered_map&amp;lt;VOXEL_LOCATION, VoxelOctoTree *&amp;gt; &amp;amp;feat_map, double img_time);
+
+
+
+订阅器sub_pcllivox_pcl_cbk() - Livox LiDAR回调函数
+
+功能：处理Livox品牌激光雷达的自定义点云消息
+消息类型：livox_ros_driver::CustomMsg
+
+standard_pcl_cbk()- 标准点云回调函数
+
+功能：处理标准ROS点云消息（如Velodyne、Ouster等）
+消息类型：sensor_msgs::PointCloud2
+
+sub_imu
+imu_cbk() - IMU回调函数
+
+功能：处理惯性测量单元数据
+消息类型：sensor_msgs::Imu
+
+sub_img
+img_cbk() - 图像回调函数
+
+功能：处理相机图像数据
+消息类型：sensor_msgs::Image
+
+main.cppLIVMapper mapper(nh); mapper.initializeSubscribersAndPublishers(nh, it);mapper.run();				
+
+
+
+雷达-相机外参用于VIO（第5&amp;#x2F;7部分）
+函数setLidarToCameraExtrinsic
+本机环境 (和Fast-Livo2无关)只是电脑又坏了。
+
+NVIDIA驱动 : 
+
+关闭bios security boot
+
+在命令行模式下删除之前安装的nvidia驱动
+Ctrl + Alt + F3sudo systemctl stop gdmsudo apt-get purge &amp;#x27;^nvidia-.*&amp;#x27;sudo apt-get autoremovesudo rm -rf /etc/X11/xorg.confsudo rm -rf /lib/modules/$(uname -r)/kernel/drivers/video/nvidia*sudo rm -rf /usr/src/nvidia*sudo rm -rf /usr/share/doc/NVIDIA_GLX-1.0*sudo rm -rf /usr/share/man/man1/nvidia*sudo rm -rf /usr/bin/nvidia*sudo rm -rf /etc/modprobe.d/blacklist-nvidia.conf
+
+重新安装,选择recommend的版本
+sudo ubuntu-drivers devices # 查看可以使用的驱动版本
+
+重启
+reboot
+
+检查
+nvidia-smi
+
+
+
+NUC环境搭建1. 修网卡fast@fast:~/WIFI/backport-iwlwifi$ lspci | grep -i wirelessfast@fast:~/WIFI/backport-iwlwifi$ lsmod | grep iwl
+
+系统没有识别出无线网卡设备,疑似硬件问题.最后使用网线上网.
+2. 依赖项
+PCL&amp;gt;&amp;#x3D;1.8, Follow PCL Installation.
+
+Eigen&amp;gt;&amp;#x3D;3.3.4, Follow Eigen Installation.
+
+OpenCV&amp;gt;&amp;#x3D;4.2, Follow Opencv Installation.
+
+MVS-2.1.2 
+
+Livox_SDK2 :
+git clone https://github.com/Livox-SDK/Livox-SDK2.gitcd ./Livox-SDK2/mkdir buildcd buildcmake .. &amp;amp;&amp;amp; make -jsudo make install
+
+Sophus : Sophus Installation for the non-templated&amp;#x2F;double-only version.
+git clone https://github.com/strasdat/Sophus.gitcd Sophusgit checkout a621ffmkdir build &amp;amp;&amp;amp; cd build &amp;amp;&amp;amp; cmake ..makesudo make install
+
+如果 Sophus 编译报错:
+/Sophus/sophus/so2.cpp:32:26: error: lvalue required as left operand of assignment   32 |   unit_complex_.real() = 1.;      |                          ^~/Sophus/sophus/so2.cpp:33:26: error: lvalue required as left operand of assignment   33 |   unit_complex_.imag() = 0.;      |                          ^~
+
+参考issue,把so2.cpp中30-34行改为:
+SO2::SO2()&amp;#123;  unit_complex_.real(1.);  unit_complex_.imag(0.);&amp;#125;
+
+重新编译即可.
+
+
+3. 工作空间配置Avia只支持livox_ros_driver
+livox_ros_driver可以不着急先编译,等最后一起build
+
+FAST_LIVO2 : https://github.com/hku-mars/FAST-LIVO2.git
+
+livox_ros_ driver :  https://github.com/xuankuzcr/LIV_handhold.git
+ &amp;lt;说明&amp;gt;硬同步需要使用这个github库中的livox_ros_driver,对比官方,这里做了硬同步的改动，增加了对共享内存写入时间戳的功能 
+
+mvs_ros_pkg : https://github.com/xuankuzcr/LIV_handhold.git 	
+ &amp;lt;说明&amp;gt;硬同步需要使用这个github库中的相机ros驱动
+
+rpg_vikit : https://github.com/xuankuzcr/rpg_vikit.git (使用这个url,否则编译时出错)
+
+
+4. Buildcd ~/fast_livo2_ws/catkin_makesource ~/fast_livo2_ws/devel/setup.bash
+
+​	
+说明
+关于LIV_handhold中livox_ros_driver的改动
+使用meld对比两份文件夹 ,  新的livox_ros_driver增加了共享内存以及对共享内存写入时间戳的功能.
+
+
++ livox_ros_driver.cpp	 // 将文件映射为一个共享内存区域，大小为sizeof(time_stamp)，通过指针pointt可以直接读写它。	  const char *user_name = getlogin();      std::string path_for_time_stamp = &amp;quot;/home/&amp;quot; + std::string(user_name) + &amp;quot;/timeshare&amp;quot;;      const char *shared_file_name = path_for_time_stamp.c_str();      int fd = open(shared_file_name, O_CREAT | O_RDWR | O_TRUNC, 0666);      if (fd == -1) &amp;#123;        ERR_EXIT(&amp;quot;open&amp;quot;);      &amp;#125; else &amp;#123;        printf(&amp;quot;open code: %d\n&amp;quot;, fd);      &amp;#125;      lseek(fd, sizeof(time_stamp) * 1, SEEK_SET);      write(fd, &amp;quot;&amp;quot;, 1);      pointt = (time_stamp *)mmap(NULL, sizeof(time_stamp) * 1,                                  PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+
+关于LIV_handhold中livox_ros_driver2的改动
+新的livox_ros_driver2增加了共享内存以及对共享内存写入时间戳的功能.
+
+
++lddc.cpp    // 实现了用一个普通文件作为共享内存的载体，进程间可以通过映射该文件进行数据共享。    // 结构体time_stamp用于在多个进程（或设备驱动与应用程序）间共享硬件时间戳。    //******************************************************************** add code    if (isOpended == false)    &amp;#123;      const char *user_name = getlogin();      std::string path_for_time_stamp = &amp;quot;/home/&amp;quot; + std::string(user_name) + &amp;quot;/timeshare&amp;quot;;      const char *shared_file_name = path_for_time_stamp.c_str();      int fd = open(shared_file_name, O_CREAT | O_RDWR | O_TRUNC, 0666);      if (fd == -1)      &amp;#123;        ROS_ERROR(&amp;quot;open failed\n&amp;quot;);        isOpended = false;      &amp;#125;      else      &amp;#123;        ROS_ERROR(&amp;quot;open code: %d\n&amp;quot;, fd);        isOpended = true;      &amp;#125;      lseek(fd, sizeof(time_stamp) * 1, SEEK_SET);      write(fd, &amp;quot;&amp;quot;, 1);      pointt = (time_stamp *)mmap(NULL, sizeof(time_stamp) * 1,                                  PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);    &amp;#125;    //********************************************************************
+
+
+
+STM32硬同步1. 材料
+工程文件 : stm32_timersync-open
+烧录器 : ST-LINK V2
+STM32F103C8T6
+TTL to USB
+TTL to RS485
+
+2. 原理图
+图9-硬件同步方案
+
+Livox_avia不支持直接读取GPRMC格式的指令,mid360支持直接读取.如果使用mid360连线原理图将会改变.本篇只考虑Livox_avia.
+
+图10-硬件同步原理图
+
+
+图11-时间对齐原理图
+
+3. 硬件连线图**硬件连线参考图 : ** 
+
+图12-硬件连线参考图
+
+相机线说明 :
+相机的电源及 I&amp;#x2F;O 接口为 6-pin P7 接口。
+
+图13-相机同步线线序图
+
+Livox Converter 2.0 同步线说明 :
+
+图14-雷达同步线线序图
+
+
+
+4. 串口绑定为了赋予特定串口权限,且防止串口在ubuntu下名称跳变，本片介绍ubuntu系统下如何绑定串口。
+1. 建立udev规则sudo gedit /etc/udev/rules.d/my_rule.rules
+
+2. 获取串口设备详情列出当前串口设备。
+ls /dev/ttyUSB*
+
+以ttyUSB0为例。
+udevadm info --attribute-walk --name=/dev/ttyUSB0
+
+获得详细信息，我习惯以第四行&amp;#x3D;&amp;#x3D;looking …&amp;#x3D;&amp;#x3D;以下的信息作为信息绑定的依靠。
+looking at device &amp;#x27;/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3:1.0/ttyUSB0/tty/ttyUSB0&amp;#x27;:    KERNEL==&amp;quot;ttyUSB0&amp;quot;    SUBSYSTEM==&amp;quot;tty&amp;quot;    DRIVER==&amp;quot;&amp;quot;  looking at parent device &amp;#x27;/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3:1.0/ttyUSB0&amp;#x27;:    KERNELS==&amp;quot;ttyUSB0&amp;quot;    SUBSYSTEMS==&amp;quot;usb-serial&amp;quot;    DRIVERS==&amp;quot;cp210x&amp;quot;    ATTRS&amp;#123;port_number&amp;#125;==&amp;quot;0&amp;quot;  looking at parent device &amp;#x27;/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3:1.0&amp;#x27;:    KERNELS==&amp;quot;3-3:1.0&amp;quot;    SUBSYSTEMS==&amp;quot;usb&amp;quot;    DRIVERS==&amp;quot;cp210x&amp;quot;    ATTRS&amp;#123;interface&amp;#125;==&amp;quot;CP2102 USB to UART Bridge Controller&amp;quot;    ATTRS&amp;#123;authorized&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;bAlternateSetting&amp;#125;==&amp;quot; 0&amp;quot;    ATTRS&amp;#123;bInterfaceProtocol&amp;#125;==&amp;quot;00&amp;quot;    ATTRS&amp;#123;bNumEndpoints&amp;#125;==&amp;quot;02&amp;quot;    ATTRS&amp;#123;supports_autosuspend&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;bInterfaceSubClass&amp;#125;==&amp;quot;00&amp;quot;    ATTRS&amp;#123;bInterfaceClass&amp;#125;==&amp;quot;ff&amp;quot;    ATTRS&amp;#123;bInterfaceNumber&amp;#125;==&amp;quot;00&amp;quot;  looking at parent device &amp;#x27;/devices/pci0000:00/0000:00:14.0/usb3/3-3&amp;#x27;:    KERNELS==&amp;quot;3-3&amp;quot;    SUBSYSTEMS==&amp;quot;usb&amp;quot;    DRIVERS==&amp;quot;usb&amp;quot;    ATTRS&amp;#123;idProduct&amp;#125;==&amp;quot;ea60&amp;quot;    ATTRS&amp;#123;bConfigurationValue&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;tx_lanes&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;bNumInterfaces&amp;#125;==&amp;quot; 1&amp;quot;    ATTRS&amp;#123;maxchild&amp;#125;==&amp;quot;0&amp;quot;    ATTRS&amp;#123;avoid_reset_quirk&amp;#125;==&amp;quot;0&amp;quot;    ATTRS&amp;#123;devpath&amp;#125;==&amp;quot;3&amp;quot;    ATTRS&amp;#123;bDeviceSubClass&amp;#125;==&amp;quot;00&amp;quot;    ATTRS&amp;#123;bDeviceClass&amp;#125;==&amp;quot;00&amp;quot;    ATTRS&amp;#123;ltm_capable&amp;#125;==&amp;quot;no&amp;quot;    ATTRS&amp;#123;quirks&amp;#125;==&amp;quot;0x0&amp;quot;    ATTRS&amp;#123;serial&amp;#125;==&amp;quot;0001&amp;quot;    ATTRS&amp;#123;bDeviceProtocol&amp;#125;==&amp;quot;00&amp;quot;    ATTRS&amp;#123;speed&amp;#125;==&amp;quot;12&amp;quot;    ATTRS&amp;#123;busnum&amp;#125;==&amp;quot;3&amp;quot;    ATTRS&amp;#123;bNumConfigurations&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;manufacturer&amp;#125;==&amp;quot;Silicon Labs&amp;quot;    ATTRS&amp;#123;bMaxPacketSize0&amp;#125;==&amp;quot;64&amp;quot;    ATTRS&amp;#123;version&amp;#125;==&amp;quot; 1.10&amp;quot;    ATTRS&amp;#123;bcdDevice&amp;#125;==&amp;quot;0100&amp;quot;    ATTRS&amp;#123;devnum&amp;#125;==&amp;quot;6&amp;quot;    ATTRS&amp;#123;rx_lanes&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;authorized&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;removable&amp;#125;==&amp;quot;removable&amp;quot;    ATTRS&amp;#123;product&amp;#125;==&amp;quot;CP2102 USB to UART Bridge Controller&amp;quot;    ATTRS&amp;#123;configuration&amp;#125;==&amp;quot;&amp;quot;    ATTRS&amp;#123;bMaxPower&amp;#125;==&amp;quot;100mA&amp;quot;    ATTRS&amp;#123;urbnum&amp;#125;==&amp;quot;12&amp;quot;    ATTRS&amp;#123;bmAttributes&amp;#125;==&amp;quot;80&amp;quot;    ATTRS&amp;#123;idVendor&amp;#125;==&amp;quot;10c4&amp;quot;  looking at parent device &amp;#x27;/devices/pci0000:00/0000:00:14.0/usb3&amp;#x27;:    KERNELS==&amp;quot;usb3&amp;quot;    SUBSYSTEMS==&amp;quot;usb&amp;quot;    DRIVERS==&amp;quot;usb&amp;quot;    ATTRS&amp;#123;devpath&amp;#125;==&amp;quot;0&amp;quot;    ATTRS&amp;#123;authorized_default&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;ltm_capable&amp;#125;==&amp;quot;no&amp;quot;    ATTRS&amp;#123;speed&amp;#125;==&amp;quot;480&amp;quot;    ATTRS&amp;#123;bNumInterfaces&amp;#125;==&amp;quot; 1&amp;quot;    ATTRS&amp;#123;configuration&amp;#125;==&amp;quot;&amp;quot;    ATTRS&amp;#123;bMaxPower&amp;#125;==&amp;quot;0mA&amp;quot;    ATTRS&amp;#123;bmAttributes&amp;#125;==&amp;quot;e0&amp;quot;    ATTRS&amp;#123;avoid_reset_quirk&amp;#125;==&amp;quot;0&amp;quot;    ATTRS&amp;#123;serial&amp;#125;==&amp;quot;0000:00:14.0&amp;quot;    ATTRS&amp;#123;manufacturer&amp;#125;==&amp;quot;Linux 5.15.0-139-generic xhci-hcd&amp;quot;    ATTRS&amp;#123;busnum&amp;#125;==&amp;quot;3&amp;quot;    ATTRS&amp;#123;interface_authorized_default&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;bConfigurationValue&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;bDeviceClass&amp;#125;==&amp;quot;09&amp;quot;    ATTRS&amp;#123;bMaxPacketSize0&amp;#125;==&amp;quot;64&amp;quot;    ATTRS&amp;#123;quirks&amp;#125;==&amp;quot;0x0&amp;quot;    ATTRS&amp;#123;bcdDevice&amp;#125;==&amp;quot;0515&amp;quot;    ATTRS&amp;#123;idProduct&amp;#125;==&amp;quot;0002&amp;quot;    ATTRS&amp;#123;tx_lanes&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;rx_lanes&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;product&amp;#125;==&amp;quot;xHCI Host Controller&amp;quot;    ATTRS&amp;#123;urbnum&amp;#125;==&amp;quot;98&amp;quot;    ATTRS&amp;#123;removable&amp;#125;==&amp;quot;unknown&amp;quot;    ATTRS&amp;#123;bNumConfigurations&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;devnum&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;bDeviceProtocol&amp;#125;==&amp;quot;01&amp;quot;    ATTRS&amp;#123;version&amp;#125;==&amp;quot; 2.00&amp;quot;    ATTRS&amp;#123;idVendor&amp;#125;==&amp;quot;1d6b&amp;quot;    ATTRS&amp;#123;maxchild&amp;#125;==&amp;quot;12&amp;quot;    ATTRS&amp;#123;bDeviceSubClass&amp;#125;==&amp;quot;00&amp;quot;    ATTRS&amp;#123;authorized&amp;#125;==&amp;quot;1&amp;quot;  looking at parent device &amp;#x27;/devices/pci0000:00/0000:00:14.0&amp;#x27;:    KERNELS==&amp;quot;0000:00:14.0&amp;quot;    SUBSYSTEMS==&amp;quot;pci&amp;quot;    DRIVERS==&amp;quot;xhci_hcd&amp;quot;    ATTRS&amp;#123;local_cpus&amp;#125;==&amp;quot;ffff&amp;quot;    ATTRS&amp;#123;dma_mask_bits&amp;#125;==&amp;quot;64&amp;quot;    ATTRS&amp;#123;power_state&amp;#125;==&amp;quot;D0&amp;quot;    ATTRS&amp;#123;device&amp;#125;==&amp;quot;0x51ed&amp;quot;    ATTRS&amp;#123;subsystem_device&amp;#125;==&amp;quot;0x3037&amp;quot;    ATTRS&amp;#123;ari_enabled&amp;#125;==&amp;quot;0&amp;quot;    ATTRS&amp;#123;class&amp;#125;==&amp;quot;0x0c0330&amp;quot;    ATTRS&amp;#123;msi_bus&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;vendor&amp;#125;==&amp;quot;0x8086&amp;quot;    ATTRS&amp;#123;revision&amp;#125;==&amp;quot;0x01&amp;quot;    ATTRS&amp;#123;local_cpulist&amp;#125;==&amp;quot;0-15&amp;quot;    ATTRS&amp;#123;label&amp;#125;==&amp;quot;Onboard - Other&amp;quot;    ATTRS&amp;#123;numa_node&amp;#125;==&amp;quot;-1&amp;quot;    ATTRS&amp;#123;driver_override&amp;#125;==&amp;quot;(null)&amp;quot;    ATTRS&amp;#123;consistent_dma_mask_bits&amp;#125;==&amp;quot;64&amp;quot;    ATTRS&amp;#123;subsystem_vendor&amp;#125;==&amp;quot;0x8086&amp;quot;    ATTRS&amp;#123;dbc&amp;#125;==&amp;quot;disabled&amp;quot;    ATTRS&amp;#123;enable&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;broken_parity_status&amp;#125;==&amp;quot;0&amp;quot;    ATTRS&amp;#123;irq&amp;#125;==&amp;quot;145&amp;quot;    ATTRS&amp;#123;d3cold_allowed&amp;#125;==&amp;quot;1&amp;quot;    ATTRS&amp;#123;index&amp;#125;==&amp;quot;7&amp;quot;  looking at parent device &amp;#x27;/devices/pci0000:00&amp;#x27;:    KERNELS==&amp;quot;pci0000:00&amp;quot;    SUBSYSTEMS==&amp;quot;&amp;quot;    DRIVERS==&amp;quot;&amp;quot;    ATTRS&amp;#123;waiting_for_supplier&amp;#125;==&amp;quot;0&amp;quot;
+
+3. 在udev规则下写入串口信息如果没有相同ID设备的话可直接写入。
+其中KERNEL==&amp;quot;ttyUSB*&amp;quot;表明绑定的设备是串口，ATTRS&amp;#123;idVendor&amp;#125;==&amp;quot;10c4&amp;quot;, ATTRS&amp;#123;idProduct&amp;#125;==&amp;quot;ea60&amp;quot;是Step2中设备的信息，MODE:=&amp;quot;0777&amp;quot;给予设备最高权限，SYMLINK+=&amp;quot;ttyUSB_TTL2USB&amp;quot;为绑定后设备的名称。
+KERNEL==&amp;quot;ttyUSB*&amp;quot;, ATTRS&amp;#123;idVendor&amp;#125;==&amp;quot;10c4&amp;quot;, ATTRS&amp;#123;idProduct&amp;#125;==&amp;quot;ea60&amp;quot;, MODE:=&amp;quot;0777&amp;quot;, SYMLINK+=&amp;quot;ttyUSB_TTL2USB&amp;quot;
+
+若有相同ID设备，则可再添加ATTRS&amp;#123;devpath&amp;#125;==&amp;quot;5.2&amp;quot;信息，该量一般与设备与电脑链接的端口号有关。
+4. 重启udevsudo service udev reloadsudo service udev restart
+
+再次查看串口设备，即可看到绑定成功后的名称。若还没成功，可尝试重启电脑或者热插拔设备。
+
+图15-绑定串口显示
+
+
+
+5. 雷达设置雷达选型 : Livox AVIA
+转换器 : Livox Converter 2.0
+Livox雷达时间同步说明参考:https://github.com/Livox-SDK/Livox-SDK/wiki/livox-device-time-synchronization-manual-cn#%E9%99%84%E5%BD%95
+Livox设备支持3种时间同步方式：
+
+PTP：IEEE 1588v2.0 PTP 网络协议同步；
+GPS：秒脉冲+GPRMC时间数据，组成GPS时间同步方式；
+PPS：秒脉冲同步，需要上层应用程序通过其他途径（如：uart）获取每个脉冲的时间信息，并修正点云时间。
+
+FAST-LIO只涉及GPS和PPS两种,只介绍这两种。
+GPSGPS时钟源的PPS端口每秒发送一次硬件脉冲（PPS信号），随后数据端口发送一次对应这个脉冲上升沿的时间信息（GPRMC格式）。Livox设备接收到PPS信号上升沿，并由GPRMC数据解析出正确的时间信息后，会设置点云时间为GPS时间，并保持此时间基准持续累加，来实现和GPS设备的时间同步。
+
+图17-GPS信号示意图
+
+Livox Converter 2.0将GPS模块的时间信号（GPRMC）通过TTL转usb模块接入PC，PPS信号接入LiDAR转接盒同步口（Sync Port）。
+
+图18-Livox Converter 2.0连线图
+
+PPSLivox LiDAR每次接收到PPS信号的上升沿后，会将当前时刻的点云时间置为0，然后重新开始计时直到下一个PPS脉冲到来,利用这个特性，来实现PPS脉冲对LiDAR时间的同步。
+伪代码:
+// PPS Time Synchronizationstatic uint64_t lidar_time_last;static uint64_t lidar_time_real;// 1. Read the PPS rising edge time, Unit is nanosecond.uint64_t pps_time_ns = get_pps_rising_nsecond();// 2. Read LiDAR point time, Unit is nanosecond.uint64_t lidar_time = get_lidar_pack_time();// 3. Update real time.if (lidar_time &amp;lt; lidar_time_last)&amp;#123;    //LiDAR time jump indicates the generation of PPS rising edge.    lidar_time_real = pps_time_ns + lidar_time%(1000000000);&amp;#125;else&amp;#123;    lidar_time_real += lidar_time - lidar_time_last;&amp;#125;//Update historylidar_time_last = lidar_time;
+
+设置1. 安装Livox Viewer Livox Viewer 0.10.0(64bit) : https://www.livoxtech.com/downloads
+
+注：Livox Viewer2并不支持Avia
+
+以太网设置:
+
+图19-Livox雷达以太网设置
+
+点击左上角播放按钮,出现点云.
+
+图20-Livox Viewer点云示意图
+
+插上硬同步设备后,查看雷达的连接转态和数据的读取状态，来确认雷达是否已进入PPS同步状态 (在这里不能修改TIme Sync &amp;#x2F; PPS State,此设置为连接硬同步后自动触发)
+
+图21-Livox Viewer设置状态图
+
+2. 修改livox_lidar_config.json
+图22-livox_lidar_config.json参数设置
+
+3. 测试roslaunch livox_ros_driver livox_lidar_rviz.launch
+
+可以在自动弹出来的rviz中查看是否有点云正常输出和显示
+6. 相机设置相机 : 海康相机MV-CS020-10UC
+驱动 : MVS_STD_V3.0.1
+1. 安装驱动海康威视工业相机SDK的ros驱动依赖MVS的库文件，先安装MVS客户端.
+官方下载地址：https://www.hikrobotics.com/cn/machinevision/service/download/?module=0
+2. 下载和编译相机的雷达ros驱动 (见NUC环境搭建 - 3.工作空间配置)
+3. 调整配置文件路径 : mvs_ros_driver&amp;#x2F;config
+%YAML:1.0#--------------------------------------------------------------------------------------------# Camera Parameters. Adjust them!#--------------------------------------------------------------------------------------------SerialNumber: &amp;quot;DA2099368&amp;quot; # Not needed for single camera. Specify serial number for multiple cameras. TopicName: &amp;quot;left_camera/image&amp;quot;TriggerEnable: 1 # 0 stands for Off, 1 stands for OnExposureAutoMode: 0 # 0 stands for Off, 1 stands for Once, 2 stands for ContinuesExposureTime: 5000 # us# ExposureAutoMode: 2# AutoExposureTimeLower: 100# AutoExposureTimeUpper: 20000image_scale: 0.5 # 1 0.5GainAuto: 2 # Gain Auto, 0 stands for Off, 1 stands for Once, 2 stands for ContinuesGain: 15 # min: 0   max: 17.0166Gamma: 0.7  # min: 0   max: 17.0166GammaSelector: 1 # 0 stands for user, 1 stands for sRGB# GammaEnable: 1PixelFormat: 0 # 0: RGB8, 1: BayerRG8, 2: BayerRG12Packed, 3: BayerGB12Packed, 4: BayerGB8
+
+最重要的参数是PixelFormat,需要根据相机型号调整。遍历一遍看哪个数值可用当然可以,代价是报错的时候不能理解其中原因,会造成很多麻烦。
+如何找到适合本相机的PixelFormat :
+
+查阅海康相机官网https://www.hikrobotics.com/cn/machinevision/productdetail/?id=12379
+
+
+图23-相机支持像素格式
+
+​	看似这个相机支持RGB8 &amp;#x2F; BayerRG8 &amp;#x2F; BayerRG12Packed, PixelFormat选择0&amp;#x2F;1&amp;#x2F;2都可以, 实则不然。
+​	当选择1或2的时候,运行roslaunch mvs_ros_driver mvs_camera_trigger.launch时, 出现报错 :
+
+图24-mvs_camera_trigger报错图
+
+​	针对这个报错, 打开MVS的官方图形化界面看一下 : 
+​	图形化界面参数太多了,再查阅海康机器人USB3.0工业面阵相机用户手册,发现Gamma参数应该在Analog Control 属性中.
+
+图25-海康相机用户手册详细参数
+
+​	在Bayer RG 8 &amp;#x2F; BayerRG12Packed模式下 , 没有Gamma这个参数 ．只有在RGB8模式下才有Gamma参数．
+
+图26-海康相机图形化界面参数
+
+
+图27-海康相机图形化界面参数
+
+​	探究一下原理：
+
+Bayer 格式是原始图像数据（Raw），Bayer RG8 是未经过处理的原始图像数据格式，每个像素仅包含单色信息（红、绿或蓝中的一个）。在这种格式下，图像还没有完成 去马赛克（Demosaicing）、白平衡、Gamma 校正等ISP流程。
+
+RGB8 是处理后的彩色图像格式，可以进行Gamma调节．
+
+注 : 如果把yaml文件中的Gamma和GammaSelector注释掉,该驱动包也能正常跑.但是之后我都选择使用RGB8格式,故BayerRG8 &amp;#x2F; BayerRG12Packed能否跑完全流程并不确定．
+
+
+
+4. 测试
+如果需要单独测试相机驱动,需要把mvs_ros_driver&amp;#x2F;config中的TriggerEnable参数改为0,否则节点无图像数据！
+
+相机插NUC的USB3.0的插口
+
+指令
+roslaunch mvs_ros_pkg mvs_camera_trigger.launch
+
+rviz中查看图像是否正常输出．
+
+图28-mvs_camera_trigger的rviz界面
+
+7. 烧录
+STLINK驱动安装
+https://docs.qq.com/doc/DT2hyS2ZjY21WQkZt
+
+硬件连接
+
+图29-烧录硬件连接原理图
+
+
+图30-实物图(stlink正面)
+
+
+图31-实物图(stlink侧面)
+
+
+图32-实物图(stm32背面)
+
+
+Keil烧录
+
+图33-烧录步骤-1
+
+
+图34-烧录步骤-2
+
+
+图35-烧录步骤-3
+
+
+图36-烧录步骤-4
+
+
+图37-烧录步骤-5
+
+
+图38-烧录步骤-6
+
+
+图39-烧录步骤-7
+
+
+
+标定相机内参标定张正友平面标定法
+
+准备标定素材
+海康相机不能直接用opencv打开,必须调用mvs_ros_driver包,在自己写的订阅相机图片节点捕获图像.
+
+注意mvs_ros_driver发布图片话题时有scale &amp;#x3D; 0.5,后面标定得到的参数需要*2。
+
+
+
+/*订阅相机图像话题并截图的ros_node*/#include &amp;lt;ros/ros.h&amp;gt;#include &amp;lt;sensor_msgs/Image.h&amp;gt;#include &amp;lt;cv_bridge/cv_bridge.h&amp;gt;#include &amp;lt;opencv2/opencv.hpp&amp;gt;#include &amp;lt;mutex&amp;gt;#include &amp;lt;boost/filesystem.hpp&amp;gt;namespace fs = boost::filesystem;class ImageCapture&amp;#123;public:    ImageCapture(ros::NodeHandle&amp;amp; nh, const std::string&amp;amp; save_dir)        : save_dir_(save_dir)    &amp;#123;        sub_ = nh.subscribe(&amp;quot;/left_camera/image&amp;quot;, 1, &amp;amp;ImageCapture::imageCallback, this);        ROS_INFO(&amp;quot;等待按下空格键保存图像，按 &amp;#x27;q&amp;#x27; 退出&amp;quot;);        if (!fs::exists(save_dir_))        &amp;#123;            fs::create_directories(save_dir_);            ROS_INFO(&amp;quot;创建保存目录: %s&amp;quot;, save_dir_.c_str());        &amp;#125;        cv::namedWindow(&amp;quot;View&amp;quot;, cv::WINDOW_NORMAL);    &amp;#125;    void spin()    &amp;#123;        ros::Rate rate(30);        while (ros::ok())        &amp;#123;            &amp;#123;                std::lock_guard&amp;lt;std::mutex&amp;gt; lock(mutex_);                if (!latest_image_.empty())                &amp;#123;                    cv::imshow(&amp;quot;View&amp;quot;, latest_image_);                &amp;#125;            &amp;#125;            int key = cv::waitKey(1);            if (key == 32) // 空格            &amp;#123;                saveImage();            &amp;#125;            else if (key == &amp;#x27;q&amp;#x27; || key == &amp;#x27;Q&amp;#x27;)            &amp;#123;                ROS_INFO(&amp;quot;用户退出程序&amp;quot;);                break;            &amp;#125;            ros::spinOnce();            rate.sleep();        &amp;#125;    &amp;#125;private:    ros::Subscriber sub_;    cv::Mat latest_image_;    std::mutex mutex_;    std::string save_dir_;    void imageCallback(const sensor_msgs::ImageConstPtr&amp;amp; msg)    &amp;#123;        try        &amp;#123;            cv::Mat image = cv_bridge::toCvShare(msg, &amp;quot;bgr8&amp;quot;)-&amp;gt;image;            std::lock_guard&amp;lt;std::mutex&amp;gt; lock(mutex_);            latest_image_ = image.clone();        &amp;#125;        catch (cv_bridge::Exception&amp;amp; e)        &amp;#123;            ROS_ERROR(&amp;quot;cv_bridge 异常: %s&amp;quot;, e.what());        &amp;#125;    &amp;#125;    void saveImage()    &amp;#123;        std::lock_guard&amp;lt;std::mutex&amp;gt; lock(mutex_);        if (!latest_image_.empty())        &amp;#123;            std::string filename = save_dir_ + &amp;quot;/image_&amp;quot; + std::to_string(ros::Time::now().toNSec()) + &amp;quot;.jpg&amp;quot;;            cv::imwrite(filename, latest_image_);            ROS_INFO(&amp;quot;图像已保存为 %s&amp;quot;, filename.c_str());        &amp;#125;        else        &amp;#123;            ROS_WARN(&amp;quot;没有图像可保存&amp;quot;);        &amp;#125;    &amp;#125;&amp;#125;;int main(int argc, char** argv)&amp;#123;    ros::init(argc, argv, &amp;quot;image_capture_node&amp;quot;);    ros::NodeHandle nh(&amp;quot;~&amp;quot;);    // 获取保存目录参数（默认当前目录）    std::string save_dir;    nh.param&amp;lt;std::string&amp;gt;(&amp;quot;save_dir&amp;quot;, save_dir, &amp;quot;./&amp;quot;);    ImageCapture ic(nh, save_dir);    ic.spin();    return 0;&amp;#125;
+
+
+
+
+使用MATLAB进行标定:
+
+
+图40-在matlab中选择标定
+
+
+图41-标定过程
+
+
+图42-标定得到的数据
+
+
+得到参数:
+&amp;gt;&amp;gt; cameraParams.IntrinsicMatrix
+   671.9949         0          0         
+   0                672.0204   0  
+  410.0420    323.3874  1.0000 
+ &amp;gt;&amp;gt; cameraParams.RadialDistortion     -0.0572    0.0895
+
+对应camera_pinhole.yaml中
+cam_model: Pinholecam_width: 1624cam_height: 1240scale: 0.5cam_fx: 1343.9898cam_fy: 1344.0408cam_cx: 820.0840cam_cy: 646.7748cam_d0: -0.0572cam_d1: 0.0895cam_d2: 0.0cam_d3: 0.0
+
+外参标定
+将相机内参同步到FAST-Calib/config/qr_params.yaml中。
+
+运行roslaunch livox_ros_driver livox_lidar_msg在/FAST-Calib/calib_data 下运行  rosbag record -a
+
+拍照当前相机图片
+标定数据组织如下 (data.txt为自行记录标定数据,不需要预先创建)
+
+
+
+图43-FAST-Calib标定数据组织
+
+运行:
+roslaunch fast_calib calib.launch
+
+
+注意修改qr_params.yaml中和filter相关的参数.
+否则会报错 :
+[pcl::TransformationEstimationSVD::estimateRigidTransformation] Number or points in source (0) differs than target (4)! [Result] RMSE:  [computeRMSE] Point cloud sizes do not match, cannot compute RMSE.  -1.0000 m
+
+参考qr_params.yaml
+# Camera intrinsics    # mid360  # fx: 522.123514287681  # fy: 522.275153384482  # cx: 773.466430504725  # cy: 534.053165700174  # k1: 0.00324949759262203  # k2: -0.0171040538369167  # p1: 0.000669657443377146  # p2: -0.000350205468789575  # avia  fx: 1343.9898  fy: 1344.0408  cx: 820.0840  cy: 646.7748  k1: -0.0572  k2: 0.0895  p1: 0  p2: 0  # ouster  # fx: 1466.16500795563  # fy: 1465.32657394431  # cx: 1214.39964380518  # cy: 1010.97681425650  # k1: -0.0458344972140773  # k2: 0.0896961240772692  # p1: -0.000731746350601389  # p2: -0.000201478932371979# Calibration target parameters  marker_size: 0.17 # ArUco marker size (our test data uses 0.16m; adjust to match your marker size)  delta_width_qr_center: 0.55 # Half the distance between the centers of two markers in the horizontal direction   delta_height_qr_center: 0.35 # Half the distance between the centers of two markers in the vertical direction  delta_width_circles: 0.5 # Distance between the centers of two circles in the horizontal direction  delta_height_circles: 0.4 # Distance between the centers of two circles in the vertical direction  circle_radius: 0.12 # Radius of the circle # Distance filter  x_min: 1.8  x_max: 2.4  y_min: -1  y_max: 1.0  z_min: -0.2 # avia and mid360: -0.5 ouster: -0.8  z_max: 2.5# Input  lidar_topic: &amp;quot;/livox/lidar&amp;quot; # /ouster/points /livox/lidar  bag_path: &amp;quot;$(find fast_calib)/calib_data/1.bag&amp;quot;  image_path: &amp;quot;$(find fast_calib)/calib_data/1.png&amp;quot;# Output  output_path: &amp;quot;$(find fast_calib)/output&amp;quot;
+
+标定结果:
+
+图44-FAST-Calib标定的点云
+
+
+图45-FAST-Calib标定的彩色图像
+
+
+图46-FAST-Calib得到的数据
+
+
+输出:
+[Result] Extrinsic parameters T_cam_lidar:-0.096829 -0.994963 -0.025938 -1.142585-0.081987  0.033945 -0.996055 -0.876730 0.991919 -0.094320 -0.084861  2.192050 0.000000  0.000000  0.000000  1.000000
+对应的Rcl和Pcl:
+Rcl: [-0.096829, -0.994963, -0.025938,      -0.081987,  0.033945, -0.996055,       0.991919, -0.094320, -0.084861]Pcl: [-1.142585, -0.876730, 2.192050]
+和真值偏移很大,彩色点云图中也有畸变,怀疑是标定板形变,以及标定板没有按照FAST-Calib官方推荐固定并悬挂的原因.
+
+测试跑包HKU_Lecture_Center_02.bag
+roslaunch fast_livo mapping_avia.launchrosbag play HKU_Lecture_Center_02.bag
+
+建图精度
+图47-rviz-1
+
+
+图48-rviz-2
+
+墙面与地面分界线清晰
+
+图49-rviz-3
+
+图片处理(拉高亮度)后,可以看到墙面纹路,转角非常清晰
+
+图50-rviz-4
+
+
+图51-rviz-5
+
+
+
+系统资源占用运行launch和rviz : 资源主要由rviz占用,且初始rviz config中点云queue数值极大,rviz实时看全局着色点云很卡
+
+可以把queue值 &amp;#x2F; decay值适当改小;
+可以重建完成后保存pcd文件,通过pcl_viewer（最好+显卡 +opengl）或者cloud compare等软件离线查看;
+使用带gpu的电脑提升实时rviz性能.
+
+
+
+
+字段
+含义
+
+
+
+PRI
+Priority（优先级）
+
+
+NI
+Nice 值（友好度）
+
+
+VIRT
+Virtual Memory（虚拟内存大小）
+
+
+RES
+Resident Memory（常驻内存） 当前进程实际占用的物理内存大小
+
+
+SHR
+Shared Memory（共享内存）
+
+
+S
+State（进程状态）R：运行（Running）S：休眠（Sleeping）
+
+
+CPU%
+进程当前使用的 CPU 百分比（所有核总和）
+
+
+MEM%
+进程使用的物理内存占系统总内存的百分比
+
+
+
+图52-htop查看资源占用
+
+
+图53-fast-livo2运行占用资源
+
+
+图54-fast-livo2的rviz占用资源
+
+只运行launch: 
+
+图55-只运行launch系统占用资源
+
+
+
+里程计数据纵轴单位(m) ,三条曲线分别是x轴,y轴,z轴里程计数据变化
+
+蓝色-x轴
+
+红色-y轴
+
+绿色-z轴
+取最后一段平稳曲线部分放大 : 静态波动在厘米级,峰峰值4-6cm
+
+
+
+图56-里程计数据总览
+
+
+图57-里程计数据细节(图56蓝色框部分)
+
+
+图58-里程计数据统计(统计图57中数据部分)
+
+
+
+处理时间参考该帧处理时间数量级
+
+图59-处理时间参考
+
+
+
+###可行性初测试
+修改参数
+图60-fast-livo2文件结构
+
+
+&amp;#x2F;congfig&amp;#x2F;avia.yaml: Avia雷达的参数配置
+
+图61-雷达参数配置文件
+
+
+
+extrin_calib 中：
+
+extrinsic_T 和extrinsic_R 为雷达到IMU的外参（平移与旋转）
+
+Rcl 和 Pcl 为相机到 LiDAR 的旋转矩阵和平移向量, 需要外参标定得出，更新到该位置即可
+-作者在issue中的原回答:
+The extrinsic_R in avia_resize.yaml doesn’t have to be an identity matrix.extrinsic_R represents the rotation matrix of LiDAR frame w.r.t. IMU frame.extrinsic_T represents the translation of LiDAR frame w.r.t. IMU frame.If you set them correctly according to the physical meaning, there should be no wrong alignment of the image and LiDAR scan.
+
+
+
+preprocess 预处理中：
+1.lidar_type： LiDAR 类型 保持值仍为1 （1：Livox Avia &amp;#x2F; Mid360）
+2.scan_line:  扫描线数量 这里仍为6  （Avia：6，Mid360：4）
+
+time_offset时间偏移: 
+-作者在issue中的原回答:
+img_time_offset: 0.1，在我们提供的同步方案中，LiDAR会将其时间戳存储到共享内存中，相机帧则会读取内存中最新的时间戳。由于LiDAR scan是一个段时间测量，需要等0.1秒扫完后才会将其header的时间戳存到内存里。此时被触发的相机读取的时间戳实际上是0.1秒前的，因此其真实采样时间戳需要+0.1s。 对于NTU-VIRAL数据集，我设置lidar_time_offset: -0.1，因为该数据集中的LiDAR scan提供的是帧末时间戳，而我们的系统需要的是header时间戳，因此需要-0.1s。这一判断是基于在静止条件下观察EKF估计出的位姿抖动程度得出的。 
+时间没对上不影响，只要在一个时间轴上就可以，evo会用高频的真值轨迹插值出LiDAR或相机采样时刻的位姿的。
+
+
+
+
+&amp;#x2F;congfig&amp;#x2F;camara_pinhole.yaml: 相机的参数配置
+相机选型: 海康相机MV-CS020-10UC
+相机原始图像尺寸大小 : 1624*1240
+
+
+cam_model: Pinholecam_width: 1624cam_height: 1240scale: 0.5cam_fx: 1343.9898cam_fy: 1344.0408cam_cx: 820.0840cam_cy: 646.7748cam_d0: -0.0572cam_d1: 0.0895cam_d2: 0.0cam_d3: 0.0
+
+
+除了要修改雷达的内参参数外,还要注意cam_width &amp;#x2F; cam_height &amp;#x2F; scale 三个参数 :
+
+在 mvs_ros_driver &amp;#x2F; config &amp;#x2F; left_camera_trigger.yaml中,scale默认为0.5,camara_pinhole.yaml中的值需要与其保持一致
+mvs_ros_driver中默认不修改相机图像大小,cam_width &amp;#x2F; cam_height 为相机原尺寸
+图像传输时缩放了 0.5 倍，尺寸变为 812×620。
+
+
+启动启动雷达：
+roslaunch livox_ros_driver livox_lidar_msg.launch
+
+注意：这里我们启动的是Avia雷达的自定义消息格式，而非PointCloud2格式
+启动相机:
+roslaunch mvs_ros_pkg mvs_camera_trigger.launch
+
+Fast Livo2主节点启动:
+roslaunch fast_livo mapping_avia.launch
+
+建图效果，如下方所示：
+
+图62-实时rviz
+
+包数据分析对齐效果 :
+
+图63-包对齐总览
+
+
+图64-包对齐细节
+
+
+
+雷达 &amp;#x2F; imu &amp;#x2F; 图像均为10hz
+
+
+完全测试硬件设备
+图65-硬件设备设计图
+
+
+图66-硬件设备实物图
+
+
+图67-硬件设备实物图
+
+设备标注:
+
+图68-硬件设备标注
+
+设备接线:
+
+图69-设备接线标注
+
+设备供电:
+
+使用一块4S航模电池为雷达 &amp;#x2F; NUC供电
+
+4S航模电池直供NUC
+
+4S航模电池经过Livox Converter 2.0降压连接雷达
+
+
+
+NUC为相机 &amp;#x2F; 屏幕供电
+
+使用一块4S航模电池为雷达 &amp;#x2F; NUC供电
+
+4S航模电池直供NUC
+4S航模电池经过Livox Converter 2.0降压连接雷达
+
+
+NUC为相机 &amp;#x2F; 屏幕供电
+
+
+
+
+
+图70-设备供电展示
+
+
+
+建图精度表现 : 基本可以看清大色块纹理,也许需要更准确的标定数据?(存疑)
+
+图71-复杂墙面建图总览
+
+
+图72-复杂墙面建图细节-1
+
+
+图73-复杂墙面建图细节-2
+
+
+图74-大号文字墙面建图
+
+
+
+回环精度表现 : 长距离回环 z轴有1.8m左右的漂移, x轴,y轴回环较为稳定
+
+图75-回环路径展示
+
+
+图76-回环里程计数据-z轴
+
+
+图77-回环里程计数据-x轴(蓝)/y轴(绿)
+
+
+
+不同场景
+12分钟+室内+室外
+表现 : 里程计数据基本平滑 , 室外相机有过曝情况 , 代码里没有看到和论文中对应的自动调整曝光的部分,也没有发布自动曝光话题 (存疑)
+
+图78-室外场景实时rviz
+
+
+图79-室外场景里程计数据总览
+
+
+图80-室外场景里程计数据细节
+
+室内
+表现 : 玻璃会影响建图精度,从开发空间进入密闭空间(推门走进楼梯间)易造成错误建图
+
+图81-室内场景rviz-1
+
+
+图82-室内场景rviz-2
+
+
+图83-室内场景rviz-3
+
+楼梯间
+表现 : 跑飞,窗户处建图错误
+推测 : 楼梯间狭窄且全为白墙,特征点少,avia雷达1-2m处点云质量差,存在盲区
+
+
+
+图84-楼梯间rviz-1
+
+
+图85-楼梯间rviz-2
+
+                </p>
             </a>
           </div>
         
@@ -249,8 +1181,8 @@ VIO 子系统: 提取当前 FoV 中的视觉子映射,剔除异常值。
               <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
                 2025-05-22
               </p>
-              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
-                调试记录5.21测试记录目前采用静态网页进行可视化
+                <p class="post-excerpt text-hacker-color3 group-hover:text-white truncate">
+                  调试记录5.21测试记录目前采用静态网页进行可视化
 
 用户登录未测试,现在根据用户名区分不同用户,密码不管是什么都能登录
 增加home界面,在该页面可选择词书,查询单词,选择学习&amp;#x2F;复习,复习下选择释义测试&amp;#x2F;拼写测试
@@ -263,8 +1195,14 @@ VIO 子系统: 提取当前 FoV 中的视觉子映射,剔除异常值。
 
 增加每日学习部分.
 增加profile中学习成果及可视化部分.
-增加复习规则&amp;#x2F;learn帮助...
-              </p>
+增加复习规则&amp;#x2F;learn帮助&amp;#x2F;review帮助
+缺少按记忆曲线进行复习部分.
+
+代码已推送至dictionary的visual分支
+&amp;#96;在home界面可更改每日学习词数
+5.23测试记录现在复习的逻辑已经完善了可以在个人中心看到今日学习数据&amp;#x2F;复习曲线&amp;#x2F;待复习列表,复习只会在当天对应复习列表的词汇中抽取
+
+                </p>
             </a>
           </div>
         
@@ -276,8 +1214,8 @@ VIO 子系统: 提取当前 FoV 中的视觉子映射,剔除异常值。
               <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
                 2025-04-06
               </p>
-              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
-                OverView前端:路径寻找基于搜索
+                <p class="post-excerpt text-hacker-color3 group-hover:text-white truncate">
+                  OverView前端:路径寻找基于搜索
 图搜索基础
 Dijkstra and A*
 Jump Point Search
@@ -293,8 +1231,416 @@ State Lattic Search
 Kinodynamic RRT*
 Hybrid A*
 
-后端:轨迹生成MINIMUN SNAP TRAJECTORY GENERATIONSOFT AND HARD CONSTRAINED TRAJ...
-              </p>
+后端:轨迹生成MINIMUN SNAP TRAJECTORY GENERATIONSOFT AND HARD CONSTRAINED TRAJECTORY OPTIMIZATIONMAPOccupancy grid mapgithub:https://github.com/ANYbotics/grid_map
+
+排列紧密
+结构化
+索引队列访问
+
+缺点:当切分过于细密时空间占用率大.
+Octo-mapgithub:https://github.com/OctoMap/octomap_mapping
+地图中大部分为稀疏部分,使用八叉树的数据结构储存.如果一个区块没有障碍物,不再细分该区块;如果一个区块有障碍物则细分至最小包含该障碍物的区块.
+Octree
+八叉树（Octree）是一种用于描述三维空间的树状数据结构。八叉树的每个节点表示一个正方体的体积元素，每个节点有八个子节点，将八个子节点所表示的体积元素加在一起就等于父节点的体积。八叉树是四叉树在三维空间上的扩展，二维上我们有四个象限，而三维上，我们有8个卦限。八叉树主要用于空间划分和最近邻搜索。
+实现Octree的原理:
+
+将当前的立方体细分为八个子立方体。
+如果任何一个子立方体内包含多个点，则将其进一步细分为八个子立方体。
+重复以上操作使得每个子立方体内包含最多一个点。
+
+
+
+
+排列稀疏
+结构化
+非直接索引访问(树的查询)
+
+Voxel hashinggithub:https://github.com/niessner/VoxelHashing
+记录存在碰撞的区块 —-&amp;gt; 哈希表,字典
+一个bucket中划分为更小的voxel blocks
+
+
+排列最稀疏
+结构化
+非直接索引访问(字典查询)
+
+Point Cloud Map
+无序
+无法通过索引队列访问(除非自发遍历)
+
+TSDF mapTruncated Signed Distance Functions (截断&amp;#x2F;有符号&amp;#x2F;距离函数)
+github:
+TSDF 是一种用于表示3D空间表面的体素网格地图.
+Signed Distance Function (SDF)对于空间中任意一点 x，SDF 给出它到最近表面的距离 d：$$SDF(x)&amp;#x3D;±d$$
+
++d：点在表面外部（通常指相机方向）
+−d：点在表面内部
+d&amp;#x3D;0：点在表面上（即零交叉点）
+
+Truncated SDF（TSDF）真实计算中远离表面部分的距离信息不重要且不准确，因此会进行截断：
+
+若 ∣d∣&amp;gt; μ，则 TSDF 值为截断值。
+μ 是截断距离阈值（truncation distance）。
+
+Voxel Grid（体素网格）TSDF 存在于一个 3D 网格中（类似立方体像素）：
+
+每个体素（voxel）存储：
+当前体素的 TSDF 值
+加权平均值（来自多个观测帧）
+权重（用于融合多个观测）
+
+
+
+
+
+ESDF MapEuclidean Signed Distance Field 欧几里得有符号距离场
+以 3D 网格（体素）的形式表示环境中每一点到障碍物最近点的欧几里得距离，并附带符号来表示点位于障碍物内部或外部。局部ESDF地图:只记忆感兴趣部分的ESDF值.
+
+
+Free-space Roadmap概率路线图 —-&amp;gt; 安全通行区域,使用凸多边体表示
+得到的是一个宽阔的解空间
+Voronoi Diagram Map高效利用ESDF提取地图骨架 —-&amp;gt; 稀疏
+基于搜索的路径寻找A*A*算法在Dijkstra算法的基础上引入了启发函数(贪心思想)，启发函数是对当前节点到目标节点所需代价的预估.启发式函数一般使用曼哈顿距离、欧几里德距离。
+
+
+从起点开始，将其加入待探索的节点集合（open set）。
+
+每次选择 f 值最小的节点进行扩展，其中 f(n) = g(n) + h(n)
+
+
+
+g(n) 是从起点到当前节点的实际代价
+h(n) 是从当前节点到终点的启发式估计（如直线距离）
+
+
+对当前节点的所有相邻节点，计算新的 g 值，更新路径记录。
+
+如果发现更优路径（g 值更小），则更新该邻居的记录，并加入 open set。
+
+重复以上步骤，直到终点被选中扩展，表示找到最短路径。
+
+通过路径记录表回溯，重建从起点到终点的完整路径。
+
+
+
+伪代码
+• 维护一个优先级队列来存储所有待扩容节点• 所有节点的启发式函数h(n)是预定义的• 优先级队列初始化为起始状态 X S• 对图中所有其他节点赋值g(X S) = 0, g(n) = infinite• Loop    •如果队列为空，则返回FALSE；BREAK;    •从优先级队列中删除f(n)=g(n)+h(n)最小的节点“n”    •将节点“n”标记为展开    •如果节点“n”是目标状态，返回TRUE；BREAK;    •对于节点n的所有未展开的邻居 m		•If g(m) = infinite			• g(m)= g(n) + Cnm    •对于节点n的所有未展开的邻居 m		•If g(m) = infinite			• g(m)= g(n) + Cnm			• Push node “m” into the queue		•If g(m) &amp;gt; g(n) + C nm			•g(m)= g(n) + Cnm	•end• End Loop
+
+
+
+Weighted A* SearchSub-Optimal Solution
+通过人为加大启发函数的影响力来获得更快的搜索速度，以牺牲路径最优性为代价。
+f &amp;#x3D; g + εh, ε &amp;gt; 1 &amp;#x3D;bias towards states that are closer to goal.
+
+
+Most Greedy（最贪婪）
+
+参数：a&amp;#x3D;0,b&amp;#x3D;1
+
+只考虑启发式代价，完全不考虑当前路径代价
+
+结果：趋向于直接朝目标点移动，但路径不一定最短或最优
+
+
+
+
+Tunable Greediness（可调贪婪度）
+
+参数：a&amp;#x3D;1,b&amp;#x3D;ε&amp;gt;1
+
+综合考虑当前路径和启发式估计，但偏向启发式
+
+结果：平衡探索性和效率，路径更合理
+
+
+
+
+Optimal（最优路径）
+
+参数：a&amp;#x3D;1,b&amp;#x3D;1
+
+平等考虑已知路径和启发估计
+
+结果：找到最优路径
+
+
+
+
+Dijkstra算法
+
+参数：a&amp;#x3D;1,b&amp;#x3D;0
+
+完全不使用启发式，只靠实际代价 g,效率低
+
+
+A*的实施流程
+建立地图 → 生成网格节点数组
+
+设定障碍 → 标记不可达节点
+
+编写邻居搜索函数
+
+编写A*主循环：
+
+从openList中取出f值最小的节点
+
+计算邻居的g&amp;#x2F;h&amp;#x2F;f值，加入openList
+
+更新已访问节点（closedList）
+
+
+
+使用priority_queue或multimap优化性能
+
+
+最好的启发函数最好:tight,正确的最短距离函数
+
+二维最佳启发函数:$$h2D​&amp;#x3D;(dx+dy)+(2​−2)⋅min(dx,dy)$$三维最佳启发函数:
+我们记 dx,dy,dz为三维网格中当前点与目标点在三个轴上的距离（均为非负整数），有：$$h3D&amp;#x3D;dmin⋅3+(dmid−dmin)⋅2+(dmax−dmid)⋅1$$其中：dmin,dmid,dmax是 dx,dy,dzdx,dy,dz 的排序结果，使得
+$$dmin≤dmid≤dmax$$
+
+Tie Breaker平局处理器,打破 f 值相等时的探索顺序
+
+问题:
+
+​	A* 会选取 f 值最小的节点扩展（f&amp;#x3D;g+h）
+​	但在一些情形下，很多节点的 f 值完全相等,尤其是在网格图中启发函数不够 tight 的时候
+​	导致算法要探索很多不必要的节点，降低效率
+
+
+解决方法:
+
+
+人为干扰 h，让 f 值不同:
+
+  将原来的启发函数 h乘上一个微小因子：$$  h&amp;#x3D;h×(1.0+p)$$  其中：$$  p &amp;lt; \frac{\text{最小步长代价}}{\text{预期路径总长度}}$$  这样能 轻微打破平局，减少无效扩展
+  代价是轻微地破坏启发式的“可采纳性”（admissibility），但常常实际无影响或带来更好效率.
+
+优先选 h值小的节点
+
+  如果两个节点 f 一样，选择 h 小的那个（靠近终点）
+
+加入伪随机干扰项（Deterministic random）
+
+
+给每个节点加一个唯一扰动，保持一致性但不完全对称
+
+
+优先靠近起点-终点连线的路径
+
+$$cross&amp;#x3D;∣dx1×dy2−dx2×dy1∣$$
+这其实是在衡量点偏离直线的“面积”，越小越靠近理想路径。
+
+Jump Point Search核心思想:在两点之间没有障碍物时，中间的节点不考虑,只考虑重要节点.
+
+邻居修剪 Neighbor Pruning
+
+
+灰色节点：较差的邻居，当去到它们时，没有分值的路径更便宜。丢弃。
+
+白色节点：自然邻居。
+
+
+​	只需要考虑自然邻居.
+
+
+强迫邻居 Forced Neighbors
+
+节点X的邻居节点有障碍物，且X的父节点P经过X到达N的距离代价，比不经过X到大N的任一路径的距离代价都小，则称N是X的强迫邻居。
+
+有相邻的障碍
+
+红色节点是强制邻居。
+
+一条从父母到他们通过障碍的更便宜的路径被阻断。
+
+
+
+
+跳点(Jump Point)：什么样的节点可以作为跳点 (1)节点 A 是起点、终点. (2)节点A 至少有一个强迫邻居. (3)父节点在斜方向(斜向搜索)，节点A的水平或者垂直方向上有满足 (1)、(2) 的节点
+
+
+跳点搜索中，会递归地检查路径上的邻居节点是否是“跳点”。在检查对角线方向前，会优先尝试直线方向。只要某个节点通往某些邻居的最短路径必须经过它，它就会被标记为跳点。同时，对“强制邻居”不能剪枝，必须展开。
+基于采样的路径寻找Probabilistic Road Map图结构
+将规划分为两个阶段：·学习阶段·查询阶段
+检查采样配置和连接的样本之间的碰撞可以有效率地完成任务。数量相对较少的里程碑和局部路径足以捕获的连通性。
+
+限制路径点连接的长度避免图结构过于复杂
+
+学习阶段:
+在c空间中采样N个点
+删除碰撞点
+
+
+
+连接到最近的点，并获得无碰撞段。
+删除碰撞段
+
+
+查询阶段:
+在路线图上搜索，找到从起点到终点的路径目标（使用Dijkstra算法或A*算法）。
+路线图现在类似于网格地图
+
+
+ 优点
+
+概率完备
+
+缺点
+
+要求解决两点边值问题
+
+在状态空间上构建图，但不特别关注生成路径
+
+效率不高
+
+
+Lazy collision-checking效率低: PRM（Probabilistic Roadmap）或 RRT（Rapidly-exploring Random Tree) 需要频繁地检查从一个配置到另一个配置（或状态）之间的路径是否与障碍物发生碰撞。但碰撞检测是一个昂贵的计算操作，尤其在高维空间或复杂环境中，频繁的碰撞检测会成为性能瓶颈。
+
+不考虑采样点和生成分段碰撞（懒惰）
+
+先构建图（PRM）或树（RRT）时不立即检查碰撞，等到真正要使用这条路径时（例如在查询最短路径、或者将路径从树&amp;#x2F;图中提取出来时），再执行碰撞检测。
+PRM+Lazy collision-checking
+构建 roadmap：采样节点、连接边，不做碰撞检测。
+
+查询路径：使用 A* 或 Dijkstra 等算法找到一条从起点到终点的路径。
+
+在该路径上进行逐段碰撞检测：
+
+如果全部无碰撞，路径有效；
+
+如果某段有碰撞，将该边标记为无效（不可达），从图中删除，重新搜索。
+
+
+
+
+
+Rapidly-exploring Random Tree核心思想:
+
+通过生成next构建树状态在树中通过执行随机控制,从起点开始，不断向随机方向扩展一棵树，迅速探索整个状态空间。
+
+伪代码:
+
+
+初始化一棵树 T，将起始点 X_init 作为树的根节点。
+循环:
+在整个状态空间中随机采样一个点 X_rand，用于探索新方向。
+找出树 T 中距离 X_rand 最近的已有节点 X_nearest。
+从 X_nearest 朝 q_rand 方向延伸一个固定步长delta，生成新点 X_new。
+
+如果新点 X_new 是可行的（比如不与障碍物碰撞），则执行以下操作:
+
+把这个新点 X_new 加入树中，作为新的节点。
+在树中添加一条从 X_nearest 到 X_new 的路径边。
+返回整个搜索生成的树 T，它包含从起点开始探索出来的路径结构。
+
+**提前停止的条件：**因为每一段树枝的末端都是Xnew，所以每产生一次Xnew节点，我们都判断一下Xnew与终点之间的距离，看这个距离是否小于步长，如果小于步长且没有经过障碍物，则就直接把Xnew与终点进行相连。
+
+优点:·旨在找到从起点到目标的路径·比PRM更有针对性缺点:·非最优解·效率不高,在 narrow环境 中效率低·整个空间取样
+
+KD树 Kd-Tree，即K-dimensional  tree，是一棵二叉树，树中存储的是一些K维数据。在一个K维数据集合上构建一棵Kd-Tree代表了对该K维数据集合构成的K维空间的一个划分，即树中的每个结点就对应了一个K维的超矩形区域（Hyperrectangle）。
+关键术语:
+
+维度（K）：表示数据点所在的空间维数。例如，二维空间中的点有x和y坐标，三维空间中的点有x、y、z坐标。
+节点：KD树的每个节点包含一个K维点及其分割超平面的信息。
+超平面：在K维空间中用于将空间划分为两个部分的（K-1）维子空间。例如，二维空间中的超平面是直线，三维空间中的超平面是平面。
+
+构建步骤:
+
+输入数据：假设有N个K维数据点。
+
+选择分割维度：按照循环顺序选择当前维度。例如，第一个维度（x轴）用于根节点，第二个维度（y轴）用于其子节点，依此类推。
+
+选择分割值：在当前分割维度上找到中位数点，将其作为当前节点。
+
+划分数据：
+
+左子集：所有在当前分割维度上小于中位数点的点。
+
+右子集：所有在当前分割维度上大于中位数点的点。
+
+
+
+递归构建子树：对左子集和右子集重复上述步骤，直到所有点都被包含在树中。
+
+终止条件：当某一子集为空时，递归终止。
+
+
+
+使用KD树提高路径规划效率
+Bidirectional RRT &amp;#x2F; RRT-Connect 双向快速扩展随机树
+
+初始化两棵树：T_start 以 q_start 为根，T_goal 以 q_goal 为根。
+重复以下过程直到路径找到或迭代上限：a. 从状态空间中采样一个随机点 q_rand。b. 使用 Extend 操作从 T_start 向 q_rand 延伸，得到 q_new。c. 如果扩展成功：i. 使用 Connect 操作让 T_goal 向 q_new 不断扩展，直到无法前进。ii. 如果两个树在某个点连接，则路径找到。d. 交换 T_start 和 T_goal。
+
+
+
+
+
+项目
+单向 RRT
+双向 RRT（RRT-Connect）
+
+
+
+扩展方向
+只从起点扩展
+起点和终点同时扩展
+
+
+搜索速度
+较慢
+更快，更高效
+
+
+成功率
+容易陷入复杂障碍
+双向推进更容易绕障碍
+
+
+路径质量
+一般
+更好
+
+
+复杂性
+低
+高
+
+
+Optimal sampling-based path planning methods在传统采样方法（如 RRT、PRM）的基础上，进一步加入了路径最优性保证的算法。最经典的代表是 RRT*
+RRT*
+Choose Best Parent：在新节点周围半径内的已有节点中，选择一条“代价最小”的路径作为父节点；
+Rewire：反过来看新节点是否能以更小的代价更新周围节点的父节点。
+Kinodynamic-RRT*更改Steer（）函数以适应机器人的运动或其他限制导航(曲线)
+Advanced Sampling-based MethodsInform RRT*一旦找到一条路径，其代价为 c_best，就只在以下区域采样：
+
+从起点 q_start 到终点 q_goal 的椭球体区域（Ellipsoidal Sampling Space） 半长轴为 c_best/2，焦点为起点与终点，构成一个最短路径所有可能穿过的区域。
+
+
+Cross-entropy motion planning
+初始化一个轨迹分布模型
+
+比如用高斯分布建模一条轨迹（多个中间点组成）
+
+初始均值：可能是直线路径，初始方差大
+
+
+
+采样多个轨迹
+每条轨迹是从当前分布中采样得到的一个完整路径（可加速度约束等）
+
+评估轨迹代价:碰撞检测、路径长度、平滑性、目标接近度等
+
+选取表现最好的轨迹（Top-k）:选出“精英轨迹”，即代价最小的那一部分
+
+**用精英轨迹更新分布参数:**更新高斯均值和协方差，使下次采样更集中于好路径附近
+
+迭代:重复 2-5，直到满足终止条件（如达到最小代价、收敛、超时等）
+
+
+
+                </p>
             </a>
           </div>
         
@@ -306,8 +1652,8 @@ Hybrid A*
               <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
                 2025-03-10
               </p>
-              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
-                接入网综合课设阶段一
+                <p class="post-excerpt text-hacker-color3 group-hover:text-white truncate">
+                  接入网综合课设阶段一
 完成虚拟机选型，并配置至少两个网段， 分别测试子网内和子网间连通性； 
 
 设计PPPOE本地认证拓扑图及IP地址规划 (客户至少两个网段)  ；
@@ -324,8 +1670,608 @@ Vmnet3:192.168.30.0&amp;#x2F;24
 
 
 配置流程
-在ubuntu编辑-虚拟网络编辑器中选择更改设置，赋予管理员权限后选择添加网络，类...
-              </p>
+在ubuntu编辑-虚拟网络编辑器中选择更改设置，赋予管理员权限后选择添加网络，类型为仅主机模式，修改子网IP和子网掩码。
+
+
+
+在ubuntu虚拟机设置中添加网卡，三张为子网规划中定义所对应的网卡。
+
+
+
+对应网络适配器选择自定义-特定虚拟网络-选择对应网卡-确定。
+
+
+在ubuntu中输入
+
+ifconfig
+
+出现对应网卡信息。
+
+
+配置静态IP。参考博客：Ubuntu配置静态IP，注意与网卡名称匹配。
+
+Ubuntu 16.04 及更早版本：网络管理工具使用 ifupdown，网络配置文件在 /etc/network/interfaces
+auto loiface lo inet loopbackauto eth0iface eth0 inet dhcpauto eth1iface eth1 inet staticaddress 192.168.10.10netmask 255.255.255.0gateway 192.168.10.1dns-nameservers 8.8.8.8 8.8.4.4auto eth2iface eth2 inet staticaddress 192.168.20.10netmask 255.255.255.0gateway 192.168.20.1auto eth3iface eth3 inet staticaddress 192.168.30.10netmask 255.255.255.0gateway 192.168.30.1
+
+Ubuntu 17.10 及更高版本：网络管理工具使用 Netplan，配置文件位于 /etc/netplan/00-installer-config.yaml
+# Let NetworkManager manage all devices on this systemnetwork:  version: 2  renderer: NetworkManager  ethernets:    ens33:                  dhcp4: true                                nameservers:        addresses: [8.8.8.8, 8.8.4.4]           ens37:      addresses: [192.168.10.10/24]              routes:        - to: default          via: 192.168.10.1                      dhcp4: false                                nameservers:        addresses: [8.8.8.8, 8.8.4.4]          ens38:      addresses: [192.168.20.10/24]               routes:        - to: default          via: 192.168.20.1                      dhcp4: false                                nameservers:        addresses: [8.8.8.8, 8.8.4.4]       ens39:      addresses: [192.168.30.10/24]              routes:        - to: default          via: 192.168.30.1                    dhcp4: false                           nameservers:        addresses: [8.8.8.8, 8.8.4.4]   
+
+配置完成后执行命令使配置生效。
+sudo netplan apply
+
+执行ifconfig命令查看当前IP地址。
+测试子网间连通性
+
+Client1(192.168.10.20)
+
+Client2(192.168.20.20)
+
+
+子网内连通性
+Client1(192.168.10.20)
+
+Client2(192.168.20.20)
+
+
+任务三PPPoE服务器端参考博客:基于Linux环境的PPPOE服务器搭建
+
+安装PPPoE服务器程序
+
+sudo apt-get install pppoe
+
+使用pppoe-server -h查看pppoe安装情况及版本,该PPPoE-Server版本为3.12。
+
+
+编辑&amp;#x2F;etc&amp;#x2F;ppp&amp;#x2F;options文件
+
+
+PAP：明文密码认证协议。
+CHAP：挑战握手认证协议，三次握手机制，使用哈希加密。
+
+14+ ms-dns 8.8.8.857  local144 #+pap  // 关闭pap147 -pap151 +chap  // 开启chap154 #-chap208 proxyarp
+
+
+编辑 pppoe-server-options文件
+
+创建&amp;#x2F;etc&amp;#x2F;ppp&amp;#x2F;pppoe-server-options文件，使用chap验证协议require-chap，如果使用pap验证协议则配置为 require-pap。
+authrequire-chaplcp-echo-interval 60lcp-echo-failure 5     logfile /var/log/pppd.log
+
+
+编辑&amp;#x2F;etc&amp;#x2F;ppp&amp;#x2F;chap-secrets 文件
+
+# Secrets for authentication using CHAP# client	server	secret			IP addressestest * test *
+
+用户名为test，密码为test，服务器名和IP地址为任意。
+
+开启IP转发功能
+
+​	编辑&amp;#x2F;etc&amp;#x2F;sysctl.conf文件：
+28 net.ipv4.ip_forward=1
+
+​	运行sudo sysctl -p生效配置。
+
+启动PPPoE服务器
+
+sudo pppoe-server -I ens37 -L 192.168.10.10 -R 192.168.10.11 -N 20   sudo pppoe-server -I ens38 -L 192.168.20.10 -R 192.168.20.11 -N 20   
+
+指令含义：
+
+
+
+pppoe-server
+启动 PPPoE 服务器进程
+
+
+
+-I xxx
+监听物理网卡xxx，接受客户端的 PPPoE 拨号请求
+
+
+-L IP地址
+PPP 服务器的 IP 地址
+
+
+-R IP地址
+客户端分配 IP 的起始地址
+
+
+-N n
+最多允许 n 个 PPPoE 客户端同时连接
+
+
+
+查看PPPoE服务器的启用情况
+
+ps -ef|grep pppoe
+
+
+
+如果需要关闭PPPoE服务器，指令为：
+
+sudo killall pppoe-server
+
+
+每次电脑重启均需要重新运行PPPoE启动命令，设置开机自启动脚本：
+
+创建systemd服务文件：
+sudo gedit /etc/systemd/system/pppoe-server.service
+
+[Unit]Description=PPPoE Server ServiceAfter=network.target # 等到网络启动后再启动[Service]ExecStart=/usr/local/bin/start-pppoe.shRestart=alwaysRestartSec=5User=root# 无限制重启StartLimitIntervalSec=0[Install]WantedBy=multi-user.target
+
+sudo gedit /usr/local/bin/start-pppoe.sh
+
+创建脚本文件：
+sudo gedit /usr/local/bin/start-pppoe.sh
+
+#!/bin/bashpppoe-server -I ens37 -L 192.168.10.10 -R 192.168.10.11 -N 20pppoe-server -I ens38 -L 192.168.20.10 -R 192.168.20.11 -N 20# 保持进程运行tail -f /dev/null
+
+赋予执行权限：
+sudo chmod +x /usr/local/bin/start-pppoe.sh
+
+重新加载配置，重启服务：
+sudo systemctl daemon-reloadsudo systemctl reset-failedsudo systemctl enable pppoe-serversudo systemctl start pppoe-server
+
+重启后检查服务状态：
+ps -ef|grep pppoesudo systemctl status pppoe-server
+
+
+
+
+
+注：如果systemd服务文件中没有添加StartLimitIntervalSec=0,脚本文件中没有tail -f /dev/null,则有可能报错：
+sudo systemctl status pppoe-server● pppoe-server.service - PPPoE Server Service     Loaded: loaded (/etc/systemd/system/pppoe-server.service; enabled; vendor&amp;gt;     Active: failed (Result: start-limit-hit) since Mon 2025-03-10 00:16:20 CS&amp;gt;    Process: 2386 ExecStart=/usr/local/bin/start-pppoe.sh (code=exited, status&amp;gt;   Main PID: 2386 (code=exited, status=0/SUCCESS)3月 10 00:16:20 xu-virtual-machine systemd[1]: pppoe-server.service: Scheduled&amp;gt;3月 10 00:16:20 xu-virtual-machine systemd[1]: Stopped PPPoE Server Service.3月 10 00:16:20 xu-virtual-machine systemd[1]: pppoe-server.service: Start req&amp;gt;3月 10 00:16:20 xu-virtual-machine systemd[1]: pppoe-server.service: Failed wi&amp;gt;3月 10 00:16:20 xu-virtual-machine systemd[1]: Failed to start PPPoE Server Se&amp;gt;
+
+失败的原因： start-limit-hit，短时间内该服务多次失败，触发了 systemd 的启动限制机制。原脚本start-pppoe.sh 脚本执行完后立即退出，systemd 误以为它崩溃并尝试重启，导致触发 start-limit-hit。
+
+
+
+
+PPPoE客户端Windows端拨号步骤：
+
+选择网络和Internet设置
+
+
+
+选择拨号-设置新连接-连接到Internet-下一页-宽带
+
+
+
+输入用户名和密码
+
+
+连接成功
+
+
+
+测试 客户端连接成功后，在服务器端输入ifconfig会看到PPP接口信息
+
+在客户端输入ipconfig /all  会看到PPP服务器分配的IP地址
+Client1(192.168.10.20)
+
+测试ping通：
+
+Client2(192.168.20.20)
+
+测试ping通：
+
+抓包分析
+注意：执行 sudo wireshark 
+Filter 选择pppoe|ppoes。
+PPPoE报文类型
+
+
+
+阶段
+以太网协议号
+报文类型
+
+
+
+发现阶段（Discovery）
+0x8863
+PADI, PADO, PADR, PADS, PADT
+
+
+会话阶段（Session）
+0x8864
+PPP 数据包（LCP、PAP&amp;#x2F;CHAP、IP 数据等）
+
+
+PPPoE交互过程
+
+
+
+
+PPPoE 发现阶段
+PPPoE 发现阶段用于 建立 PPPoE 连接有5种报文：
+
+PADI（PPPoE Active Discovery Initiation）
+
+
+客户端 → 广播 发送 PADI（发现请求）。
+用于查找可用的 PPPoE 服务器（AC, Access Concentrator）。
+目标 MAC 地址：FF:FF:FF:FF:FF:FF（广播）。
+只有Service-Name为空的服务器会响应。
+
+
+
+PADO（PPPoE Active Discovery Offer）
+
+
+服务器（AC）→ 客户端 回复 PADO（提供服务）。
+服务器响应客户端，表明自己可用。
+包含 服务器名称 和 支持的服务。
+
+
+
+PADR（PPPoE Active Discovery Request）
+
+
+客户端 → 服务器（AC） 发送 PADR（连接请求）。
+
+用户主机可能会收到多个 PADO，但仅查看它收到的 PADO 数据包并选择一个，并请求建立会话。
+
+包含 服务名 和 唯一的标识符。
+
+
+
+
+PADS（PPPoE Active Discovery Session-confirmation）
+
+
+服务器（AC）→ 客户端 发送 PADS（会话确认）。
+分配一个 PPPoE 会话 ID，表示连接已建立。
+
+
+
+PADT（PPPoE Active Discovery Terminate）
+
+
+客户端或服务器 发送 PADT（终止连接）。
+关闭 PPPoE 连接。
+
+PPPoE 会话阶段
+PPPoE 发现阶段完成后，客户端和服务器通过 PPPoE 会话 ID 进行通信。 此时 PPPoE 封装标准 PPP 报文，包括4种报文：
+
+LCP（Link Control Protocol）：链路协商。
+PAP&amp;#x2F;CHAP（Password Authentication Protocol &amp;#x2F; Challenge Handshake Authentication Protocol）:  用户身份认证。
+NCP（Network Control Protocol) : 分配 IP 地址。
+IP 数据报文: 网络通信数据（TCP&amp;#x2F;IP、UDP）。
+
+阶段二
+设计PPPoE+RADIUS远程接入控制拓扑图及IP地址规划（客户机至少两个网段）。
+选型RADIUS服务器软件，并在虚拟平台下完成PPPOE+RADIUS远程接入认证的搭建、配置、实验测试。
+
+任务一
+任务二
+RADIUS服务器：FreeRADIUS 3.0.27 （最新stable版本）
+RADIUS客户端：FreeRADIUS -client-1.1.7
+
+配置Radius服务器及客户端静态IPsudo gedit /etc/netplan/01-network-manager-all.yaml
+
+
+服务器
+
+# Let NetworkManager manage all devices on this systemnetwork:  version: 2  renderer: NetworkManager  ethernets:    ens33:                  dhcp4: true                           # 启用 DHCP      nameservers:        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置            ens37:      addresses: [192.168.30.2/24]              routes:        - to: default          via: 192.168.30.1                      dhcp4: false                                nameservers:        addresses: [8.8.8.8, 8.8.4.4] 
+
+配置完成后执行命令使配置生效。
+sudo netplan apply
+
+执行ifconfig命令查看当前IP地址
+
+
+客户端（PPPoE服务器）
+
+# Let NetworkManager manage all devices on this systemnetwork:  version: 2  renderer: NetworkManager  ethernets:    ens33:                  dhcp4: true                           # 启用 DHCP      nameservers:        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置            ens37:      addresses: [192.168.10.1/24]           # 静态 IP 地址      routes:        - to: default          via: 192.168.10.1  # 默认网关      dhcp4: false                           # 禁用 DHCP      nameservers:        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置            ens38:      addresses: [192.168.20.1/24]           # 静态 IP 地址      routes:        - to: default          via: 192.168.20.1  # 默认网关      dhcp4: false                           # 禁用 DHCP      nameservers:        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置            ens39:      addresses: [192.168.30.1/24]           # 静态 IP 地址      routes:        - to: default          via: 192.168.30.1  # 默认网关      dhcp4: false                           # 禁用 DHCP      nameservers:        addresses: [8.8.8.8, 8.8.4.4]        # DNS 配置      link: ens37      addresses:        - 192.168.10.129/25
+
+配置完成后执行命令使配置生效。
+sudo netplan apply
+
+执行ifconfig命令查看当前IP地址
+
+安装Radius服务器
+下载Radius：
+freeradius官方网站：http://freeradius.org/download.html
+freeradius官方文档：
+
+解压：
+tar -zxvf freeradius-server-3.0.27.tar.gz 
+
+安装依赖项
+sudo apt updatesudo apt install build-essential -ysudo apt install libtalloc-dev -ysudo apt install libssl-dev -ysudo apt install libhiredis-dev -ysudo apt install freeradius-mysql
+
+编译及安装
+cd  freeradius-server-3.0.26./configure makesudo make install # 默认安装在 /usr/local/etc/raddb下
+
+启动Radius
+# debug模式启动sudo radiusd -X# 后台进程方式启动systemctl start radiusdsystemctl enable radiusd# 日志/var/log/radius/radius.log 
+
+添加用户
+在 &amp;#x2F;usr&amp;#x2F;local&amp;#x2F;etc&amp;#x2F;raddb&amp;#x2F;users 的末尾添加：
+# test 的用户设置明文密码为 &amp;quot;test&amp;quot;# user Cleartext-Password := &amp;quot;password&amp;quot;test Cleartext-Password := &amp;quot;test&amp;quot;
+
+# radtest &amp;lt;用户名&amp;gt; &amp;lt;密码&amp;gt; &amp;lt;服务器地址&amp;gt; &amp;lt;端口&amp;gt; &amp;lt;共享密钥&amp;gt;radtest testing password123 127.0.0.1 0 testing123  
+
+本地测试成功
+
+
+
+创建数据库1.安装mariadb
+sudo apt updatesudo apt install mariadb-server mariadb-clientsudo systemctl start mariadbsudo systemctl enable mariadb
+
+若此时直接运行安全设置mysql_secure_installation，则报错：
+xu@xu-virtual-machine:~/Desktop$ mysql_secure_installationNOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!In order to log into MariaDB to secure it, we&amp;#x27;ll need the currentpassword for the root user.  If you&amp;#x27;ve just installed MariaDB, andyou haven&amp;#x27;t set the root password yet, the password will be blank,so you should just press enter here.Enter current password for root (enter for none): ERROR 1698 (28000): Access denied for user &amp;#x27;root&amp;#x27;@&amp;#x27;localhost&amp;#x27;Enter current password for root (enter for none): Aborting!Cleaning up...
+
+这是因为 MariaDB 默认使用 auth_socket 插件 进行身份验证，它不接受通过普通密码登录，只通过 Unix 套接字进行验证。
+解决方案：
+
+通过root用户登录:
+sudo mysql -u root
+
+禁用 auth_socket 插件并设置密码:
+sudo mysqlUSE mysql;SET PASSWORD FOR &amp;#x27;root&amp;#x27;@&amp;#x27;localhost&amp;#x27; = PASSWORD(&amp;#x27;1&amp;#x27;);# 刷新权限并退出FLUSH PRIVILEGES;EXIT;
+
+​	运行mysql_secure_installation进行安全设置：
+
+
+
+进入数据库
+
+mysql -uroot -p
+
+
+创建数据库并授权
+
+MariaDB [(none)]&amp;gt; create database radius；Query OK, 1 row affected (0.00 sec)MariaDB [(none)]&amp;gt; grant all on radius.* to radius@&amp;#x27;localhost&amp;#x27; identified by &amp;#x27;radius&amp;#x27;;Query OK, 0 rows affected (0.00 sec)MariaDB [(none)]&amp;gt; flush privileges;Query OK, 0 rows affected (0.00 sec)
+
+
+
+配置Radius服务器端和数据库
+导入数据库
+
+cd /usr/local/etc/raddb/mods-config/sql/main/mysqlmysql -u radius -p radius&amp;lt; schema.sql
+
+如果报错：
+root@xu-virtual-machine:/usr/local/etc/raddb/mods-config/sql/main/mysql# mysql -u radius -p radius&amp;lt; schema.sqlEnter password: ERROR 1045 (28000): Access denied for user &amp;#x27;radius&amp;#x27;@&amp;#x27;localhost&amp;#x27; (using password: YES)
+
+这是因为 MySQL 用户 radius 在 localhost 上的访问被拒绝，重新设置密码
+mysql -uroot -pALTER USER &amp;#x27;radius&amp;#x27;@&amp;#x27;localhost&amp;#x27; IDENTIFIED BY &amp;#x27;your_password&amp;#x27;;GRANT ALL PRIVILEGES ON radius.* TO &amp;#x27;radius&amp;#x27;@&amp;#x27;localhost&amp;#x27;;FLUSH PRIVILEGES;
+
+
+配置Radius
+
+配置default文件
+sudo -igedit /usr/local/etc/raddb/sites-enabled/default
+
+使用数据库储存用户信息&amp;#x2F;计费：
+在538行authenticate {}部分，注释files，解注释sql
+在673行accounting{}部分，解注释 sql
+
+配置sql文件
+sudo -igedit /usr/local/etc/raddb/mods-available/sql# 设置文件tls_required = nodriver = &amp;quot;rlm_sql_mysql&amp;quot;  # 指定 FreeRADIUS 使用 MySQL 数据库作为后端数据库来进行认证和计费dialect = &amp;quot;mysql&amp;quot;         # mysql 表示使用 MySQL 数据库的 SQL 方言server = &amp;quot;localhost&amp;quot;      # 数据库运行在本地计算机上port = 3306 login = &amp;quot;radius&amp;quot;password = &amp;quot;radius&amp;quot;radius_db = &amp;quot;radius&amp;quot;read_clients = yes         # 允许 FreeRADIUS 从数据库中读取客户端信息                                      、
+
+
+客户端认证设置
+
+
+sudo gedit /usr/local/etc/raddb/clients.conf# 定义 PPPoE 客户端连接到服务器时需要使用的 IP 地址和密码（共享密钥）client pppoe-server &amp;#123;    ipaddr = 192.168.30.1    secret = testing123&amp;#125;
+
+
+配置组与用户信息
+
+
+进入radius库
+
+sudo mysql -u root -p radius
+
+
+新建组
+
+insert into radgroupcheck (groupname,attribute,op,value) values  (&amp;#x27;usr&amp;#x27;,&amp;#x27;Auth- Type&amp;#x27;,&amp;#x27;:=&amp;#x27;,&amp;#x27;Local&amp;#x27;);insert into radgroupcheck (groupname,attribute,op,value) values (&amp;#x27;usr&amp;#x27;,&amp;#x27;Service-Type&amp;#x27;,&amp;#x27;:=&amp;#x27;,&amp;#x27;Framed-User&amp;#x27;);insert into radgroupcheck (groupname,attribute,op,value) values (&amp;#x27;usr&amp;#x27;,&amp;#x27;Framed-IP-Address&amp;#x27;,&amp;#x27;:=&amp;#x27;,&amp;#x27;255.255.255.255&amp;#x27;);insert into radgroupcheck (groupname,attribute,op,value) values (&amp;#x27;usr&amp;#x27;,&amp;#x27;Framed-IP-Netmask&amp;#x27;,&amp;#x27;:=&amp;#x27;,&amp;#x27;255.255.255.0&amp;#x27;);
+
+查看新建组 select * from radgroupcheck; 
+
+可以看到，usr 组的认证方式为 本地认证（Local）， Service-Type 为 Framed-User，即拨号用户，用于 PPP&amp;#x2F;PPPoE 认证。分配给用户的 IP 地址为255.255.255.255，表示 不指定具体 IP 地址，由PPPoE 服务器动态分配。若分配了 IP 地址，默认子网掩码为 255.255.255.0。
+
+配置 RADIUS 认证用户
+定义 RADIUS 用户，用于身份验证。
+
+
+sudo gedit /usr/local/etc/raddb/users# 对于 client-1user1 Cleartext-Password := &amp;quot;test-1&amp;quot;# 对于 client-2user2 Cleartext-Password := &amp;quot;test-2&amp;quot;
+
+
+插入用户
+
+INSERT INTO radcheck (username, attribute, op, value) VALUES (&amp;#x27;user1&amp;#x27;, &amp;#x27;Cleartext-Password&amp;#x27;, &amp;#x27;:=&amp;#x27;, &amp;#x27;test-1&amp;#x27;); INSERT INTO radcheck (username, attribute, op, value) VALUES (&amp;#x27;user2&amp;#x27;, &amp;#x27;Cleartext-Password&amp;#x27;, &amp;#x27;:=&amp;#x27;, &amp;#x27;test-2&amp;#x27;); 
+
+查看用户信息 SELECT * FROM radcheck; 
+
+
+关联用户和组
+
+INSERT INTO radusergroup (username, groupname) VALUES (&amp;#x27;user1&amp;#x27;, &amp;#x27;usr&amp;#x27;);INSERT INTO radusergroup (username, groupname) VALUES (&amp;#x27;user2&amp;#x27;, &amp;#x27;usr&amp;#x27;);
+
+查看用户和组的关联信息 SELECT * FROM radusergroup; 
+
+
+建立软链接
+
+在 FreeRADIUS 服务器的配置目录中启用 SQL 模块
+sudo -icd /usr/local/etc/raddb/mods-enabledln -s /usr/local/etc/raddb/mods-available/sql ./
+
+查看软链接信息 ls -l /usr/local/etc/raddb/mods-enabled/sql 
+
+本地测试用户链接：
+
+radtest user1 test-1 127.0.0.1 0 testing123radtest user2 test-2 127.0.0.1 0 testing123
+
+
+配置Radius客户端
+下载并安装RADIUS -clients
+
+wget ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gztar -xzvf freeradius-client-1.1.7.tar.gz cd freeradius-client-1.1.7/./configure sudo makesudo make install
+
+
+在 PPPoE 服务器中启用 RADIUS 认证
+
+​	在&amp;#x2F;etc&amp;#x2F;ppp&amp;#x2F;pppoe-server-options中增加
+# 加载 radius.so 插件plugin /usr/lib/pppd/2.4.7/radius.so# 指定 RADIUS 客户端配置文件radius-config-file /usr/local/etc/radiusclient/radiusclient.conf
+
+
+配置radiusclient.conf文件
+
+sudo gedit /usr/local/etc/radiusclient/radiusclient.conf
+
+在文件末尾添加：
+# 认证顺序：先本地认证，再 RADIUS 远程认证auth_order      local,radius# RADIUS 认证服务器authserver      192.168.30.2:1812# RADIUS 计费服务器acctserver      192.168.30.2:1813# RADIUS 共享密钥存放servers        /usr/local/etc/radiusclient/servers# RADIUS 共享密钥文件seqfile        /var/run/radius.seq# RADIUS映射文件mapfile        /usr/local/etc/radiusclient/port-id-mapdictionary     /usr/local/etc/radiusclient/dictionarylogin_radius   /usr/local/sbin/login.radius
+
+
+配置 server 文件
+
+sudo gedit /usr/local/etc/radiusclient/servers
+
+在文件末尾添加：
+# [RADIUS服务器IP]  [共享密钥]  [可选参数]192.168.30.2 testing123
+
+
+配置dictionary文件
+
+sudo gedit /usr/local/etc/radiusclient/dictionary
+
+在文件末尾添加：
+INCLUDE /usr/local/etc/radiusclient/dictionary.sipINCLUDE /usr/local/etc/radiusclient/dictionary.ascendINCLUDE /usr/local/etc/radiusclient/dictionary.meritINCLUDE /usr/local/etc/radiusclient/dictionary.compatINCLUDE /usr/local/etc/radiusclient/dictionary.microsoft
+
+
+
+测试
+PPPoE服务器启动情况
+
+
+Radius服务器启动情况
+
+
+
+
+Client1
+
+输入正确用户及密码（user1，test-1），拨号成功
+
+PPPoE服务器已分配地址：
+
+上网测试：
+
+在Radius服务器端本次会话记录:
+
+输入错误用户及密码（user1，test-2），拨号失败
+
+在Radius服务器端本次会话记录:
+
+
+Client2
+
+输入正确用户密码（user2，test-2），拨号成功
+
+PPPoE服务器已分配地址：
+
+上网测试：
+
+在Radius服务器端本次会话记录:
+
+输入错误用户及密码（user2，test-1），拨号失败
+
+
+抓包分析RADIUS报文格式
+
+RADIUS 报文类型分为 认证报文 和 计费报文：
+1. 认证报文（Authentication Messages）
+认证报文用于 用户身份验证，确保用户合法，并为其分配相应权限。常见类型如下：
+
+
+
+报文类型
+代码
+作用
+
+
+
+Access-Request
+1
+认证请求，客户端（NAS）向 RADIUS 服务器发送，包含用户名、密码等信息
+
+
+Access-Accept
+2
+认证通过，RADIUS 服务器返回，NAS 允许用户访问
+
+
+Access-Reject
+3
+认证失败，RADIUS 服务器拒绝用户访问
+
+
+Access-Challenge
+11
+质询认证，要求客户端提供额外凭证（如 EAP 认证）
+
+
+** 2. 计费报文（Accounting Messages）**
+计费报文用于 记录用户上网时长、流量等信息，用于后续计费。常见类型如下：
+
+
+
+报文类型
+代码
+作用
+
+
+
+Accounting-Request
+4
+计费请求，NAS 发送给 RADIUS 服务器，包含用户会话信息
+
+
+Accounting-Response
+5
+计费响应，RADIUS 服务器收到计费信息后确认
+
+
+Accounting-Request 又分为：
+
+Start（用户上线）：用户开始上网时发送，记录 acctstarttime。
+Interim-Update（状态更新）：定期发送，更新流量、时长等数据。
+Stop（用户下线）：用户断开时发送，记录 acctstoptime、acctsessiontime、流量。
+
+RADIUS客户端与服务器交互过程：
+
+
+Access-Request：
+
+Access-Accept
+
+Access-Reject
+
+Accounting-Request
+
+Accounting-Response
+
+遇到的问题及调试方法在Radius全面配置好后，windows客户端无法直接拨号，否则显示691错误码，在radius端无信息反馈。推测PPPoE与客户端间传输存在问题。接回PPPoE本地测试可通。
+使用sudo tail -f /var/log/syslog | grep ppp监听PPPoE服务器信息
+当客户端拨号时，报错：
+Apr  3 11:19:13 xu-virtual-machine pppd[2901]: rc_read_dictionary: invalid type on line 92 of dictionary /usr/local/etc/radiusclient/dictionaryApr  3 11:19:13 xu-virtual-machine pppd[2901]: RADIUS: Can&amp;#x27;t read dictionary file /usr/local/etc/radiusclient/dictionaryApr  3 11:19:13 xu-virtual-machine pppd[2901]: Peer user2 failed CHAP authentication
+
+
+把/usr/local/etc/radiusclient/dictionary文件中所有ipv6addr和ipv6prdeix改成string
+
+下载dictionary.microsoft，只有使用该文件才支持Windows拨号
+
+在/usr/local/etc/radiusclient/dictionary末尾加上
+INCLUDE /usr/local/etc/radiusclient/dictionary.sipINCLUDE /usr/local/etc/radiusclient/dictionary.ascendINCLUDE /usr/local/etc/radiusclient/dictionary.meritINCLUDE /usr/local/etc/radiusclient/dictionary.compatINCLUDE /usr/local/etc/radiusclient/dictionary.microsoft
+
+之后再拨号，Radius服务器端显示报错信息，根据具体报错信息修改即可。
+
+
+
+                </p>
             </a>
           </div>
         
@@ -337,8 +2283,8 @@ Vmnet3:192.168.30.0&amp;#x2F;24
               <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
                 2025-02-27
               </p>
-              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
-                算法与分治Divide and Conquer（DC）
+                <p class="post-excerpt text-hacker-color3 group-hover:text-white truncate">
+                  算法与分治Divide and Conquer（DC）
 Divide：将源问题分解为规模较小的子问题，拆分问题性质相同，将子问题的解组合成原问题的解。
 Conquer：如果子问题仍然困难，就继续对子问题进行分解，直到子问题可以被trivial。
 Recursion：用递归的方式实现。
@@ -355,8 +2301,258 @@ Merg Sort：
 求解：递归地对两个子数组分别排序;
 合并：将两个已排序的子数组合并。
 
-Merge Step CLAIM：对于n ≥ 1的数组，MergeSort需要的运行时间T(n) ...
-              </p>
+Merge Step CLAIM：对于n ≥ 1的数组，MergeSort需要的运行时间T(n) ≤ $ 6n \log_2 n + 6n $
+
+函数增长的渐进符号Big O: 如果存在正数c和N，对于所有的n&amp;gt;&amp;#x3D;N，有f(n)&amp;lt;&amp;#x3D;c*g(n)，则f(n)&amp;#x3D;O(g(n))。
+Big Omega：如果存在正数c和N，对于所有的n&amp;gt;&amp;#x3D;N，有f(n)&amp;gt;&amp;#x3D;c*g(n)，则f(n)&amp;#x3D;Omega(g(n))。
+Big Theta：f(n)&amp;#x3D;Theta(g(n))，当且仅当f(n)&amp;#x3D;O(g(n))且f(n)&amp;#x3D;Omega(g(n))。
+基于比较的排序CLAIM：任何基于比较的排序算法，RT不可能低于O(nlogn)。
+任何基于两两比较的排序算法都可以表达为一棵决策树（完全二叉树）。
+完全二叉树：完全二叉树从根结点到倒数第二层满足完美二叉树，最后一层可以不完全填充，其叶子结点都靠左对齐。
+
+主办法（Master Method）主定理
+
+
+
+图简介树树：不包含任何圈的连通图。
+生成树(Spanning Tree)：如果图G的一个子图包含了G的全部顶点，且为树，则称之为G的生成树。
+图搜索循环不变式
+概念：每次循环开始时都要保持的性质 &amp;#x2F; 状态。
+INVARIANT：已探索集合和未探索集合应该处于正确的状态。边界点集合应准备好了。
+循环开始时，从边界点集合中选择一个顶点进行探索。
+循环结束前，将新扩展的边界点纳入集合。
+
+
+维护边界点集合：
+BFS：队列(FIFO)
+DFS：堆栈(LIFO)
+
+
+
+BFSBFS的伪代码：
+BFS(Graph, start):
+B.EnQueue(s)
+WHILE B is not empty:
+    d=B.DeQueue();
+    标记d为“已探索”
+    FOR each neighbor t of d:
+        IF t is not in visited:
+            B.EnQueue(t)
+        ENDIF
+    ENDFOR
+ENDWHILE
+
+聚合分析复杂度：O(n+m)
+DFSDFS的伪代码：
+DFS(Graph, start):B.Push(s)WHILE B is not empty: d = B.Pop() 标记 d 为“已探索” FOR each neighbor t of d:  IF t is not in visited:   B.Push(t)  ENDIF ENDFORENDWHILE
+
+聚合分析复杂度：O(n+m)
+图的连通性无向图的连通分量下述等价关系的等价类：当且仅当图中具有u-v路径时，称u~v。
+BFS求无向连通分量BFS求无向连通分量的伪代码：
+Loop-BFS(G):FOR i=1 to n	IF t is not in visited:		BFS(G,i);ENDFOR
+
+聚合分析复杂度：O(n+m)
+有向图的强连通分量（Strongly Connected Component,SCC）下述等价关系的等价类：当且仅当有向图G中具有u -&amp;gt; v路径且具有v -&amp;gt; u路径时，称称u~v。
+TWO-PASS算法(Kosaraju算法)
+构建逆图。
+在逆图中进行 Loop-DFS，记录每个节点的完成时间 f(v)。
+在原图中运行 Loop-DFS，按照逆图 DFS 完成的节点顺序进行，确定每个节点的 Leader。
+
+
+
+聚合分析复杂度：O(n+m)
+关键引理Key Lemma：考虑有向图G中的两个临接SCC，f(v)表示顶点v在反向图G’中Loop-DFS的完成时间，则有：$$\max_{v \in C_1} f(v) &amp;lt; \max_{v \in C_2} f(v)$$推论：最大的f值必然在”sink“SCC中。
+贪心MST贪心vs分治
+决策过程：
+分治：每个子问题的解都会考虑整个子问题的情况，逐步拆解，最终合并。
+贪心：每一步决策只关注当前的局部最优解，不回头。
+
+
+全局与局部：
+分治：每个子问题的解可能涉及整个问题的全局结构。
+贪心：每一步只考虑局部最优解，期望通过局部最优解得到全局最优解。
+
+
+解决问题的方式：
+分治：递归地分解问题，直到子问题足够简单直接求解。
+贪心：通过逐步选择当前最优的解来构建最终解。
+
+
+是否需要回溯：
+分治：通常会回溯并合并结果。
+贪心：不会回溯，一旦做出选择就不再修改。
+
+
+
+MST（前提：无向图）定义：最小权重生成树T。
+
+必须是无向图;
+生成树的权重定义为树上边权重之和;
+生成树定义为E的子集：
+必须覆盖V;
+无环;
+连通。
+
+
+
+
+割割的概念：图G(V，E)的一个割(Cut)是V的一个划分，该划分将集合V分为两个非空的集合。
+
+
+n个顶点的图最多有 $ 2^n-2 $ 个不同的割。
+
+Empty-Cut引理：图G不连通，当且仅当Cut(A，B)没有割边。
+Double-Crossing Lemma：如果某个圈C⊆E中有边跨越了Cut(A，B)，则C中至少还有一条边跨越Cut(A，B)。
+Lonely-Cut Corollary：如果边e是跨越了Cut(A，B)的唯一一条边，则e不可能在任一圈中。
+The Cut Property：考虑图G中的一条边e，如果存在Cut(A，B)，使得e是所有跨越该割的所有边中权最小者，则e一定在G的MST中。
+割的证明：
+
+
+堆（Heap）一个容器，其中元素具有key。
+常规操作及对应的RT：
+
+Heapify：建堆 O(n)
+Insert：加入一个新的对象 O(logn)
+Extract-Min：从堆中取出具有最小key的元素 O(logn)
+Delete：删除指定元素 O(logn)
+
+Heap Property
+堆是一颗有根，二叉，尽可能完全的树。
+任何节点的key都不大于其所有子代的key。 ——&amp;gt; 根元素具有最小key
+
+用数组实现堆
+Parent (i) &amp;#x3D; i &amp;#x2F; 2  （下标i为奇数时向下取整）
+LeftC (i) &amp;#x3D; 2i
+RightC (i) &amp;#x3D; 2i + 1
+
+
+
+Prime算法基本思想：
+
+从一个节点开始（任意选择一个节点作为起点），将它加入生成树。
+找到当前生成树中所有节点与其他节点之间的边，选择权重最小的边。
+将与该边相连的节点加入生成树，更新最小边的权重，重复选择最小边的过程。
+直到所有节点都被加入到生成树中。
+
+Pim的伪代码：
+Prim(Graph, start):    初始化最小生成树的边集合 MST = &amp;#123;&amp;#125;    初始化一个优先队列 Q，用于存储每个节点及其最小边的权重    对于每个节点 v ∈ Graph:        设置 v 的最小权重为无穷大（∞）    设置 start 节点的最小权重为 0，并将其加入 Q    WHILE Q is not empty:        选择 Q 中最小的权重的节点 u        标记 u 为“已加入到最小生成树”        对于 u 的每个邻居 v:            IF v is not in MST AND weight(u, v) &amp;lt; v 的当前权重:                更新 v 的最小权重为 weight(u, v)                将 v 更新到 Q 中，以反映其新的最小权重        ENDFOR    ENDWHILE
+
+Prim算法的证明：
+
+
+用堆实现Prim：
+Prim(Graph, start):
+    初始化最小生成树 MST = &amp;#123;&amp;#125;
+    初始化最小堆 MinHeap
+    初始化一个集合 Visited，用于记录已加入 MST 的节点
+    将 (0, start) 插入 MinHeap  // (边的权重, 节点)
+    初始化 total_weight = 0  // 记录最小生成树的总权重	
+	WHILE MinHeap is not empty:
+    	(weight, node) = MinHeap.Pop()  // 取出当前权重最小的边
+   	 IF node 已在 Visited:
+    	    CONTINUE  // 如果该节点已经在 MST 中，跳过
+
+  	  标记 node 为已访问
+  	  total_weight += weight  // 累加权重
+  	  MST.Add(node)
+
+	    FOR each (neighbor, edge_weight) in Graph[node]:  // 遍历邻居
+     	   IF neighbor 不在 Visited:
+       	     MinHeap.Push((edge_weight, neighbor))  // 只加入未访问的节点
+
+	RETURN MST, total_weight
+
+复杂度分析：
+
+n次Extract-Min：O(nlogn)
+m次Delete和m次Insert：O(mlogn)
+
+总RT &amp;#x3D; O(nlogn)+O(mlogn) &amp;#x3D; O(mlogn)
+Kruskal算法基本思想：
+
+按权重升序对边排序。
+按序逐条检查边。
+只要不成环，就将边加入T。
+
+Kruskal的伪代码：
+Kruskal(Graph):
+    初始化最小生成树 MST = &amp;#123;&amp;#125;
+    初始化并查集（Union-Find）来管理连通性
+    按照权重从小到大排序 Graph 的所有边 EdgeList
+	FOR (u, v, weight) in EdgeList:  // 遍历排序后的边
+   	 IF u 和 v 不在同一个连通分量 (Find(u) ≠ Find(v)):
+    	    MST.Add((u, v, weight))  // 加入最小生成树
+  	      Union(u, v)  // 合并连通分量
+  	  IF MST 的边数 == V - 1:
+     	   BREAK  // 最小生成树构建完成
+	RETURN MST
+
+Kruskal算法的证明：
+
+
+UNION-FIND算法Union-Find（并查集）是一种高效的数据结构，主要用于处理动态连通性问题。它支持两种核心操作：
+
+Find(x)：查找元素 x 所属的集合（返回它的代表元素）。
+Union(x, y)：合并 x 和 y 所在的两个集合。
+
+核心思想：
+
+每个集合用一棵树表示，树的根节点作为该集合的代表元（代表元素）。
+Find(x) 操作用于查找 x 所在集合的代表元（根节点）。
+Union(x, y) 操作用于合并两个集合，将其中一个集合的根节点指向另一个集合的根。
+
+Dijkstra算法Dijkstra的前提：无负权图（源点到第一层点的权重可为负值），避免负圈。
+Dijkstra的基本思路：
+
+初始化：
+
+
+设 dist[s] = 0（起点到自身的距离为 0），其他所有点 dist[v] = ∞（起始时认为未知）。
+用一个**优先队列（最小堆）**维护当前已发现的最短距离点。
+
+
+贪心扩展：
+
+
+每次从未访问的节点中选取当前 dist[v] 最小的点 u。
+遍历 u的所有邻居 v，尝试松弛：
+如果 dist[u] + w(u, v) &amp;lt; dist[v]，更新 dist[v]，并将 v 加入优先队列。
+
+
+
+
+终止：所有节点均已访问，或优先队列为空（所有可达点已确定最短路径）。
+
+Dijkstra的伪代码：
+Dijkstra(Graph, start):    初始化 dist[]，所有点设为 ∞，dist[start] = 0    初始化优先队列 PQ，插入 (0, start)  // (当前最短距离, 顶点)    初始化 visited[] 记录已确定最短路径的点    WHILE PQ 不为空:        (d, u) = PQ.Pop()  // 取出当前最短距离的点        IF u 已访问:            CONTINUE        标记 u 为已访问        FOR each 邻居 (v, weight) of u:            IF dist[u] + weight &amp;lt; dist[v]:  // 进行松弛操作                dist[v] = dist[u] + weight                PQ.Push((dist[v], v))  // 将 v 加入优先队列        RETURN dist[]
+
+循环桶桶（Bucket） 是一种数据存储和分类的方法，可以根据某种规则（如哈希值、时间、范围等）将数据映射到不同的桶中，以加快查询、存储或计算的效率。
+循环桶将数据按照一定规则分配到有限个桶（Bucket）中，并循环使用这些桶。
+循环桶的核心特点
+固定数量的桶（N 个）：
+设定 N 个桶，编号从 0 到 N-1，它们按照顺序排列成一个循环结构。
+访问时基于取模（modulo）运算，保证访问永远落在 0 ~ N-1 之间。
+
+
+循环访问（Modulo 取模）：
+计算索引 index = (当前时间 t) % N，从而使得时间到了 N 之后会回到 0，形成循环管理。
+
+
+
+用循环桶实现Dijkstra算法：CLAIM：Dijkstra算法中最多只需要C+1个桶。
+
+永久标记的顶点和非边界顶点不在桶中。
+边界点的距离标记不会超过A[i]+C（i为当前标记点）
+顶点x的桶的编号：A[x]mod(C+1)
+
+Dijkstra_CircularBucket(Graph, start):    初始化 dist[]，所有点设为 ∞，dist[start] = 0    初始化桶 Bucket[]，桶的数量为 C+1，存储每个距离区间的节点    初始化 visited[]，记录顶点是否已被永久标记        将起点 start 放入 Bucket[0] 中（dist[start] = 0）        WHILE 有节点未被永久标记:        从桶中找出具有最小距离的非永久标记的边界点 u        标记 u 为永久标记，并从桶中移除 u                FOR 每个邻居 v of u:            IF v 没有被永久标记:                IF dist[u] + w(u, v) &amp;lt; dist[v]:                    dist[v] = dist[u] + w(u, v)  // 松弛操作                    将 v 放入 Bucket[dist[v] mod (C + 1)] 中  // 根据 dist[v] 放入桶                    更新 v 的距离标记    RETURN dist[]
+
+复杂度分析：O(m+nC)
+Dijsktra算法扩展单源单宿最短路问题问题描述：给定图G，给定顶点s和d，求从s到d的最小权重路径。
+解决方式：增加一个判断分支，d被永久标记时终止循环。
+1111111111111111
+
+                </p>
             </a>
           </div>
         
