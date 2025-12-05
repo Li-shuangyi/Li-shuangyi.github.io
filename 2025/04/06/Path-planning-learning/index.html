@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    p{
+        margin-top: 0 !important;
+        margin-bottom: 1rem !important;
+        font-size: 1.1rem;
+    }
+    figure{
+        margin: 0 !important;
+    }
+    pre{
+        padding: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    td{
+        padding: 0 !important;
+        margin-bottom: 1rem !important;
+    }
+    h1,h2,h3,h4,h5,h6{
+        margin-top: 0 !important;
+        margin-bottom: 1rem !important;
+    }
+    @media (min-width: 1024px) {
+        #middle-box{
+            min-width: 56rem;
+        }
+    
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ether Blog - Path_planning_learning</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/toc.css">
+    
+<header class="bg-black text-hacker-white py-4 font-dos font-extrabold">
+    <div class="container mx-auto flex items-center justify-between space-x-8">
+    
+      <h1 class="text-2xl font-bold ml-[100px] md:ml-0 animate-pulse text-hacker-color1 md:mr-[20%]">
+        <a href="/" class="hover:text-white transition-colors select-none">
+          Ether Blog
+        </a>
+      </h1>
+  
+    <!-- 大屏幕 -->
+      <nav class="hidden md:block">
+        <ul class="flex space-x-6">
+          
+            <li>
+              <a href="/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Home
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Archives
+              </a>
+            </li>
+          
+            <li>
+              <a href="/categories/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Categories
+              </a>
+            </li>
+          
+            <li>
+              <a href="/tags/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Tags
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                About
+              </a>
+            </li>
+          
+            <li>
+              <a href="/rss.xml" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                RSS
+              </a>
+            </li>
+          
+        </ul>
+      </nav>
+  
+      <!-- 小屏幕 -->
+      <button id="menu-toggle" class="block md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  
+    <!-- 折叠菜单 -->
+    <nav id="mobile-menu" class="hidden bg-black">
+      <ul class="space-y-2 py-4 px-6">
+        
+          <li>
+            <a href="/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Home
+            </a>
+          </li>
+        
+          <li>
+            <a href="/archives/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Archives
+            </a>
+          </li>
+        
+          <li>
+            <a href="/categories/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Categories
+            </a>
+          </li>
+        
+          <li>
+            <a href="/tags/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Tags
+            </a>
+          </li>
+        
+          <li>
+            <a href="/about/" class="block text-white hover:text-hacker-color1 transition-colors">
+              About
+            </a>
+          </li>
+        
+          <li>
+            <a href="/rss.xml" class="block text-white hover:text-hacker-color1 transition-colors">
+              RSS
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+  
+    <!-- RSS Link -->
+    <link rel="alternate" type="application/rss+xml" title=" RSS" href="/rss.xml" />
+  </header>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/search.js"></script>
+  <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    menuToggle.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.remove("hidden");
+        } else {
+        mobileMenu.classList.add("hidden");
+        }
+    });
+    });
+
+  </script>
+  
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+<body class="bg-black text-hacker-color3 container mx-auto" style="overflow-x:hidden">
+    <!-- 文章标题 -->
+    <h1 class="text-5xl text-hacker-color1 font-bold font-dos my-6 text-center">Path_planning_learning</h1>
+
+    <!-- 发布时间 -->
+    <p class="text-hacker-color3 text-center text-sm mb-4">
+        2025-04-06
+    </p>
+
+    <!-- 文章内容 -->
+    <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight" style="display: flex;">
+        <div id="middle-box">
+            <h1 id="OverView"><a href="#OverView" class="headerlink" title="OverView"></a>OverView</h1><h2 id="前端-路径寻找"><a href="#前端-路径寻找" class="headerlink" title="前端:路径寻找"></a>前端:路径寻找</h2><h3 id="基于搜索"><a href="#基于搜索" class="headerlink" title="基于搜索"></a>基于搜索</h3><ul>
+<li>图搜索基础</li>
+<li>Dijkstra and A*</li>
+<li>Jump Point Search</li>
+</ul>
+<h3 id="基于采样"><a href="#基于采样" class="headerlink" title="基于采样"></a>基于采样</h3><ul>
+<li>Probabilstic Road Map</li>
+<li>RRT</li>
+<li>RRT* &#x2F; Informed RRT</li>
+</ul>
+<h3 id="基于运动学动态路径寻找"><a href="#基于运动学动态路径寻找" class="headerlink" title="基于运动学动态路径寻找"></a>基于运动学动态路径寻找</h3><ul>
+<li>State-state Boundary Value Optimal Control Problem</li>
+<li>State Lattic Search</li>
+<li>Kinodynamic RRT*</li>
+<li>Hybrid A*</li>
+</ul>
+<h2 id="后端-轨迹生成"><a href="#后端-轨迹生成" class="headerlink" title="后端:轨迹生成"></a>后端:轨迹生成</h2><h3 id="MINIMUN-SNAP-TRAJECTORY-GENERATION"><a href="#MINIMUN-SNAP-TRAJECTORY-GENERATION" class="headerlink" title="MINIMUN SNAP TRAJECTORY GENERATION"></a>MINIMUN SNAP TRAJECTORY GENERATION</h3><h3 id="SOFT-AND-HARD-CONSTRAINED-TRAJECTORY-OPTIMIZATION"><a href="#SOFT-AND-HARD-CONSTRAINED-TRAJECTORY-OPTIMIZATION" class="headerlink" title="SOFT AND HARD CONSTRAINED TRAJECTORY OPTIMIZATION"></a>SOFT AND HARD CONSTRAINED TRAJECTORY OPTIMIZATION</h3><h1 id="MAP"><a href="#MAP" class="headerlink" title="MAP"></a>MAP</h1><h2 id="Occupancy-grid-map"><a href="#Occupancy-grid-map" class="headerlink" title="Occupancy grid map"></a>Occupancy grid map</h2><p>github:<a target="_blank" rel="noopener" href="https://github.com/ANYbotics/grid_map">https://github.com/ANYbotics/grid_map</a></p>
+<ul>
+<li>排列紧密</li>
+<li>结构化</li>
+<li>索引队列访问</li>
+</ul>
+<p>缺点:当切分过于细密时空间占用率大.</p>
+<h2 id="Octo-map"><a href="#Octo-map" class="headerlink" title="Octo-map"></a>Octo-map</h2><p>github:<a target="_blank" rel="noopener" href="https://github.com/OctoMap/octomap_mapping">https://github.com/OctoMap/octomap_mapping</a></p>
+<p>地图中大部分为稀疏部分,使用八叉树的数据结构储存.如果一个区块没有障碍物,不再细分该区块;如果一个区块有障碍物则细分至最小包含该障碍物的区块.</p>
+<p><strong>Octree</strong></p>
+<p>八叉树（Octree）是一种用于描述三维空间的树状数据结构。八叉树的每个节点表示一个正方体的体积元素，每个节点有八个子节点，将八个子节点所表示的体积元素加在一起就等于父节点的体积。八叉树是四叉树在三维空间上的扩展，二维上我们有四个象限，而三维上，我们有8个卦限。八叉树主要用于空间划分和最近邻搜索。</p>
+<p>实现Octree的原理:</p>
+<ul>
+<li>将当前的立方体细分为八个子立方体。</li>
+<li>如果任何一个子立方体内包含多个点，则将其进一步细分为八个子立方体。</li>
+<li>重复以上操作使得每个子立方体内包含最多一个点。</li>
+</ul>
+<p><img src="/images/path_planning_learning/1.png" alt="八叉树1"></p>
+<p><img src="/images/path_planning_learning/2.webp" alt="八叉树2"></p>
+<ul>
+<li>排列稀疏</li>
+<li>结构化</li>
+<li>非直接索引访问(树的查询)</li>
+</ul>
+<h2 id="Voxel-hashing"><a href="#Voxel-hashing" class="headerlink" title="Voxel hashing"></a>Voxel hashing</h2><p>github:<a target="_blank" rel="noopener" href="https://github.com/niessner/VoxelHashing">https://github.com/niessner/VoxelHashing</a></p>
+<p>记录存在碰撞的区块 —-&gt; 哈希表,<strong>字典</strong></p>
+<p>一个bucket中划分为更小的voxel blocks</p>
+<p><img src="/images/path_planning_learning/3.png" alt="Voxel"></p>
+<ul>
+<li>排列最稀疏</li>
+<li>结构化</li>
+<li>非直接索引访问(字典查询)</li>
+</ul>
+<h2 id="Point-Cloud-Map"><a href="#Point-Cloud-Map" class="headerlink" title="Point Cloud Map"></a>Point Cloud Map</h2><ul>
+<li>无序</li>
+<li>无法通过索引队列访问(除非自发遍历)</li>
+</ul>
+<h2 id="TSDF-map"><a href="#TSDF-map" class="headerlink" title="TSDF map"></a>TSDF map</h2><p><strong>Truncated Signed Distance Functions (截断&#x2F;有符号&#x2F;距离函数)</strong></p>
+<p>github:</p>
+<p>TSDF 是一种用于表示3D空间表面的体素网格地图.</p>
+<h3 id="Signed-Distance-Function-SDF"><a href="#Signed-Distance-Function-SDF" class="headerlink" title="Signed Distance Function (SDF)"></a>Signed Distance Function (SDF)</h3><p>对于空间中任意一点 x，SDF 给出它到最近表面的距离 d：<br>$$<br>SDF(x)&#x3D;±d<br>$$</p>
+<ul>
+<li>+d：点在<strong>表面外部</strong>（通常指相机方向）</li>
+<li>−d：点在<strong>表面内部</strong></li>
+<li>d&#x3D;0：点在表面上（即零交叉点）</li>
+</ul>
+<h3 id="Truncated-SDF（TSDF）"><a href="#Truncated-SDF（TSDF）" class="headerlink" title="Truncated SDF（TSDF）"></a>Truncated SDF（TSDF）</h3><p>真实计算中远离表面部分的距离信息不重要且不准确，因此会进行截断：</p>
+<ul>
+<li>若 ∣d∣&gt; μ，则 TSDF 值为截断值。</li>
+<li>μ 是截断距离阈值（truncation distance）。</li>
+</ul>
+<h3 id="Voxel-Grid（体素网格）"><a href="#Voxel-Grid（体素网格）" class="headerlink" title="Voxel Grid（体素网格）"></a>Voxel Grid（体素网格）</h3><p>TSDF 存在于一个 3D 网格中（类似立方体像素）：</p>
+<ul>
+<li>每个体素（voxel）存储：<ul>
+<li>当前体素的 TSDF 值</li>
+<li>加权平均值（来自多个观测帧）</li>
+<li>权重（用于融合多个观测）</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/path_planning_learning/4.png" alt="TSDF1"></p>
+<p><img src="/images/path_planning_learning/5.png" alt="TSDF2"></p>
+<h2 id="ESDF-Map"><a href="#ESDF-Map" class="headerlink" title="ESDF Map"></a>ESDF Map</h2><p><strong>Euclidean Signed Distance Field 欧几里得有符号距离场</strong></p>
+<p>以 3D 网格（体素）的形式表示环境中每一点<strong>到障碍物最近点的欧几里得距离</strong>，并附带符号来表示点位于障碍物内部或外部。局部ESDF地图:只记忆感兴趣部分的ESDF值.</p>
+<p><img src="/images/path_planning_learning/6.png" alt="ESDF1"></p>
+<p><img src="/images/path_planning_learning/7.png" alt="ESDF2"></p>
+<h2 id="Free-space-Roadmap"><a href="#Free-space-Roadmap" class="headerlink" title="Free-space Roadmap"></a>Free-space Roadmap</h2><p>概率路线图 —-&gt; 安全通行区域,使用<strong>凸多边体</strong>表示</p>
+<p>得到的是一个宽阔的解空间</p>
+<h2 id="Voronoi-Diagram-Map"><a href="#Voronoi-Diagram-Map" class="headerlink" title="Voronoi Diagram Map"></a>Voronoi Diagram Map</h2><p>高效利用ESDF提取地图骨架 —-&gt; 稀疏</p>
+<h1 id="基于搜索的路径寻找"><a href="#基于搜索的路径寻找" class="headerlink" title="基于搜索的路径寻找"></a>基于搜索的路径寻找</h1><h2 id="A"><a href="#A" class="headerlink" title="A*"></a>A*</h2><p>A*算法在Dijkstra算法的基础上引入了启发函数(贪心思想)，启发函数是对当前节点到目标节点所需代价的预估.启发式函数一般使用曼哈顿距离、欧几里德距离。</p>
+<blockquote>
+<ol>
+<li><p>从起点开始，将其加入待探索的节点集合（open set）。</p>
+</li>
+<li><p>每次选择 f 值最小的节点进行扩展，其中 <code>f(n) = g(n) + h(n)</code></p>
+</li>
+</ol>
+<ul>
+<li><code>g(n)</code> 是从起点到当前节点的实际代价</li>
+<li><code>h(n)</code> 是从当前节点到终点的启发式估计（如直线距离）</li>
+</ul>
+<ol start="3">
+<li><p>对当前节点的所有相邻节点，计算新的 g 值，更新路径记录。</p>
+</li>
+<li><p>如果发现更优路径（g 值更小），则更新该邻居的记录，并加入 open set。</p>
+</li>
+<li><p>重复以上步骤，直到终点被选中扩展，表示找到最短路径。</p>
+</li>
+<li><p>通过路径记录表回溯，重建从起点到终点的完整路径。</p>
+</li>
+</ol>
+</blockquote>
+<p>伪代码</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><code class="hljs c++">• 维护一个优先级队列来存储所有待扩容节点<br>• 所有节点的启发式函数<span class="hljs-built_in">h</span>(n)是预定义的<br>• 优先级队列初始化为起始状态 X S<br>• 对图中所有其他节点赋值<span class="hljs-built_in">g</span>(X S) = <span class="hljs-number">0</span>, <span class="hljs-built_in">g</span>(n) = infinite<br>• Loop<br>    •如果队列为空，则返回FALSE；BREAK;<br>    •从优先级队列中删除<span class="hljs-built_in">f</span>(n)=<span class="hljs-built_in">g</span>(n)+<span class="hljs-built_in">h</span>(n)最小的节点“n”<br>    •将节点“n”标记为展开<br>    •如果节点“n”是目标状态，返回TRUE；BREAK;<br>    •对于节点n的所有未展开的邻居 m<br>		•<span class="hljs-function">If <span class="hljs-title">g</span><span class="hljs-params">(m)</span> </span>= infinite<br>			• <span class="hljs-built_in">g</span>(m)= <span class="hljs-built_in">g</span>(n) + Cnm<br>    •对于节点n的所有未展开的邻居 m<br>		•If <span class="hljs-built_in">g</span>(m) = infinite<br>			• <span class="hljs-built_in">g</span>(m)= <span class="hljs-built_in">g</span>(n) + Cnm<br>			• Push node “m” into the queue<br>		•If <span class="hljs-built_in">g</span>(m) &gt; <span class="hljs-built_in">g</span>(n) + C nm<br>			•<span class="hljs-built_in">g</span>(m)= <span class="hljs-built_in">g</span>(n) + Cnm<br>	•end<br>• End Loop<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Weighted-A-Search"><a href="#Weighted-A-Search" class="headerlink" title="Weighted A* Search"></a>Weighted A* Search</h3><p>Sub-Optimal Solution</p>
+<p>通过人为加大启发函数的影响力来获得更快的搜索速度，以牺牲路径最优性为代价。</p>
+<p>f &#x3D; g + εh, ε &gt; 1 &#x3D;bias towards states that are closer to goal.</p>
+<p><img src="/images/path_planning_learning/8.png" alt="Weighted_A*_Search"></p>
+<ul>
+<li><p>Most Greedy（最贪婪）</p>
+</li>
+<li><p>参数：a&#x3D;0,b&#x3D;1</p>
+</li>
+<li><p>只考虑启发式代价，完全不考虑当前路径代价</p>
+</li>
+<li><p>结果：趋向于直接朝目标点移动，但路径不一定最短或最优</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p>Tunable Greediness（可调贪婪度）</p>
+</li>
+<li><p>参数：a&#x3D;1,b&#x3D;ε&gt;1</p>
+</li>
+<li><p>综合考虑当前路径和启发式估计，但偏向启发式</p>
+</li>
+<li><p>结果：平衡探索性和效率，路径更合理</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p>Optimal（最优路径）</p>
+</li>
+<li><p>参数：a&#x3D;1,b&#x3D;1</p>
+</li>
+<li><p>平等考虑已知路径和启发估计</p>
+</li>
+<li><p>结果：找到最优路径</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p>Dijkstra算法</p>
+</li>
+<li><p>参数：a&#x3D;1,b&#x3D;0</p>
+</li>
+<li><p>完全不使用启发式，只靠实际代价 g,效率低</p>
+</li>
+</ul>
+<h3 id="A-的实施流程"><a href="#A-的实施流程" class="headerlink" title="A*的实施流程"></a>A*的实施流程</h3><ol>
+<li><p>建立地图 → 生成网格节点数组</p>
+</li>
+<li><p>设定障碍 → 标记不可达节点</p>
+</li>
+<li><p>编写邻居搜索函数</p>
+</li>
+<li><p>编写A*主循环：</p>
+<ul>
+<li><p>从openList中取出f值最小的节点</p>
+</li>
+<li><p>计算邻居的g&#x2F;h&#x2F;f值，加入openList</p>
+</li>
+<li><p>更新已访问节点（closedList）</p>
+</li>
+</ul>
+</li>
+<li><p>使用<code>priority_queue</code>或<code>multimap</code>优化性能</p>
+</li>
+</ol>
+<h3 id="最好的启发函数"><a href="#最好的启发函数" class="headerlink" title="最好的启发函数"></a><strong>最好的启发函数</strong></h3><p><strong>最好:tight</strong>,正确的最短距离函数</p>
+<blockquote>
+<p>二维最佳启发函数:<br>$$<br>h2D​&#x3D;(dx+dy)+(2<br>​−2)⋅min(dx,dy)<br>$$<br>三维最佳启发函数:</p>
+<p>我们记 dx,dy,dz为三维网格中当前点与目标点在三个轴上的距离（均为非负整数），有：<br>$$<br>h3D&#x3D;dmin⋅3+(dmid−dmin)⋅2+(dmax−dmid)⋅1<br>$$<br>其中：dmin,dmid,dmax是 dx,dy,dzdx,dy,dz 的排序结果，使得</p>
+<p>$$<br>dmin≤dmid≤dmax<br>$$</p>
+</blockquote>
+<h3 id="Tie-Breaker"><a href="#Tie-Breaker" class="headerlink" title="Tie Breaker"></a>Tie Breaker</h3><p>平局处理器,打破 f 值相等时的探索顺序</p>
+<ul>
+<li>问题:</li>
+</ul>
+<p>​	A* 会选取 f 值最小的节点扩展（f&#x3D;g+h）</p>
+<p>​	但在一些情形下，很多节点的 f 值完全相等,尤其是在网格图中启发函数不够 tight 的时候</p>
+<p>​	导致算法要探索很多不必要的节点，降低效率</p>
+<blockquote>
+<ul>
+<li><strong>解决方法:</strong></li>
+</ul>
+<ol>
+<li>人为干扰 h，让 f 值不同:</li>
+</ol>
+<p>  将原来的启发函数 h乘上一个微小因子：<br>$$<br>  h&#x3D;h×(1.0+p)<br>$$<br>  其中：<br>$$<br>  p &lt; \frac{\text{最小步长代价}}{\text{预期路径总长度}}<br>$$<br>  这样能 <strong>轻微打破平局</strong>，减少无效扩展</p>
+<p>  代价是轻微地破坏启发式的“可采纳性”（admissibility），但常常实际无影响或带来更好效率.</p>
+<ol start="2">
+<li>优先选 h值小的节点</li>
+</ol>
+<p>  如果两个节点 f 一样，选择 h 小的那个（靠近终点）</p>
+<ol start="3">
+<li>加入伪随机干扰项（Deterministic random）</li>
+</ol>
+<ul>
+<li>给每个节点加一个唯一扰动，保持一致性但不完全对称</li>
+</ul>
+<ol start="4">
+<li>优先靠近起点-终点连线的路径</li>
+</ol>
+<p>$$<br>cross&#x3D;∣dx1×dy2−dx2×dy1∣<br>$$</p>
+<p><strong>这其实是在衡量点偏离直线的“面积”，越小越靠近理想路径。</strong></p>
+</blockquote>
+<h2 id="Jump-Point-Search"><a href="#Jump-Point-Search" class="headerlink" title="Jump Point Search"></a>Jump Point Search</h2><p>核心思想:<strong>在两点之间没有障碍物时，中间的节点不考虑,只考虑重要节点.</strong></p>
+<ol>
+<li>邻居修剪 Neighbor Pruning</li>
+</ol>
+<ul>
+<li><p>灰色节点：较差的邻居，当去到它们时，没有分值的路径更便宜。丢弃。</p>
+</li>
+<li><p>白色节点：自然邻居。</p>
+</li>
+</ul>
+<p>​	只需要考虑<strong>自然邻居</strong>.</p>
+<p><img src="/images/path_planning_learning/9.png" alt="Neighbor Pruning"></p>
+<ol start="2">
+<li>强迫邻居 Forced Neighbors</li>
+</ol>
+<p>节点X的邻居节点有障碍物，且X的父节点P经过X到达N的距离代价，比不经过X到大N的任一路径的距离代价都小，则称N是X的强迫邻居。</p>
+<ul>
+<li><p>有相邻的障碍</p>
+</li>
+<li><p>红色节点是强制邻居。</p>
+</li>
+<li><p>一条从父母到他们通过障碍的更便宜的路径被阻断。</p>
+</li>
+</ul>
+<p><img src="/images/path_planning_learning/10.png" alt="Forced Neighbors"></p>
+<ol start="3">
+<li>跳点(Jump Point)：什么样的节点可以作为跳点<br> (1)节点 A 是起点、终点.<br> (2)节点A 至少有一个强迫邻居.<br> (3)父节点在斜方向(斜向搜索)，节点A的水平或者垂直方向上有满足 (1)、(2) 的节点</li>
+</ol>
+<p><img src="/images/path_planning_learning/11.png" alt="Jump Point"></p>
+<p>跳点搜索中，会递归地检查路径上的邻居节点是否是“跳点”。在检查对角线方向前，会优先尝试直线方向。只要某个节点通往某些邻居的最短路径必须经过它，它就会被标记为跳点。同时，对“强制邻居”不能剪枝，必须展开。</p>
+<h1 id="基于采样的路径寻找"><a href="#基于采样的路径寻找" class="headerlink" title="基于采样的路径寻找"></a>基于采样的路径寻找</h1><h2 id="Probabilistic-Road-Map"><a href="#Probabilistic-Road-Map" class="headerlink" title="Probabilistic Road Map"></a>Probabilistic Road Map</h2><p>图结构</p>
+<p>将规划分为两个阶段：<br>·学习阶段<br>·查询阶段</p>
+<p>检查采样配置和连接的样本之间的碰撞可以有效率地完成任务。<br>数量相对较少的里程碑和局部路径足以捕获的连通性。</p>
+<ul>
+<li>限制路径点连接的长度避免图结构过于复杂</li>
+</ul>
+<h3 id="学习阶段"><a href="#学习阶段" class="headerlink" title="学习阶段:"></a>学习阶段:</h3><ul>
+<li>在c空间中采样N个点</li>
+<li>删除碰撞点</li>
+</ul>
+<p><img src="/images/path_planning_learning/12.png" alt="PRM-Learning1"></p>
+<ul>
+<li>连接到最近的点，并获得无碰撞段。</li>
+<li>删除碰撞段</li>
+</ul>
+<p><img src="/images/path_planning_learning/13.png" alt="PRM-Learning2"></p>
+<h3 id="查询阶段"><a href="#查询阶段" class="headerlink" title="查询阶段:"></a>查询阶段:</h3><ul>
+<li>在路线图上搜索，找到从起点到终点的路径目标（使用Dijkstra算法或A*算法）。</li>
+<li>路线图现在类似于网格地图</li>
+</ul>
+<p><img src="/images/path_planning_learning/14.png" alt="PRM-Query"></p>
+<p> 优点</p>
+<ul>
+<li>概率完备</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li><p>要求解决两点边值问题</p>
+</li>
+<li><p>在状态空间上构建图，但不特别关注生成路径</p>
+</li>
+<li><p>效率不高</p>
+</li>
+</ul>
+<h3 id="Lazy-collision-checking"><a href="#Lazy-collision-checking" class="headerlink" title="Lazy collision-checking"></a>Lazy collision-checking</h3><p><strong>效率低</strong>: PRM（Probabilistic Roadmap）或 RRT（Rapidly-exploring Random Tree) 需要频繁地检查从一个配置到另一个配置（或状态）之间的路径是否与障碍物发生碰撞。但碰撞检测是一个昂贵的计算操作，尤其在高维空间或复杂环境中，频繁的碰撞检测会成为性能瓶颈。</p>
+<ul>
+<li>不考虑采样点和生成分段碰撞（懒惰）</li>
+</ul>
+<p>先构建图（PRM）或树（RRT）时不立即检查碰撞，等到真正要使用这条路径时（例如在查询最短路径、或者将路径从树&#x2F;图中提取出来时），再执行碰撞检测。</p>
+<h4 id="PRM-Lazy-collision-checking"><a href="#PRM-Lazy-collision-checking" class="headerlink" title="PRM+Lazy collision-checking"></a><strong>PRM+Lazy collision-checking</strong></h4><ol>
+<li><p>构建 roadmap：采样节点、连接边，不做碰撞检测。</p>
+</li>
+<li><p>查询路径：使用 A* 或 Dijkstra 等算法找到一条从起点到终点的路径。</p>
+</li>
+<li><p>在该路径上进行逐段碰撞检测：</p>
+<ul>
+<li><p>如果全部无碰撞，路径有效；</p>
+</li>
+<li><p>如果某段有碰撞，将该边标记为无效（不可达），从图中删除，重新搜索。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><img src="/images/path_planning_learning/15.png" alt="Lazy collision-checking"></p>
+<h2 id="Rapidly-exploring-Random-Tree"><a href="#Rapidly-exploring-Random-Tree" class="headerlink" title="Rapidly-exploring Random Tree"></a>Rapidly-exploring Random Tree</h2><p><strong>核心思想:</strong></p>
+<blockquote>
+<p>通过生成next构建树状态在树中通过执行随机控制,从起点开始，不断向随机方向扩展一棵树，迅速探索整个状态空间。</p>
+</blockquote>
+<p>伪代码:</p>
+<p><img src="/images/path_planning_learning/16.png" alt="RRT伪代码"></p>
+<ul>
+<li>初始化一棵树 <code>T</code>，将起始点 <code>X_init</code> 作为树的根节点。</li>
+<li>循环:</li>
+<li>在整个状态空间中随机采样一个点 <code>X_rand</code>，用于探索新方向。</li>
+<li>找出树 <code>T</code> 中距离 <code>X_rand</code> 最近的已有节点 <code>X_nearest</code>。</li>
+<li>从 <code>X_nearest</code> 朝 <code>q_rand</code> 方向延伸一个固定步长delta，生成新点 <code>X_new</code>。</li>
+</ul>
+<p>如果新点 <code>X_new</code> 是可行的（比如不与障碍物碰撞），则执行以下操作:</p>
+<ul>
+<li>把这个新点 <code>X_new</code> 加入树中，作为新的节点。</li>
+<li>在树中添加一条从 <code>X_nearest</code> 到 <code>X_new</code> 的路径边。</li>
+<li>返回整个搜索生成的树 <code>T</code>，它包含从起点开始探索出来的路径结构。</li>
+</ul>
+<p>**提前停止的条件：**因为每一段树枝的末端都是Xnew，所以每产生一次Xnew节点，我们都判断一下Xnew与终点之间的距离，看这个距离是否小于步长，如果小于步长且没有经过障碍物，则就直接把Xnew与终点进行相连。</p>
+<blockquote>
+<p>优点:<br>·旨在找到从起点到目标的路径<br>·比PRM更有针对性<br>缺点:<br>·非最优解<br>·效率不高,在 <strong>narrow环境</strong> 中效率低<br>·整个空间取样</p>
+</blockquote>
+<h3 id="KD树"><a href="#KD树" class="headerlink" title="KD树"></a>KD树</h3><p> Kd-Tree，即K-dimensional  tree，是一棵二叉树，树中存储的是一些K维数据。在一个K维数据集合上构建一棵Kd-Tree代表了对该K维数据集合构成的K维空间的一个划分，即树中的每个结点就对应了一个K维的超矩形区域（Hyperrectangle）。</p>
+<p>关键术语:</p>
+<ul>
+<li>维度（K）：表示数据点所在的空间维数。例如，二维空间中的点有x和y坐标，三维空间中的点有x、y、z坐标。</li>
+<li>节点：KD树的每个节点包含一个K维点及其分割超平面的信息。</li>
+<li>超平面：在K维空间中用于将空间划分为两个部分的（K-1）维子空间。例如，二维空间中的超平面是直线，三维空间中的超平面是平面。</li>
+</ul>
+<p>构建步骤:</p>
+<ol>
+<li><p>输入数据：假设有N个K维数据点。</p>
+</li>
+<li><p>选择分割维度：按照循环顺序选择当前维度。例如，第一个维度（x轴）用于根节点，第二个维度（y轴）用于其子节点，依此类推。</p>
+</li>
+<li><p>选择分割值：在当前分割维度上找到<strong>中位数</strong>点，将其作为当前节点。</p>
+</li>
+<li><p>划分数据：</p>
+<ul>
+<li><p>左子集：所有在当前分割维度上小于中位数点的点。</p>
+</li>
+<li><p>右子集：所有在当前分割维度上大于中位数点的点。</p>
+</li>
+</ul>
+</li>
+<li><p>递归构建子树：对左子集和右子集重复上述步骤，直到所有点都被包含在树中。</p>
+</li>
+<li><p>终止条件：当某一子集为空时，递归终止。</p>
+</li>
+</ol>
+<p><img src="/images/path_planning_learning/17.png" alt="一个创建KD树的例子"></p>
+<p>使用KD树提高<strong>路径规划</strong>效率</p>
+<h3 id="Bidirectional-RRT-RRT-Connect-双向快速扩展随机树"><a href="#Bidirectional-RRT-RRT-Connect-双向快速扩展随机树" class="headerlink" title="Bidirectional RRT &#x2F; RRT-Connect 双向快速扩展随机树"></a>Bidirectional RRT &#x2F; RRT-Connect 双向快速扩展随机树</h3><blockquote>
+<ol>
+<li>初始化两棵树：T_start 以 q_start 为根，T_goal 以 q_goal 为根。</li>
+<li>重复以下过程直到路径找到或迭代上限：<br>a. 从状态空间中采样一个随机点 q_rand。<br>b. 使用 Extend 操作从 T_start 向 q_rand 延伸，得到 q_new。<br>c. 如果扩展成功：<br>i. 使用 Connect 操作让 T_goal 向 q_new 不断扩展，直到无法前进。<br>ii. 如果两个树在某个点连接，则路径找到。<br>d. 交换 T_start 和 T_goal。</li>
+</ol>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">项目</th>
+<th align="center">单向 RRT</th>
+<th align="center">双向 RRT（RRT-Connect）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">扩展方向</td>
+<td align="center">只从起点扩展</td>
+<td align="center">起点和终点同时扩展</td>
+</tr>
+<tr>
+<td align="center">搜索速度</td>
+<td align="center">较慢</td>
+<td align="center">更快，更高效</td>
+</tr>
+<tr>
+<td align="center">成功率</td>
+<td align="center">容易陷入复杂障碍</td>
+<td align="center">双向推进更容易绕障碍</td>
+</tr>
+<tr>
+<td align="center">路径质量</td>
+<td align="center">一般</td>
+<td align="center">更好</td>
+</tr>
+<tr>
+<td align="center">复杂性</td>
+<td align="center">低</td>
+<td align="center">高</td>
+</tr>
+</tbody></table>
+<h2 id="Optimal-sampling-based-path-planning-methods"><a href="#Optimal-sampling-based-path-planning-methods" class="headerlink" title="Optimal sampling-based path planning methods"></a>Optimal sampling-based path planning methods</h2><p>在传统采样方法（如 RRT、PRM）的基础上，进一步加入了<strong>路径最优性保证</strong>的算法。最经典的代表是 <strong>RRT</strong>*</p>
+<h3 id="RRT"><a href="#RRT" class="headerlink" title="RRT*"></a>RRT*</h3><p><img src="/images/path_planning_learning/18.png" alt="RRT*伪代码"></p>
+<p><strong>Choose Best Parent</strong>：在新节点周围半径内的已有节点中，选择一条“代价最小”的路径作为父节点；</p>
+<p><strong>Rewire</strong>：反过来看新节点是否能以更小的代价更新周围节点的父节点。</p>
+<h3 id="Kinodynamic-RRT"><a href="#Kinodynamic-RRT" class="headerlink" title="Kinodynamic-RRT*"></a>Kinodynamic-RRT*</h3><p>更改Steer（）函数以适应机器人的运动或其他限制导航(曲线)</p>
+<h2 id="Advanced-Sampling-based-Methods"><a href="#Advanced-Sampling-based-Methods" class="headerlink" title="Advanced Sampling-based Methods"></a>Advanced Sampling-based Methods</h2><h3 id="Inform-RRT"><a href="#Inform-RRT" class="headerlink" title="Inform RRT*"></a>Inform RRT*</h3><p>一旦找到一条路径，其代价为 <code>c_best</code>，就只在以下区域采样：</p>
+<blockquote>
+<p><strong>从起点 <code>q_start</code> 到终点 <code>q_goal</code> 的椭球体区域（Ellipsoidal Sampling Space）</strong><br> 半长轴为 <code>c_best/2</code>，焦点为起点与终点，构成一个最短路径所有可能穿过的区域。</p>
+</blockquote>
+<p><img src="/images/path_planning_learning/18.png" alt="Inform RRT*"></p>
+<h3 id="Cross-entropy-motion-planning"><a href="#Cross-entropy-motion-planning" class="headerlink" title="Cross-entropy motion planning"></a>Cross-entropy motion planning</h3><ol>
+<li><p><strong>初始化一个轨迹分布模型</strong></p>
+<ul>
+<li><p>比如用高斯分布建模一条轨迹（多个中间点组成）</p>
+</li>
+<li><p>初始均值：可能是直线路径，初始方差大</p>
+</li>
+</ul>
+</li>
+<li><p><strong>采样多个轨迹</strong></p>
+<p>每条轨迹是从当前分布中采样得到的一个完整路径（可加速度约束等）</p>
+</li>
+<li><p><strong>评估轨迹代价</strong>:碰撞检测、路径长度、平滑性、目标接近度等</p>
+</li>
+<li><p><strong>选取表现最好的轨迹（Top-k）</strong>:选出“精英轨迹”，即代价最小的那一部分</p>
+</li>
+<li><p>**用精英轨迹更新分布参数:**更新高斯均值和协方差，使下次采样更集中于好路径附近</p>
+</li>
+<li><p><strong>迭代</strong>:重复 2-5，直到满足终止条件（如达到最小代价、收敛、超时等）</p>
+</li>
+</ol>
+
+        </div>
+        
+            <div class="post-container">
+            <aside class="toc-container">
+                <button class="toc-toggle">文章目录</button>
+                <nav class="toc" id="toc"></nav>
+            </aside>
+        </div>
+        
+    </div>
+
+
+    <!-- 返回主页链接 -->
+    <div class="text-center my-8">
+        <a href="/" class="text-hacker-color1 underline hover:text-hacker-color2">← Back to Home</a>
+    </div>
+
+      
+      <script src="/js/toc.js"></script>  <!-- 引入 TOC 逻辑 -->
+      
+      
+
+    <footer class="bg-black text-gray-400 py-4">
+    <div class="container mx-auto text-center">
+      <p>© <span id="current-year"></span>  Li-shuangyi 
+        <br> Powered by <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://github.com/m310ct/hexo-theme-hexploit">Hexpolit</a></p>
+    </div>
+  </footer>
+  
+  <script> 
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
+  
+
+
+</body>
+</html>

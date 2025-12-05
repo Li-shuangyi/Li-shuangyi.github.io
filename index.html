@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ether Blog</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <!-- <link rel="stylesheet" href="/css/search.css"> -->
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="bg-black">
+  <!-- 顶部导航栏 -->
+  <div class="sticky top-0 z-50">
+    
+<header class="bg-black text-hacker-white py-4 font-dos font-extrabold">
+    <div class="container mx-auto flex items-center justify-between space-x-8">
+    
+      <h1 class="text-2xl font-bold ml-[100px] md:ml-0 animate-pulse text-hacker-color1 md:mr-[20%]">
+        <a href="/" class="hover:text-white transition-colors select-none">
+          Ether Blog
+        </a>
+      </h1>
+  
+    <!-- 大屏幕 -->
+      <nav class="hidden md:block">
+        <ul class="flex space-x-6">
+          
+            <li>
+              <a href="/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Home
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Archives
+              </a>
+            </li>
+          
+            <li>
+              <a href="/categories/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Categories
+              </a>
+            </li>
+          
+            <li>
+              <a href="/tags/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Tags
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                About
+              </a>
+            </li>
+          
+            <li>
+              <a href="/rss.xml" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                RSS
+              </a>
+            </li>
+          
+        </ul>
+      </nav>
+  
+      <!-- 小屏幕 -->
+      <button id="menu-toggle" class="block md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  
+    <!-- 折叠菜单 -->
+    <nav id="mobile-menu" class="hidden bg-black">
+      <ul class="space-y-2 py-4 px-6">
+        
+          <li>
+            <a href="/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Home
+            </a>
+          </li>
+        
+          <li>
+            <a href="/archives/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Archives
+            </a>
+          </li>
+        
+          <li>
+            <a href="/categories/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Categories
+            </a>
+          </li>
+        
+          <li>
+            <a href="/tags/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Tags
+            </a>
+          </li>
+        
+          <li>
+            <a href="/about/" class="block text-white hover:text-hacker-color1 transition-colors">
+              About
+            </a>
+          </li>
+        
+          <li>
+            <a href="/rss.xml" class="block text-white hover:text-hacker-color1 transition-colors">
+              RSS
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+  
+    <!-- RSS Link -->
+    <link rel="alternate" type="application/rss+xml" title=" RSS" href="/rss.xml" />
+  </header>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/search.js"></script>
+  <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    menuToggle.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.remove("hidden");
+        } else {
+        mobileMenu.classList.add("hidden");
+        }
+    });
+    });
+
+  </script>
+  
+
+  </div>
+  
+  <main class="w-screen min-h-screen container mx-auto">
+    <!-- 欢迎页面 -->
+    <div class="min-h-screen bg-black text-center flex flex-col justify-center items-center h-screen">
+        <h1 class="
+        text-hacker-color2 font-dos md:text-huge text-3xl text-wrap animate-bounce select-none bg-red-400 md:min-h-[5rem] md:leading-[5rem] 
+        bg-gradient-to-r from-hacker-color1 to-hacker-color2 bg-clip-text text-transparent md:-mt-80 -mt-40
+        ">Welcome to Ether Blog !!!</h1>
+        <hr class="w-[85%] border-t-2 border-line-color border-dashed">
+        
+        <p class="text-hacker-color2 md:mt-40 mt-20 md:text-2xl text-lg text-wrap font-dos w-[70%] select-none">Li-shuangyi的个人博客，不定期更新内容。</p>
+
+        <!-- 下拉按钮 -->
+        <svg id="down-btn" class="icon w-16 h-16 absolute top-[75%] hover:-translate-y-1 transition-all cursor-pointer" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="#bbbbbb">
+          <path d="M185.884 327.55 146.3 367.133 512.021 732.779 877.7 367.133 838.117 327.55 511.997 653.676Z"></path>
+        </svg>
+    </div>
+
+    <!-- 博客文章与侧边栏 -->
+    <div class="min-h-screen flex gap-8" id="scr-target">
+      <!-- 文章部分 -->
+      <div class="w-full">
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/12/03/%E5%A4%8D%E7%8E%B0SHAC/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                复现SHAC
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-12-03
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                项目名称 : SHAC复现论文阅读...
+              </p>
+            </a>
+          </div>
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/10/09/%EB%82%9C%EC%9E%A5%ED%8C%90%E6%8F%92%E4%BB%B6%E9%A3%9F%E7%94%A8%E8%AF%B4%E6%98%8E/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                난장판插件食用说明
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-10-09
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                BASH文件切换环境# &amp;gt;&amp;gt;&amp;gt; switch environment &amp;gt;&amp;gt;&amp;gt;# &amp;gt;&amp;gt;&amp;gt; conda initialize &amp;gt;&amp;gt;&amp;gt;# !! Contents within this block are managed by &amp;#x27;conda init&amp;#x27; !!function use_conda() &amp;#123;    __conda_setup=&amp;quot;$(&amp;#x27;/home/xx/anaconda3/bin/conda&amp;#x27; &amp;#x27;shell.bash&amp;#x27; &amp;#x27;hook&amp;...
+              </p>
+            </a>
+          </div>
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/07/04/%E5%A4%8D%E7%8E%B0FAST-LIVO2/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                复现FAST-LIVO2
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-07-04
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                项目名称 : FAST-LIVO2复现任务规划
+设备:
+
+Livox AVIA
+Livox Converter 2.0
+海康相机MV-CS020-10UC
+
+
+硬件:
+
+手持设备支架设计(Solidworks)
+
+STM32硬同步流程
+
+相机-Lidar标定
+
+
+
+软件:
+
+环境,build
+录包,跑包
+
+
+
+论文阅读FAST-LIVO
+LIO 子系统: 反向传播补偿 LiDAR 扫描的运动畸变,计算帧到地图点到平面的残差。
+
+VIO 子系统: 提取当前 FoV 中的视觉子映射,剔除异常值。
+
+视觉对齐: 稀疏直接图像对齐,比较光流误差。
+
+紧密耦合: 点到平面残差和图像光度误差与误差状态iK...
+              </p>
+            </a>
+          </div>
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/05/22/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1_%E8%83%8C%E5%8D%95%E8%AF%8D%E8%BD%AF%E4%BB%B6%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                课程设计_背单词软件调试记录
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-05-22
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                调试记录5.21测试记录目前采用静态网页进行可视化
+
+用户登录未测试,现在根据用户名区分不同用户,密码不管是什么都能登录
+增加home界面,在该页面可选择词书,查询单词,选择学习&amp;#x2F;复习,复习下选择释义测试&amp;#x2F;拼写测试
+查询单词后可选择标记
+个人中心中增加我的数据&amp;#x2F;学习进度.我的数据子菜单下可展开每个掌握度的单词
+将不同词书隔离,不同词书学习进度独立,学习的单词独立
+在Learning界面中乱序展示所有单词,可进行标记
+
+5.22测试记录目前采用静态网页进行可视化
+
+增加每日学习部分.
+增加profile中学习成果及可视化部分.
+增加复习规则&amp;#x2F;learn帮助...
+              </p>
+            </a>
+          </div>
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/04/06/Path-planning-learning/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                Path_planning_learning
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-04-06
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                OverView前端:路径寻找基于搜索
+图搜索基础
+Dijkstra and A*
+Jump Point Search
+
+基于采样
+Probabilstic Road Map
+RRT
+RRT* &amp;#x2F; Informed RRT
+
+基于运动学动态路径寻找
+State-state Boundary Value Optimal Control Problem
+State Lattic Search
+Kinodynamic RRT*
+Hybrid A*
+
+后端:轨迹生成MINIMUN SNAP TRAJECTORY GENERATIONSOFT AND HARD CONSTRAINED TRAJ...
+              </p>
+            </a>
+          </div>
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/03/10/%E6%8E%A5%E5%85%A5%E7%BD%91%E8%AF%BE%E8%AE%BE/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                接入网综合课设
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-03-10
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                接入网综合课设阶段一
+完成虚拟机选型，并配置至少两个网段， 分别测试子网内和子网间连通性； 
+
+设计PPPOE本地认证拓扑图及IP地址规划 (客户至少两个网段)  ；
+
+选型PPPOE服务器软件，并在虚拟环境下 完成PPPoE接入本地认证的搭建、配置、 实验测试。
+
+
+任务一子网规划虚拟机选型：ubuntu20.04
+配置网段：
+
+Vmnet1:192.168.10.0&amp;#x2F;24
+Vmnet2:192.168.20.0&amp;#x2F;24 
+Vmnet3:192.168.30.0&amp;#x2F;24
+
+
+配置流程
+在ubuntu编辑-虚拟网络编辑器中选择更改设置，赋予管理员权限后选择添加网络，类...
+              </p>
+            </a>
+          </div>
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/02/27/%E7%BD%91%E7%BB%9C%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                网络算法基础
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-02-27
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                算法与分治Divide and Conquer（DC）
+Divide：将源问题分解为规模较小的子问题，拆分问题性质相同，将子问题的解组合成原问题的解。
+Conquer：如果子问题仍然困难，就继续对子问题进行分解，直到子问题可以被trivial。
+Recursion：用递归的方式实现。
+归并排序问题定义：
+
+输入：n个数构成的数组;
+
+输出：排列该n个数的有序数组。
+
+
+Merg Sort：
+
+分解：将原数组等分为两个子数组;
+求解：递归地对两个子数组分别排序;
+合并：将两个已排序的子数组合并。
+
+Merge Step CLAIM：对于n ≥ 1的数组，MergeSort需要的运行时间T(n) ...
+              </p>
+            </a>
+          </div>
+        
+      </div>
+      
+
+      <!-- 侧边部分 -->
+      
+    <div class="w-1/3 hidden md:block space-y-4 mt-8">
+      
+        
+          <!-- 搜索框 -->
+          <input type="text" id="search-input" placeholder="Search..." class="w-full p-2.5 text-lg mb-5 border-2 border-line-color rounded bg-black text-white placeholder-gray-400"/>
+          <div id="search-results"></div>
+        
+  
+        
+  
+        
+  
+        
+  
+        
+  
+      
+        
+  
+        
+          <!-- 公告栏 -->
+          <div class=" text-white p-4 rounded-md border-2 border-dashed border-line-color mb-4">
+            <h3 class="font-bold text-lg text-hacker-color1">Notice</h3>
+            <p class="mt-4">こんにちは。一名UESTC四年生。不定期更新日常。</p>
+          </div>
+        
+  
+        
+  
+        
+  
+        
+  
+      
+        
+  
+        
+  
+        
+          <!-- 分类部分 -->
+          <h3 class="text-hacker-color1 font-bold text-lg">Categories</h3>
+          <div>
+            
+            
+          </div>
+          <hr class="w-full border-t-2 border-line-color border-dashed">
+        
+  
+        
+  
+        
+  
+      
+        
+  
+        
+  
+        
+  
+        
+          <!-- 标签部分 -->
+          <h3 class="text-hacker-color1 font-bold text-lg">Tags</h3>
+          <div class="flex flex-wrap justify-start items-center">
+            
+              <a href="http://example.com/tags/网络/" class="text-hacker-color3 hover:bg-hacker-hover-color hover:text-white block border border-hacker-color3 hover:border-dotted rounded-sm py-0.5 px-2 mr-4 mb-2">
+                网络 <sub>1</sub>
+              </a>
+              <br />
+            
+              <a href="http://example.com/tags/课设/" class="text-hacker-color3 hover:bg-hacker-hover-color hover:text-white block border border-hacker-color3 hover:border-dotted rounded-sm py-0.5 px-2 mr-4 mb-2">
+                课设 <sub>2</sub>
+              </a>
+              <br />
+            
+              <a href="http://example.com/tags/算法/" class="text-hacker-color3 hover:bg-hacker-hover-color hover:text-white block border border-hacker-color3 hover:border-dotted rounded-sm py-0.5 px-2 mr-4 mb-2">
+                算法 <sub>2</sub>
+              </a>
+              <br />
+            
+              <a href="http://example.com/tags/project/" class="text-hacker-color3 hover:bg-hacker-hover-color hover:text-white block border border-hacker-color3 hover:border-dotted rounded-sm py-0.5 px-2 mr-4 mb-2">
+                project <sub>2</sub>
+              </a>
+              <br />
+            
+              <a href="http://example.com/tags/食用说明/" class="text-hacker-color3 hover:bg-hacker-hover-color hover:text-white block border border-hacker-color3 hover:border-dotted rounded-sm py-0.5 px-2 mr-4 mb-2">
+                食用说明 <sub>1</sub>
+              </a>
+              <br />
+            
+            
+          </div>
+          <hr class="w-full border-t-2 border-line-color border-dashed">
+        
+  
+        
+  
+      
+        
+  
+        
+  
+        
+  
+        
+  
+        
+          <!-- 链接部分 -->
+          <h3 class="text-hacker-color1 font-bold text-lg">Links</h3>
+          <div>
+            
+              <a href="https://github.com/Li-shuangyi" target="_blank" class="text-hacker-color3 hover:text-white">
+                github主页
+              </a>
+              <br />
+            
+              <a href="https://leetcode.cn/u/lishuangyi/" target="_blank" class="text-hacker-color3 hover:text-white">
+                LeetCode主页
+              </a>
+              <br />
+            
+          </div>
+          <hr class="w-full border-t-2 border-line-color border-dashed">
+        
+  
+      
+    </div>
+  
+  
+  
+  
+  
+
+
+
+
+
+
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-black text-gray-400 py-4">
+    <div class="container mx-auto text-center">
+      <p>© <span id="current-year"></span>  Li-shuangyi 
+        <br> Powered by <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://github.com/m310ct/hexo-theme-hexploit">Hexpolit</a></p>
+    </div>
+  </footer>
+  
+  <script> 
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
+  
+
+</body>
+<script src="./js/scroll.js"></script>
+
+</html>
