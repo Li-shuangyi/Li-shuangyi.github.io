@@ -41,7 +41,7 @@
   }
   
   .toc-list li a:hover {
-    color: white; /* 绿色 */
+    color: white; 
   }
   
   /* 让 h1、h2、h3 目录有不同的缩进和大小 */
